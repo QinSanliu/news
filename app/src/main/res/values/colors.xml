@@ -3,4 +3,11 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
+    <color name="title_bc_red">#FF4500</color>
+    <color name="title_font_bc_wite">#FFFFFF</color>
+
+    <color name="left_draw_bc">#FCFCFC</color>
+    <color name="left_draw_bottom_button_state_bc_default">#F8F8FF</color>
+    <color name="left_draw_bottom_button_state_bc_press">#CFCFCF</color>
 </resources>
