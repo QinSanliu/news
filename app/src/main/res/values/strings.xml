@@ -25,5 +25,6 @@
     <string name="feedback">反馈</string>
     <string name="left_menu_bottom_settings">设置</string>
     <string name="left_menu_bottom_exit">退出</string>
-
+    <string name="left_menu_login_name">parting_soul</string>
+    <string name="left_menu_login_mailbox">982068238@qq.com</string>
 </resources>

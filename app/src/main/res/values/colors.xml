@@ -10,4 +10,7 @@
     <color name="left_draw_bc">#FCFCFC</color>
     <color name="left_draw_bottom_button_state_bc_default">#F8F8FF</color>
     <color name="left_draw_bottom_button_state_bc_press">#CFCFCF</color>
+    <color name="left_draw_bottom_button_separate_line_bc">#BABABA</color>
+    <color name="left_draw_login_text_bc_white">#FFFFFF</color>
+
 </resources>
