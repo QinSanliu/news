@@ -5,6 +5,7 @@ import com.example.parting_soul.news.R;
 
 /**
  * Created by parting_soul on 2016/10/3.
+ * 新闻的种类，显示在横向导航条上
  */
 
 public class NewsKinds {

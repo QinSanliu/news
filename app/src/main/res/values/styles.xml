@@ -9,6 +9,7 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <!-- 左侧侧滑菜单底部的按钮风格-->
     <style name="left_bottom_button_style">
         <item name="android:gravity">center</item>
         <item name="android:clickable">true</item>
@@ -16,5 +17,11 @@
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_weight">1</item>
+    </style>
+
+    <!-- 导航字体的大小和颜色-->
+    <style name="navigation_item_front_state_style">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/navigation_item_font_state_color</item>
     </style>
 </resources>

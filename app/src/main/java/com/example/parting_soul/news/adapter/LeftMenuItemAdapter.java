@@ -15,10 +15,17 @@ import java.util.List;
 
 /**
  * Created by parting_soul on 2016/10/3.
+ * 左侧侧滑菜单项的自定义适配器
  */
 
 public class LeftMenuItemAdapter extends BaseAdapter {
+    /**
+     * 菜单项的信息
+     */
     private List<MenuItemInfo> mLists;
+    /**
+     * 上下文对象
+     */
     private Context mContext;
 
     public LeftMenuItemAdapter(Context context, List<MenuItemInfo> lists) {
@@ -53,13 +60,16 @@ public class LeftMenuItemAdapter extends BaseAdapter {
             view.setTag(holder);
         } else {
             view = convertView;
-            holder = (MenuItemHolder)view.getTag();
+            holder = (MenuItemHolder) view.getTag();
         }
         holder.pic.setImageResource(mLists.get(position).getImageId());
         holder.content.setText(mLists.get(position).getNameId());
         return view;
     }
 
+    /**
+     * 布局重用的优化类
+     */
     class MenuItemHolder {
         ImageView pic;
         TextView content;
