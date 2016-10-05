@@ -32,8 +32,8 @@ public class HttpUtils {
             URL url = new URL(path);
             conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
-            conn.setConnectTimeout(10 * 1000);
-            conn.setReadTimeout(10 * 1000);
+//            conn.setConnectTimeout(10 * 1000);
+//            conn.setReadTimeout(10 * 1000);
             in = conn.getInputStream();
 
             byte[] buffer = new byte[1024];
@@ -73,9 +73,10 @@ public class HttpUtils {
 
     /**
      * 利用Http的Post方法获取资源
-     * @param path  网络地址
-     * @param param 网络地址代封装中的参数
-     * @param encode  请求的编码方式
+     *
+     * @param path   网络地址
+     * @param param  网络地址代封装中的参数
+     * @param encode 请求的编码方式
      * @return String 返回字符串数据
      */
     public static String HttpPostMethod(String path, String param, String encode) {
@@ -85,20 +86,23 @@ public class HttpUtils {
         try {
             URL url = new URL(path);
             conn = (HttpURLConnection) url.openConnection();
+            //设置可以写入输出流
             conn.setDoOutput(true);
             conn.setRequestMethod("POST");
+            //设置请求头
             conn.setRequestProperty("Accept-Charset", encode);
             conn.setRequestProperty("contentType", encode);
             conn.setConnectTimeout(10 * 1000);
             conn.setReadTimeout(10 * 1000);
 
-
+            //将请求参数写入输出流
             PrintWriter writer = new PrintWriter(conn.getOutputStream());
             writer.print(param);
             writer.flush();
             writer.close();
 
-            reader = new BufferedReader(new InputStreamReader(conn.getInputStream(),encode));
+            //从输入流读出数据
+            reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), encode));
             String line = null;
             while ((line = reader.readLine()) != null) {
                 result.append(line);
@@ -108,6 +112,17 @@ public class HttpUtils {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            conn.disconnect();
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    reader = null;
+                }
+            }
         }
         return result.toString();
     }

@@ -1,6 +1,7 @@
 package com.example.parting_soul.news.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,15 +11,26 @@ import android.widget.TextView;
 
 import com.example.parting_soul.news.R;
 import com.example.parting_soul.news.bean.News;
+import com.example.parting_soul.news.utils.ImageLoader;
+import com.example.parting_soul.news.utils.LogUtils;
 
 import java.util.List;
 
+import static com.example.parting_soul.news.utils.CommonInfo.TAG;
+
 /**
  * Created by parting_soul on 2016/10/4.
+ * 新闻内容适配器
  */
 
 public class NewsInfoAdapter extends BaseAdapter {
+    /**
+     * 新闻数组
+     */
     private List<News> mLists;
+    /**
+     * 上下文对象
+     */
     private Context mContext;
 
     public NewsInfoAdapter(Context context, List<News> lists) {
@@ -62,6 +74,12 @@ public class NewsInfoAdapter extends BaseAdapter {
         holder.title.setText(mLists.get(position).getTitle());
         holder.authorName.setText(mLists.get(position).getAuthor_name());
         holder.date.setText(mLists.get(position).getDate());
+
+        String url = mLists.get(position).getPicPath();
+        holder.pic.setTag(url);
+        ImageLoader imageLoader = new ImageLoader();
+        imageLoader.downLoadImage(url, holder.pic);
+        LogUtils.d(TAG, "getView: " + mLists.get(position).getTitle() + " " + position + " " + mLists.get(position).getPicPath());
         return view;
     }
 

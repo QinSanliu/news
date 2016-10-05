@@ -16,7 +16,7 @@
     <color name="navigation_bc">#FAFAFA</color> <!-- 导航条背景色-->
     <color name="navigation_item_background_default">#FAFAFA</color> <!-- 导航按钮默认背景白色 -->
     <color name="navigation_item_background_selected">#FF4500</color> <!-- 导航按钮selected背景红色 -->
-    <color name="navigation_item_font_default_color">#0F0F0F</color>	<!-- 导航按钮字体默认为黑色 -->
+    <color name="navigation_item_font_default_color">#0F0F0F</color>    <!-- 导航按钮字体默认为黑色 -->
     <color name="navigation_item_font_selected_color">#F8F8FF</color> <!-- 导航按钮选中状态字体为白色 -->
     <color name="navigation_below_line">#D9D9D9</color>     <!-- 导航栏下方分割线 -->
 

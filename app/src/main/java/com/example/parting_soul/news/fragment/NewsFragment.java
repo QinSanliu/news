@@ -30,12 +30,35 @@ import static com.example.parting_soul.news.utils.JsonParseTool.parseJsonWidthJS
  */
 
 public class NewsFragment extends Fragment implements AdapterView.OnItemClickListener {
+    /**
+     * 存放新闻项的listview
+     */
     private ListView mListView;
+    /**
+     * 新闻信息适配器
+     */
     private NewsInfoAdapter mNewsInfoAdapter;
+    /**
+     * 新闻数组
+     */
     private List<News> mLists;
+    /**
+     * 请求地址中的新闻类别参数
+     */
     private String mNewTypeParam;
+    /**
+     * 进度条对话框
+     */
     private ProgressDialog mDialog;
+    /**
+     * 请求地址的所有参数
+     */
     private String mParams;
+
+    /**
+     * 是否是用户当前看到的页面
+     */
+    private boolean isUserVisiblePage;
 
     /**
      * 初始化下载进度条
@@ -47,6 +70,12 @@ public class NewsFragment extends Fragment implements AdapterView.OnItemClickLis
         mDialog.setCancelable(false);
     }
 
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        isUserVisiblePage = isVisibleToUser;
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -76,16 +105,9 @@ public class NewsFragment extends Fragment implements AdapterView.OnItemClickLis
         View view = inflater.inflate(R.layout.news_fragment, container, false);
         mListView = (ListView) view.findViewById(R.id.news_lists);
         mListView.setOnItemClickListener(this);
-        try {
-            mLists = new DownLoadNewsInfoAsyncTask().execute(mParams).get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-        mNewsInfoAdapter = new NewsInfoAdapter(getContext(),mLists);
-        mListView.setAdapter(mNewsInfoAdapter);
-        mNewsInfoAdapter.notifyDataSetChanged();
+        //if (isUserVisiblePage) {
+            new DownLoadNewsInfoAsyncTask().execute(mParams);
+        //}
         return view;
     }
 
@@ -108,8 +130,10 @@ public class NewsFragment extends Fragment implements AdapterView.OnItemClickLis
         @Override
         protected List<News> doInBackground(String... params) {
             List<News> lists = null;
+            //下载数据
             String jsonString = HttpUtils.HttpPostMethod(CommonInfo.NewsAPI.Params.REQUEST_URL,
                     params[0], CommonInfo.ENCODE_TYPE);
+            //解析下载的数据
             lists = JsonParseTool.parseJsonWidthJSONObject(jsonString);
             return lists;
         }
@@ -117,6 +141,10 @@ public class NewsFragment extends Fragment implements AdapterView.OnItemClickLis
         @Override
         protected void onPostExecute(List<News> lists) {
             super.onPostExecute(lists);
+            mLists = lists;
+            mNewsInfoAdapter = new NewsInfoAdapter(getContext(), mLists);
+            mListView.setAdapter(mNewsInfoAdapter);
+            mNewsInfoAdapter.notifyDataSetChanged();
             mDialog.dismiss();
         }
 
