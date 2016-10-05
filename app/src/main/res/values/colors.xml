@@ -20,4 +20,6 @@
     <color name="navigation_item_font_selected_color">#F8F8FF</color> <!-- 导航按钮选中状态字体为白色 -->
     <color name="navigation_below_line">#D9D9D9</color>     <!-- 导航栏下方分割线 -->
 
+    <color name="black_font">#0F0F0F</color>  <!-- 黑色字体-->
+
 </resources>

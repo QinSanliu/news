@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
@@ -20,6 +21,7 @@ import com.example.parting_soul.news.bean.MenuItemApi;
 import com.example.parting_soul.news.bean.NewsKinds;
 import com.example.parting_soul.news.customview.HorizontalNavigation;
 import com.example.parting_soul.news.fragment.NewsFragment;
+import com.example.parting_soul.news.utils.CommonInfo;
 import com.example.parting_soul.news.utils.WindowSizeTool;
 
 
@@ -175,7 +177,8 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
         for (int i = 0; i < NEWS_TYPES.length; i++) {
             NewsFragment fragment = new NewsFragment();
             Bundle bundle = new Bundle();
-            bundle.putString("msg", NEWS_TYPES[i]);
+            bundle.putString(CommonInfo.NewsAPI.Params.REQUEST_TYPE_PARAM_NAME, NewsKinds.getNewsTypeMap()
+                    .get(NEWS_TYPES[i]));
             fragment.setArguments(bundle);
             mNewsFragmentLists.add(fragment);
         }

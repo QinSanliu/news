@@ -2,11 +2,31 @@ package com.example.parting_soul.news.bean;
 
 /**
  * Created by parting_soul on 2016/10/3.
+ * 新闻类
  */
 
 public class News {
+    /**
+     * 新闻的标题
+     */
     private String title;
+    /**
+     * 新闻对应的图片路径
+     */
     private String picPath;
+    /**
+     * 新闻的url
+     */
+    private String url;
+    /**
+     * 发布新闻的日期
+     */
+    private String date;
+
+    /**
+     * 作者名字
+     */
+    private String author_name;
 
     public String getTitle() {
         return title;
@@ -23,4 +43,29 @@ public class News {
     public void setPicPath(String picPath) {
         this.picPath = picPath;
     }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getAuthor_name() {
+        return author_name;
+    }
+
+    public void setAuthor_name(String author_name) {
+        this.author_name = author_name;
+    }
+    
 }

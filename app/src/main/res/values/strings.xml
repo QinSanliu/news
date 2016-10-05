@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">news</string>
+
+    <!-- 横向导航条菜单项名称-->
     <string-array name="news_type">
         <item>头条</item>
         <item>社会</item>
@@ -13,9 +15,24 @@
         <item>时尚</item>
     </string-array>
 
+    <!-- 新闻类型http请求参数-->
+    <string-array name="news_type_request_param">
+        <item>top</item>
+        <item>shehui</item>
+        <item>guonei</item>
+        <item>guoji</item>
+        <item>yule</item>
+        <item>tiyu</item>
+        <item>junshi</item>
+        <item>keji</item>
+        <item>caijing</item>
+        <item>shishang</item>
+    </string-array>
+
+
     <string name="title_name">NewsDemo</string>
 
-
+    <!-- 左侧侧滑菜单项标题内容-->
     <string name="message">消息</string>
     <string name="collection">收藏</string>
     <string name="activity">活动</string>
@@ -25,6 +42,7 @@
     <string name="feedback">反馈</string>
     <string name="left_menu_bottom_settings">设置</string>
     <string name="left_menu_bottom_exit">退出</string>
+
     <string name="left_menu_login_name">parting_soul</string>
     <string name="left_menu_login_mailbox">982068238@qq.com</string>
 </resources>
