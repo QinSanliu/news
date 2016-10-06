@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
@@ -24,13 +23,10 @@ import com.example.parting_soul.news.fragment.NewsFragment;
 import com.example.parting_soul.news.utils.CommonInfo;
 import com.example.parting_soul.news.utils.WindowSizeTool;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener {
-    private static final String TAG = "MyTest";
-
     /**
      * 新闻的类型，显示在导航条中
      */

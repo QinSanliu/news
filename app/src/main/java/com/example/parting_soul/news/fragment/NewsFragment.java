@@ -1,10 +1,11 @@
 package com.example.parting_soul.news.fragment;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,11 +18,11 @@ import com.example.parting_soul.news.bean.News;
 import com.example.parting_soul.news.utils.CommonInfo;
 import com.example.parting_soul.news.utils.HttpUtils;
 import com.example.parting_soul.news.utils.JsonParseTool;
+import com.example.parting_soul.news.utils.LogUtils;
 
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
-import static com.example.parting_soul.news.utils.JsonParseTool.parseJsonWidthJSONObject;
+import static com.example.parting_soul.news.utils.CommonInfo.TAG;
 
 
 /**
@@ -29,7 +30,7 @@ import static com.example.parting_soul.news.utils.JsonParseTool.parseJsonWidthJS
  * 新闻碎片类
  */
 
-public class NewsFragment extends Fragment implements AdapterView.OnItemClickListener {
+public class NewsFragment extends BaseFragment implements AdapterView.OnItemClickListener {
     /**
      * 存放新闻项的listview
      */
@@ -56,11 +57,6 @@ public class NewsFragment extends Fragment implements AdapterView.OnItemClickLis
     private String mParams;
 
     /**
-     * 是否是用户当前看到的页面
-     */
-    private boolean isUserVisiblePage;
-
-    /**
      * 初始化下载进度条
      */
     private void initProgressDialog() {
@@ -70,11 +66,20 @@ public class NewsFragment extends Fragment implements AdapterView.OnItemClickLis
         mDialog.setCancelable(false);
     }
 
-
     @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        isUserVisiblePage = isVisibleToUser;
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        LogUtils.d(TAG, "onAttach -->fragment");
+    }
+
+    /**
+     * 当页面可见并且UI已经绘制完成，异步任务加载数据
+     */
+    @Override
+    public void loadData() {
+        if (mIsVisibleToUser && mIsPrepared) {
+            new DownLoadNewsInfoAsyncTask().execute(mParams);
+        }
     }
 
     @Override
@@ -83,6 +88,7 @@ public class NewsFragment extends Fragment implements AdapterView.OnItemClickLis
         mNewTypeParam = getArguments().getString(CommonInfo.NewsAPI.Params.REQUEST_TYPE_PARAM_NAME);
         initProgressDialog();
         mParams = initRequestUrlParam();
+        LogUtils.d(TAG, "onCreate -->fragment " + mNewTypeParam + " " + this);
     }
 
     /**
@@ -105,10 +111,17 @@ public class NewsFragment extends Fragment implements AdapterView.OnItemClickLis
         View view = inflater.inflate(R.layout.news_fragment, container, false);
         mListView = (ListView) view.findViewById(R.id.news_lists);
         mListView.setOnItemClickListener(this);
-        //if (isUserVisiblePage) {
-            new DownLoadNewsInfoAsyncTask().execute(mParams);
-        //}
+        //UI加载完成的标志置为true
+        mIsPrepared = true;
+        loadData();
+        Log.d(TAG, "onCreateView -->fragment " + mNewTypeParam);
         return view;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        LogUtils.d(TAG, "onActivityCreated -->fragment " + mNewTypeParam);
     }
 
     @Override
