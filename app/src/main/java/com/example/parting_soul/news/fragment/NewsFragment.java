@@ -2,8 +2,8 @@ package com.example.parting_soul.news.fragment;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,10 +12,12 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.example.parting_soul.news.Interface.HttpCallBack;
 import com.example.parting_soul.news.R;
 import com.example.parting_soul.news.adapter.NewsInfoAdapter;
 import com.example.parting_soul.news.bean.News;
 import com.example.parting_soul.news.utils.CommonInfo;
+import com.example.parting_soul.news.utils.DownLoadHandler;
 import com.example.parting_soul.news.utils.HttpUtils;
 import com.example.parting_soul.news.utils.JsonParseTool;
 import com.example.parting_soul.news.utils.LogUtils;
@@ -30,7 +32,7 @@ import static com.example.parting_soul.news.utils.CommonInfo.TAG;
  * 新闻碎片类
  */
 
-public class NewsFragment extends BaseFragment implements AdapterView.OnItemClickListener {
+public class NewsFragment extends BaseFragment implements AdapterView.OnItemClickListener, HttpCallBack {
     /**
      * 存放新闻项的listview
      */
@@ -57,6 +59,55 @@ public class NewsFragment extends BaseFragment implements AdapterView.OnItemClic
     private String mParams;
 
     /**
+     * 消息处理类
+     */
+    private DownLoadHandler mHandler = new DownLoadHandler() {
+        /**
+         * 该方法在主线程调用
+         * @param msg Looper从消息队列取出的消息
+         */
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case CommonInfo.DownloadStatus.DOWNLOAD_FINISH_MSG:
+                    updateUI(msg);
+                    break;
+                case CommonInfo.DownloadStatus.DOWNLOAD_FAILED_MSG:
+                    showError();
+                    break;
+            }
+            //关闭进度条对话框
+            mDialog.dismiss();
+        }
+
+        /**
+         * 下载错误时要处理的逻辑代码段
+         */
+        @Override
+        protected void showError() {
+
+        }
+
+        /**
+         * 下载正确则更新相应的UI
+         * @param msg
+         */
+        @Override
+        protected void updateUI(Message msg) {
+            //数据下载完成
+            if (msg.obj != null) {
+                mLists = (List<News>) msg.obj;
+                //将数据源绑定到适配器
+                mNewsInfoAdapter = new NewsInfoAdapter(getContext(), mLists);
+                //为listview设置适配器
+                mListView.setAdapter(mNewsInfoAdapter);
+                mNewsInfoAdapter.notifyDataSetChanged();
+            }
+        }
+    };
+
+    /**
      * 初始化下载进度条
      */
     private void initProgressDialog() {
@@ -78,7 +129,9 @@ public class NewsFragment extends BaseFragment implements AdapterView.OnItemClic
     @Override
     public void loadData() {
         if (mIsVisibleToUser && mIsPrepared) {
-            new DownLoadNewsInfoAsyncTask().execute(mParams);
+            new DownloadNewsThread().start();
+            //子线程下载的同时显示进度条对话框
+            mDialog.show();
         }
     }
 
@@ -130,37 +183,55 @@ public class NewsFragment extends BaseFragment implements AdapterView.OnItemClic
     }
 
     /**
-     * 异步任务进行新闻数据下载，得到json数据并且进行解析,返回新闻类的数组
+     * 下载成功时调用,该方法在子线程调用
+     *
+     * @param result 字符串形式的下载的结果
      */
-    class DownLoadNewsInfoAsyncTask extends AsyncTask<String, Void, List<News>> {
+    @Override
+    public void onResult(String result) {
+        List<News> lists = null;
+        //解析下载的数据
+        lists = JsonParseTool.parseJsonWidthJSONObject(result);
+        //从消息池取出一个空的消息对象
+        Message msg = Message.obtain();
+        //将解析后的数据绑定在消息对象上
+        msg.obj = lists;
+        //标记为下载完成
+        msg.what = CommonInfo.DownloadStatus.DOWNLOAD_FINISH_MSG;
+        //Handler将消息发送到消息队列
+        mHandler.sendMessage(msg);
+    }
 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            mDialog.show();
-        }
+    /**
+     * 下载成功时调用,该方法在子线程调用
+     *
+     * @param result 字符数组形式的下载结果
+     */
+    @Override
+    public void onResult(byte[] result) {
 
+    }
+
+    /**
+     * 产生异常时调用,该方法在子线程调用
+     *
+     * @param e 异常类型
+     */
+    @Override
+    public void onError(Exception e) {
+        mHandler.sendEmptyMessage(CommonInfo.DownloadStatus.DOWNLOAD_FAILED_MSG);
+    }
+
+    /**
+     * 子线程进行新闻数据下载，得到json数据并且进行解析,返回新闻类的数组
+     */
+    class DownloadNewsThread extends Thread {
         @Override
-        protected List<News> doInBackground(String... params) {
-            List<News> lists = null;
+        public void run() {
             //下载数据
-            String jsonString = HttpUtils.HttpPostMethod(CommonInfo.NewsAPI.Params.REQUEST_URL,
-                    params[0], CommonInfo.ENCODE_TYPE);
-            //解析下载的数据
-            lists = JsonParseTool.parseJsonWidthJSONObject(jsonString);
-            return lists;
+            HttpUtils.HttpPostMethod(CommonInfo.NewsAPI.Params.REQUEST_URL,
+                    mParams, CommonInfo.ENCODE_TYPE, NewsFragment.this);
         }
-
-        @Override
-        protected void onPostExecute(List<News> lists) {
-            super.onPostExecute(lists);
-            mLists = lists;
-            mNewsInfoAdapter = new NewsInfoAdapter(getContext(), mLists);
-            mListView.setAdapter(mNewsInfoAdapter);
-            mNewsInfoAdapter.notifyDataSetChanged();
-            mDialog.dismiss();
-        }
-
     }
 
 }

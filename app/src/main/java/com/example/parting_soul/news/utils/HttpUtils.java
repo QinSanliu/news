@@ -1,5 +1,7 @@
 package com.example.parting_soul.news.utils;
 
+import com.example.parting_soul.news.Interface.HttpCallBack;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -20,10 +22,11 @@ public class HttpUtils {
     /**
      * 采用http协议的Get方法从网络获取数据
      *
-     * @param path http路径
-     * @return byte[] 返回下载的字符数组
+     * @param path     http路径
+     * @param callback 回调方法
+     * @return void
      */
-    public static byte[] HttpGetMethod(String path) {
+    public static void HttpGetMethod(String path, HttpCallBack callback) {
         byte[] result = null;
         HttpURLConnection conn = null;
         InputStream in = null;
@@ -42,11 +45,12 @@ public class HttpUtils {
                 out.write(buffer, 0, len);
             }
             result = out.toByteArray();
-
+            //将结果传入实现回调接口的类
+            callback.onResult(result);
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            callback.onError(e);
         } catch (IOException e) {
-            e.printStackTrace();
+            callback.onError(e);
         } finally {
             conn.disconnect();
             if (in != null) {
@@ -68,18 +72,18 @@ public class HttpUtils {
                 }
             }
         }
-        return result;
     }
 
     /**
      * 利用Http的Post方法获取资源
      *
-     * @param path   网络地址
-     * @param param  网络地址代封装中的参数
-     * @param encode 请求的编码方式
-     * @return String 返回字符串数据
+     * @param path     网络地址
+     * @param param    网络地址代封装中的参数
+     * @param encode   请求的编码方式
+     * @param callback 回调方法
+     * @return void
      */
-    public static String HttpPostMethod(String path, String param, String encode) {
+    public static void HttpPostMethod(String path, String param, String encode, HttpCallBack callback) {
         StringBuilder result = new StringBuilder();
         HttpURLConnection conn = null;
         BufferedReader reader = null;
@@ -107,11 +111,11 @@ public class HttpUtils {
             while ((line = reader.readLine()) != null) {
                 result.append(line);
             }
-
+            callback.onResult(result.toString());
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            callback.onError(e);
         } catch (IOException e) {
-            e.printStackTrace();
+            callback.onError(e);
         } finally {
             conn.disconnect();
             if (reader != null) {
@@ -124,7 +128,6 @@ public class HttpUtils {
                 }
             }
         }
-        return result.toString();
     }
 
 }

@@ -74,6 +74,7 @@ public class NewsInfoAdapter extends BaseAdapter {
         holder.title.setText(mLists.get(position).getTitle());
         holder.authorName.setText(mLists.get(position).getAuthor_name());
         holder.date.setText(mLists.get(position).getDate());
+        holder.pic.setImageResource(R.mipmap.imageview_default_bc);
 
         String url = mLists.get(position).getPicPath();
         holder.pic.setTag(url);

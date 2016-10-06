@@ -17,6 +17,20 @@ public class CommonInfo {
      */
     public static final String ENCODE_TYPE = "utf-8";
 
+    /**
+     * http下载状态描述类
+     */
+    public class DownloadStatus {
+        /**
+         * 下载完成标识字段
+         */
+        public static final int DOWNLOAD_FINISH_MSG = 11111;
+
+        /**
+         * 下载失败标识字段
+         */
+        public static final int DOWNLOAD_FAILED_MSG = 11112;
+    }
 
     /**
      * 新闻api接口有关的信息
