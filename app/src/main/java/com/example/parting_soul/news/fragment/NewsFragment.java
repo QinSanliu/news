@@ -17,7 +17,7 @@ import com.example.parting_soul.news.R;
 import com.example.parting_soul.news.adapter.NewsInfoAdapter;
 import com.example.parting_soul.news.bean.News;
 import com.example.parting_soul.news.utils.CommonInfo;
-import com.example.parting_soul.news.utils.DownLoadHandler;
+import com.example.parting_soul.news.utils.AbstractDownLoadHandler;
 import com.example.parting_soul.news.utils.HttpUtils;
 import com.example.parting_soul.news.utils.JsonParseTool;
 import com.example.parting_soul.news.utils.LogUtils;
@@ -61,7 +61,7 @@ public class NewsFragment extends BaseFragment implements AdapterView.OnItemClic
     /**
      * 消息处理类
      */
-    private DownLoadHandler mHandler = new DownLoadHandler() {
+    private AbstractDownLoadHandler mHandler = new AbstractDownLoadHandler() {
         /**
          * 该方法在主线程调用
          * @param msg Looper从消息队列取出的消息
@@ -99,7 +99,7 @@ public class NewsFragment extends BaseFragment implements AdapterView.OnItemClic
             if (msg.obj != null) {
                 mLists = (List<News>) msg.obj;
                 //将数据源绑定到适配器
-                mNewsInfoAdapter = new NewsInfoAdapter(getContext(), mLists);
+                mNewsInfoAdapter = new NewsInfoAdapter(getContext(), mLists,mListView);
                 //为listview设置适配器
                 mListView.setAdapter(mNewsInfoAdapter);
                 mNewsInfoAdapter.notifyDataSetChanged();
@@ -139,7 +139,9 @@ public class NewsFragment extends BaseFragment implements AdapterView.OnItemClic
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mNewTypeParam = getArguments().getString(CommonInfo.NewsAPI.Params.REQUEST_TYPE_PARAM_NAME);
+        //初始化进度条对话框
         initProgressDialog();
+        //得到所有请求参数
         mParams = initRequestUrlParam();
         LogUtils.d(TAG, "onCreate -->fragment " + mNewTypeParam + " " + this);
     }
@@ -175,6 +177,12 @@ public class NewsFragment extends BaseFragment implements AdapterView.OnItemClic
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         LogUtils.d(TAG, "onActivityCreated -->fragment " + mNewTypeParam);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
     }
 
     @Override

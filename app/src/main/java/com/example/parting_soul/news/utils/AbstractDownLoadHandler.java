@@ -8,7 +8,7 @@ import android.os.Message;
  * 抽象类 消息处理类
  */
 
-public abstract class DownLoadHandler extends Handler {
+public abstract class AbstractDownLoadHandler extends Handler {
     /**
      * 下载错误时要处理的逻辑代码段
      */

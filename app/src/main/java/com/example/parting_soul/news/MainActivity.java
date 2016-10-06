@@ -21,6 +21,7 @@ import com.example.parting_soul.news.bean.NewsKinds;
 import com.example.parting_soul.news.customview.HorizontalNavigation;
 import com.example.parting_soul.news.fragment.NewsFragment;
 import com.example.parting_soul.news.utils.CommonInfo;
+import com.example.parting_soul.news.utils.LogUtils;
 import com.example.parting_soul.news.utils.WindowSizeTool;
 
 import java.util.ArrayList;
@@ -116,6 +117,7 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
         initLeftDrawerLayout();
         initViewPager();
         initHorizontalNavigationItem();
+        LogUtils.currentLevel = LogUtils.INFO;
     }
 
     /**

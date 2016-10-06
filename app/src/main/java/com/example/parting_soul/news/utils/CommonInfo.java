@@ -30,6 +30,11 @@ public class CommonInfo {
          * 下载失败标识字段
          */
         public static final int DOWNLOAD_FAILED_MSG = 11112;
+
+        /**
+         * 下载完成移除线程字段
+         */
+        public static final int DOWNLOAD_FINISH_REMOVE_THREAD_MSG = 111113;
     }
 
     /**
