@@ -129,7 +129,7 @@ public class NewsInfoAdapter extends BaseAdapter implements AbsListView.OnScroll
             holder.pic.setTag(url);
             mImageLoader.loadImage(url, holder.pic);
         }
-        LogUtils.d(TAG, "getView: " + mLists.get(position).getTitle() + " " + position + " " + mLists.get(position).getPicPath());
+//        LogUtils.d(TAG, "getView: " + mLists.get(position).getTitle() + " " + position + " " + mLists.get(position).getPicPath());
         return view;
     }
 

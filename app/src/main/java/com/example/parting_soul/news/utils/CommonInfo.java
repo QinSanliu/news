@@ -38,6 +38,21 @@ public class CommonInfo {
     }
 
     /**
+     * 图片缩放级别
+     */
+    public class ImageZoomLeve {
+        /**
+         * 默认ListView图片宽度分辨率
+         */
+        public static final int REQUEST_IMAGE_WIDTH = 100;
+        /**
+         * 默认ListView图片高度分辨率
+         */
+        public static final int REQUEST_IMAGE_HEIGHT = 100;
+    }
+
+
+    /**
      * 新闻api接口有关的信息
      */
     public class NewsAPI {

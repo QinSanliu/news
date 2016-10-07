@@ -38,9 +38,14 @@ public class ImageLoader {
     private LruCache<String, Bitmap> mCache;
 
     /**
-     * 一级缓存的大小
+     * 获取当前可用的最大内存，以KB为单位
      */
-    private int mCachesMemory = 10 * 1024 * 1024;
+    int maxMemory = (int) ((Runtime.getRuntime().maxMemory()) / 1024);
+
+    /**
+     * 一级缓存的大小,最大值为可用缓存的1/8
+     */
+    private int mCachesMemory = maxMemory / 8;
 
     /**
      * 构造方法
@@ -53,10 +58,11 @@ public class ImageLoader {
         mCache = new LruCache<String, Bitmap>(mCachesMemory) {
             @Override
             protected int sizeOf(String key, Bitmap value) {
-                // 每次存入缓存时调用
-                return value.getByteCount();
+                // 每次存入缓存时调用,返回每张图片的大小
+                return value.getByteCount() / 1024;
             }
         };
+        LogUtils.i(CommonInfo.TAG, "-->1" + mCachesMemory / 1024);
     }
 
     /**
@@ -179,9 +185,10 @@ public class ImageLoader {
 
                 @Override
                 public void onResult(byte[] result) {
-                    //将字符数组解析为Bitmap对象
-                    Bitmap bitmap = BitmapFactory.decodeByteArray(result, 0, result.length);
-
+                    //将字符数组解析为Bitmap对象,并将大分辨率图片缩放
+                    Bitmap bitmap = ImageZoom.decodeSimpleBitmapFromByte(result,
+                            CommonInfo.ImageZoomLeve.REQUEST_IMAGE_WIDTH,
+                            CommonInfo.ImageZoomLeve.REQUEST_IMAGE_HEIGHT);
                     if (bitmap != null) {
                         //将图片加入到内存中
                         addBitmapToCache(mUrl, bitmap);

@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
         initLeftDrawerLayout();
         initViewPager();
         initHorizontalNavigationItem();
-        LogUtils.currentLevel = LogUtils.INFO;
+        LogUtils.currentLevel = LogUtils.DEBUG;
     }
 
     /**
