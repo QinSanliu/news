@@ -1,20 +1,24 @@
 package com.example.parting_soul.news.utils;
 
+import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.Message;
+import android.os.AsyncTask;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.util.LruCache;
 import android.widget.ImageView;
 import android.widget.ListView;
 
-import com.example.parting_soul.news.Interface.HttpCallBack;
 import com.example.parting_soul.news.R;
 import com.example.parting_soul.news.adapter.NewsInfoAdapter;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashSet;
 import java.util.Set;
+
+import libcore.io.DiskLruCache;
 
 /**
  * Created by parting_soul on 2016/10/5.
@@ -26,11 +30,10 @@ public class ImageLoader {
      * 新闻数据项
      */
     private ListView mListView;
-
     /**
-     * 下载线程的集合
+     * 异步任务集合
      */
-    private Set<Thread> mThreadSets;
+    private Set<DownLoadImageAsynTask> mTaskSets;
 
     /**
      * 一级缓存，url和图片的映射
@@ -48,13 +51,18 @@ public class ImageLoader {
     private int mCachesMemory = maxMemory / 8;
 
     /**
+     * SD卡缓存类
+     */
+    private DiskLruCache mDiskLruCache;
+
+    /**
      * 构造方法
      *
      * @param listview 新闻数据项
      */
-    public ImageLoader(ListView listview) {
+    public ImageLoader(Context context, ListView listview) {
         mListView = listview;
-        mThreadSets = new HashSet<Thread>();
+        mTaskSets = new HashSet<DownLoadImageAsynTask>();
         mCache = new LruCache<String, Bitmap>(mCachesMemory) {
             @Override
             protected int sizeOf(String key, Bitmap value) {
@@ -62,17 +70,35 @@ public class ImageLoader {
                 return value.getByteCount() / 1024;
             }
         };
-        LogUtils.i(CommonInfo.TAG, "-->1" + mCachesMemory / 1024);
+
+        //得到缓存图片的文件夹对象
+        File cacheDir = DiskLruCacheHelper.getCacheFile(context,
+                CommonInfo.Cache.IMAGE_CACHE_DIR_NAME);
+        //若该文件不存在则创建文件夹
+        if (!cacheDir.exists()) {
+            cacheDir.mkdirs();
+        }
+
+        try {
+            //生成硬盘缓存管理类 参数依次为缓存文件对象,app版本号，一个key对应多少个键,缓存容量总大小
+            mDiskLruCache = DiskLruCache.open(cacheDir, DiskLruCacheHelper.getVersion(context),
+                    1, CommonInfo.Cache.IMAGE_CACHE_SIZE);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        LogUtils.i(CommonInfo.TAG, "-->mCachesMemory " + mCachesMemory / 1024);
     }
 
     /**
      * 加载从位置start开始到end之间所有的图片<br>
-     * 滚动停止时调用，若存在图片则加载，若不存在则从网络下载
+     * 滚动停止时调用，若存在图片则加载，若不存在则从硬盘获取或网络下载
      *
      * @param start 可见新闻项的开始位置
      * @param end   可见新闻项的结束位置
      */
     public void loadImage(int start, int end) {
+        LogUtils.d(CommonInfo.TAG, "--->start = " + start + " end = " + end);
         for (int i = start; i < end; i++) {
             //找到对应的图片url地址
             String url = NewsInfoAdapter.IMAGE_URLS[i];
@@ -80,16 +106,17 @@ public class ImageLoader {
             Bitmap bitmap = getBitmapFromCache(url);
             //根据图片控件Ta属性上绑定的url从listview中找到图片控件
             ImageView imageView = (ImageView) mListView.findViewWithTag(url);
+            LogUtils.d(CommonInfo.TAG, "---->loadImage " + imageView + " url = " + url);
             if (bitmap != null) {
                 //若成功从缓存中找到图片
                 imageView.setImageBitmap(bitmap);
                 LogUtils.d(CommonInfo.TAG, "bitmap from cache");
             } else {
-                //找不到图片则从网络下载图片
+                //找不到图片则从SD卡或者网络下载图片
                 downLoadImage(url, imageView);
-                LogUtils.d(CommonInfo.TAG, "bitmap from web");
             }
         }
+        LogUtils.d(CommonInfo.TAG, "loadimage finished");
 
     }
 
@@ -114,7 +141,7 @@ public class ImageLoader {
     }
 
     /**
-     * 以图片的url为键找到对应的bitmap值
+     * 以图片的url为键从内存中找到对应的bitmap值
      *
      * @param url
      * @return Bitmap 找到则返回图片，找不到返回null
@@ -125,7 +152,7 @@ public class ImageLoader {
     }
 
     /**
-     * 若缓存中没有该图片，则加入缓存
+     * 若一级缓存中没有该图片，则加入缓存
      *
      * @param url    图片的url地址(键)
      * @param bitmap 图片Bitmap对象(值)
@@ -137,85 +164,33 @@ public class ImageLoader {
     }
 
     /**
-     * 停止所有正在执行的线程
+     * 停止所有正在执行的异步任务
      */
-    public void cancelAllDownThreads() {
-        if (mThreadSets != null) {
-            for (Thread t : mThreadSets) {
-                if (t.isAlive()) {
-                    //                 t.stop();
-                }
+    public void cancelAllAsyncTask() {
+        if (mTaskSets != null) {
+            for (AsyncTask task : mTaskSets) {
+                task.cancel(false);
             }
         }
     }
 
     /**
-     * 子线程下载图片，并显示在对应的控件上
+     * 启动异步任务加载图片，并将异步任务加入集合
      *
      * @param path      图片路径
      * @param imageView 显示图片的控件
      */
     public void downLoadImage(final String url, ImageView imageView) {
-        DownLoadHandler handler = new DownLoadHandler(url, imageView);
-        DownLoadThread thread = new DownLoadThread(url, handler);
-        thread.start();
-        mThreadSets.add(thread);
+        DownLoadImageAsynTask task = new DownLoadImageAsynTask(url, imageView);
+        task.execute(url);
+        mTaskSets.add(task);
     }
 
     /**
-     * 图片下载线程
+     * 异步任务加载图片，若图片在硬盘中找到，则取出加入到内存，并显示
+     * 若在硬盘中不存在，则从网络下载图片，并且加入硬盘缓存和内存，显示图片
      */
-    class DownLoadThread extends Thread {
-        private String mUrl;
-        private DownLoadHandler mHandler;
-
-        public DownLoadThread(String url, DownLoadHandler handler) {
-            mUrl = url;
-            mHandler = handler;
-        }
-
-        @Override
-        public void run() {
-            HttpUtils.HttpGetMethod(mUrl, new HttpCallBack() {
-
-                @Override
-                public void onResult(String result) {
-
-                }
-
-                @Override
-                public void onResult(byte[] result) {
-                    //将字符数组解析为Bitmap对象,并将大分辨率图片缩放
-                    Bitmap bitmap = ImageZoom.decodeSimpleBitmapFromByte(result,
-                            CommonInfo.ImageZoomLeve.REQUEST_IMAGE_WIDTH,
-                            CommonInfo.ImageZoomLeve.REQUEST_IMAGE_HEIGHT);
-                    if (bitmap != null) {
-                        //将图片加入到内存中
-                        addBitmapToCache(mUrl, bitmap);
-                        //得到消息
-                        Message msg = Message.obtain();
-                        msg.obj = bitmap;
-                        msg.what = CommonInfo.DownloadStatus.DOWNLOAD_FINISH_MSG;
-                        //发送消息
-                        mHandler.sendMessage(msg);
-                    } else {
-                        //如果图片为空就交给异常代码块处理
-                        onError(new Exception());
-                    }
-                    mThreadSets.remove(this);
-                }
-
-                @Override
-                public void onError(Exception e) {
-                    mHandler.sendEmptyMessage(CommonInfo.DownloadStatus.DOWNLOAD_FAILED_MSG);
-                    mThreadSets.remove(this);
-                }
-
-            });
-        }
-    }
-
-    class DownLoadHandler extends AbstractDownLoadHandler {
+    class DownLoadImageAsynTask extends AsyncTask<String, Void, Bitmap> {
         /**
          * 待显示图片的控件
          */
@@ -225,44 +200,98 @@ public class ImageLoader {
          */
         private String mUrl;
 
-        public DownLoadHandler(String url, ImageView imageView) {
+        public DownLoadImageAsynTask(String url, ImageView imageView) {
             mImageView = imageView;
             mUrl = url;
         }
 
         @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case CommonInfo.DownloadStatus.DOWNLOAD_FINISH_MSG:
-                    updateUI(msg);
-                    break;
-                case CommonInfo.DownloadStatus.DOWNLOAD_FAILED_MSG:
-                    showError();
-                    break;
+        protected Bitmap doInBackground(String... params) {
+            DiskLruCache.Snapshot snapshot = null;
+            String imageUrl = params[0];
+            //将url进行MD5加密
+            String key = MD5Utils.hashKeyForDisk(imageUrl);
+            InputStream in = null;
+            //标记图片下载是否成功
+            boolean isSuccess = false;
+//            boolean isFromSD = true;
+            try {
+                //从硬盘缓存缓存取得该缓存对象封装类
+                snapshot = mDiskLruCache.get(key);
+                if (snapshot == null) {
+                    //若没有在缓存中找到，则需要从网络下载
+                    //得到写入缓存操作类
+                    DiskLruCache.Editor editor = mDiskLruCache.edit(key);
+                    if (editor != null) {
+                        //得到出输出流
+                        OutputStream out = editor.newOutputStream(0);
+                        //下载图片并写入到输出流
+                        isSuccess = HttpUtils.HttpGetMethod(imageUrl, out);
+                        if (isSuccess) {
+                            //成功就提交使得写入生效
+                            editor.commit();
+                        } else {
+                            //放弃此次提交
+                            editor.abort();
+                        }
+                        LogUtils.d(CommonInfo.TAG, "bitmap from web");
+                    }
+                    //重新从硬盘缓存缓存取得该缓存对象封装类
+                    snapshot = mDiskLruCache.get(key);
+//                    isFromSD = false;
+                }
+                if (snapshot != null) {
+                    //得到输入流
+                    in = snapshot.getInputStream(0);
+                    //先将输入流中的数据转化为字符数组，然后缩放至要求的大小，解析为bitmap对象
+                    Bitmap bitmap = ImageZoom.decodeSimpleBitmapFromByte(ImageZoom.getBytes(in), CommonInfo.ImageZoomLeve.
+                            REQUEST_IMAGE_WIDTH, CommonInfo.ImageZoomLeve.REQUEST_IMAGE_HEIGHT);
+//                    if (isFromSD) LogUtils.d(CommonInfo.TAG, "---->from SD卡" + bitmap);
+                    if (bitmap != null) {
+                        //将该对象加入内存中
+                        addBitmapToCache(imageUrl, bitmap);
+                        return bitmap;
+                    }
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if (in != null) {
+                    try {
+                        in.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } finally {
+                        in = null;
+                    }
+                }
             }
+            return null;
         }
 
-        /**
-         * 下载错误时要处理的逻辑代码段
-         */
         @Override
-        protected void showError() {
-            //图片下载错误就显示默认图片
-            mImageView.setImageResource(R.mipmap.imageview_error_bc);
-        }
-
-        /**
-         * 下载正确则更新相应的UI
-         *
-         * @param msg
-         */
-        @Override
-        protected void updateUI(Message msg) {
-            Log.i(CommonInfo.TAG, "-->" + mImageView.getTag());
-            if (mImageView.getTag().equals(mUrl)) {
-                Bitmap bitmap = (Bitmap) msg.obj;
+        protected void onPostExecute(Bitmap bitmap) {
+            super.onPostExecute(bitmap);
+            if (mImageView != null && mImageView.getTag().equals(mUrl)) {
+                //判断控件的tag标志是否与url一致
                 mImageView.setImageBitmap(bitmap);
+            }
+            //异步任务图片加载完成，移除该任务
+            mTaskSets.remove(this);
+        }
+
+    }
+
+    /**
+     * 将记录同步到journal中
+     */
+    public void fluchCache() {
+        if (mDiskLruCache != null) {
+            try {
+                mDiskLruCache.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }

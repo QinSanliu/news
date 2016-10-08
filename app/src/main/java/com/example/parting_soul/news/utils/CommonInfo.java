@@ -18,6 +18,11 @@ public class CommonInfo {
     public static final String ENCODE_TYPE = "utf-8";
 
     /**
+     * APP的当前版本号
+     */
+    public static final int APP_VERSION = 1;
+
+    /**
      * http下载状态描述类
      */
     public class DownloadStatus {
@@ -35,6 +40,21 @@ public class CommonInfo {
          * 下载完成移除线程字段
          */
         public static final int DOWNLOAD_FINISH_REMOVE_THREAD_MSG = 111113;
+    }
+
+    /**
+     * 缓存信息类
+     */
+    public class Cache {
+        /**
+         * 图片缓存文件夹名
+         */
+        public static final String IMAGE_CACHE_DIR_NAME = "picture";
+
+        /**
+         * 图片缓存的占SD空间的最大内存
+         */
+        public static final long IMAGE_CACHE_SIZE = 30 * 1024 * 1024;
     }
 
     /**

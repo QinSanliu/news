@@ -16,9 +16,11 @@ import com.example.parting_soul.news.utils.CommonInfo;
 import com.example.parting_soul.news.utils.ImageLoader;
 import com.example.parting_soul.news.utils.LogUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static android.R.attr.start;
+import static android.media.CamcorderProfile.get;
 import static com.example.parting_soul.news.utils.CommonInfo.TAG;
 
 /**
@@ -64,7 +66,7 @@ public class NewsInfoAdapter extends BaseAdapter implements AbsListView.OnScroll
     public NewsInfoAdapter(Context context, List<News> lists, ListView listView) {
         mContext = context;
         mLists = lists;
-        mImageLoader = new ImageLoader(listView);
+        mImageLoader = new ImageLoader(context, listView);
         getPicUrl();
         //为listview添加滚动监听
         listView.setOnScrollListener(this);
@@ -125,6 +127,7 @@ public class NewsInfoAdapter extends BaseAdapter implements AbsListView.OnScroll
 //        holder.pic.setImageResource(R.mipmap.imageview_default_bc);
 
         String url = mLists.get(position).getPicPath();
+        LogUtils.d(CommonInfo.TAG, "---->" + url + " ++ " + holder.pic);
         if (url != null) {
             holder.pic.setTag(url);
             mImageLoader.loadImage(url, holder.pic);
@@ -144,7 +147,7 @@ public class NewsInfoAdapter extends BaseAdapter implements AbsListView.OnScroll
         if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
             mImageLoader.loadImage(mStart, mEnd);
         } else {
-            mImageLoader.cancelAllDownThreads();
+            mImageLoader.cancelAllAsyncTask();
         }
     }
 
@@ -152,11 +155,25 @@ public class NewsInfoAdapter extends BaseAdapter implements AbsListView.OnScroll
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
         mStart = firstVisibleItem;
         mEnd = firstVisibleItem + visibleItemCount;
-        LogUtils.i(CommonInfo.TAG, "-->" + mLists.get(0).getTitle());
+        LogUtils.i(CommonInfo.TAG, "-->onScroll start = " + mStart + " end = " + mEnd);
         if (isFirstIn && visibleItemCount > 0) {
             mImageLoader.loadImage(mStart, mEnd);
             isFirstIn = false;
         }
+    }
+
+    /**
+     * 取消所有异步任务下载，供Fragment退出前调用
+     */
+    public void cancelAllSyncTask() {
+        mImageLoader.cancelAllAsyncTask();
+    }
+
+    /**
+     * 将记录同步到journal中,供Fragment onPause时调用
+     */
+    public void flushCache() {
+        mImageLoader.fluchCache();
     }
 
 }

@@ -99,7 +99,7 @@ public class NewsFragment extends BaseFragment implements AdapterView.OnItemClic
             if (msg.obj != null) {
                 mLists = (List<News>) msg.obj;
                 //将数据源绑定到适配器
-                mNewsInfoAdapter = new NewsInfoAdapter(getContext(), mLists,mListView);
+                mNewsInfoAdapter = new NewsInfoAdapter(getContext(), mLists, mListView);
                 //为listview设置适配器
                 mListView.setAdapter(mNewsInfoAdapter);
                 mNewsInfoAdapter.notifyDataSetChanged();
@@ -180,9 +180,28 @@ public class NewsFragment extends BaseFragment implements AdapterView.OnItemClic
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume -->fragment " + mNewTypeParam);
+    }
+
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause -->fragment " + mNewTypeParam);
+        if (mNewsInfoAdapter != null) {
+            mNewsInfoAdapter.flushCache();
+        }
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
-
+        Log.d(TAG, "onDestroyView -->fragment " + mNewTypeParam);
+        if (mNewsInfoAdapter != null) {
+            mNewsInfoAdapter.cancelAllSyncTask();
+        }
     }
 
     @Override

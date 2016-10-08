@@ -3,6 +3,10 @@ package com.example.parting_soul.news.utils;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
 /**
  * Created by parting_soul on 2016/10/7.
  * 大分辨率图缩放工具类
@@ -33,6 +37,7 @@ public class ImageZoom {
             //取缩放比率小的为缩放比率，使得图片至少比规定图片略大
             inSimpleSize = widthRadio > heightRadio ? heightRadio : widthRadio;
         }
+        LogUtils.d(CommonInfo.TAG, " realwidth = " + realWidth + " realheight = " + realHeight + " insimplesize" + inSimpleSize);
         return inSimpleSize;
     }
 
@@ -54,5 +59,67 @@ public class ImageZoom {
         //根据缩放级别解析出Bitmap对象
         options.inJustDecodeBounds = false;
         return BitmapFactory.decodeByteArray(data, 0, data.length, options);
+    }
+
+    /**
+     * 将输入流中的大分辨图像缩放为小分辨率图
+     *
+     * @param in            输入流
+     * @param requestWidth  自定义缩放的宽度
+     * @param requestHeight 自定义缩放的高度
+     * @return Bitmap 缩放后解析出的位图对象
+     */
+    public static Bitmap decodeSimpleBitmapFromInputStream(InputStream in, int requestWidth, int requestHeight) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        //标识为true则禁止给Bitmap分配内存，只是取得真实的图片高度和宽度
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeStream(in, null, options);
+        //得到缩放级别
+        int inSimpleSize = calculateInSimpleSize(options, requestWidth, requestHeight);
+        //根据缩放级别解析出Bitmap对象
+        options.inJustDecodeBounds = false;
+        return BitmapFactory.decodeStream(in, null, options);
+    }
+
+    /**
+     * 将输入流的数据转化为字节数组
+     *
+     * @param in 输入流
+     * @return byte[] 字节数组
+     */
+    public static byte[] getBytes(InputStream in) {
+        if (in == null) return null;
+        byte[] result = null;
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        byte[] buffer = new byte[1024];
+        int len = -1;
+        try {
+            while ((len = in.read(buffer)) != -1) {
+                out.write(buffer, 0, len);
+            }
+            result = out.toByteArray();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    in = null;
+                }
+            }
+            if (out != null) {
+                try {
+                    out.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    out = null;
+                }
+            }
+        }
+        return result;
     }
 }

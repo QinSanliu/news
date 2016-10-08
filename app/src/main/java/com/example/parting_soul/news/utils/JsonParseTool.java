@@ -47,7 +47,7 @@ public class JsonParseTool {
                     String author_name = newsJsonObject.getString(CommonInfo.NewsAPI.JSONKEY.RESPONSE_JSON_RESULT_NEWS_AUTHOR_NAME);
                     //                  String uniqueKey = newsJsonObject.getString(CommonInfo.NewsAPI.JSONKEY.RESPONSE_JSON_RESULT_NEWS_UNIQUE_KEY);
                     //                  String realType = newsJsonObject.getString(CommonInfo.NewsAPI.JSONKEY.RESPONSE_JSON_RESULT_NEWS_REALTYPE);
-
+                    LogUtils.d(CommonInfo.TAG, "-->picPath " + picPath);
                     news.setTitle(title);
                     news.setDate(date);
                     news.setPicPath(picPath);

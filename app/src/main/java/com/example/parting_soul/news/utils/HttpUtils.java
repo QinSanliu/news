@@ -2,11 +2,13 @@ package com.example.parting_soul.news.utils;
 
 import com.example.parting_soul.news.Interface.HttpCallBack;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -20,17 +22,17 @@ import java.net.URL;
 
 public class HttpUtils {
     /**
-     * 采用http协议的Get方法从网络获取数据
+     * 采用http协议的Get方法从网络获取图片并且写入缓存
      *
-     * @param path     http路径
-     * @param callback 回调方法
-     * @return void
+     * @param path         http路径
+     * @param outputStream 写入缓存的输出流
+     * @return boolean 下载成功 返回true
      */
-    public static void HttpGetMethod(String path, HttpCallBack callback) {
-        byte[] result = null;
+    public static boolean HttpGetMethod(String path, OutputStream outputStream) {
+        boolean isSuccess = false;
         HttpURLConnection conn = null;
         InputStream in = null;
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        BufferedOutputStream out = new BufferedOutputStream(outputStream);
         try {
             URL url = new URL(path);
             conn = (HttpURLConnection) url.openConnection();
@@ -38,19 +40,14 @@ public class HttpUtils {
 //            conn.setConnectTimeout(10 * 1000);
 //            conn.setReadTimeout(10 * 1000);
             in = conn.getInputStream();
-
             byte[] buffer = new byte[1024];
             int len = -1;
             while ((len = in.read(buffer)) != -1) {
                 out.write(buffer, 0, len);
             }
-            result = out.toByteArray();
-            //将结果传入实现回调接口的类
-            callback.onResult(result);
-        } catch (MalformedURLException e) {
-            callback.onError(e);
-        } catch (IOException e) {
-            callback.onError(e);
+            isSuccess = true;
+        } catch (Exception e) {
+            isSuccess = false;
         } finally {
             conn.disconnect();
             if (in != null) {
@@ -72,6 +69,7 @@ public class HttpUtils {
                 }
             }
         }
+        return isSuccess;
     }
 
     /**
