@@ -9,21 +9,27 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.parting_soul.news.Interface.HttpCallBack;
+import com.example.parting_soul.news.MyApplication;
 import com.example.parting_soul.news.R;
 import com.example.parting_soul.news.adapter.NewsInfoAdapter;
 import com.example.parting_soul.news.bean.News;
-import com.example.parting_soul.news.utils.CommonInfo;
+import com.example.parting_soul.news.database.DBManager;
 import com.example.parting_soul.news.utils.AbstractDownLoadHandler;
+import com.example.parting_soul.news.utils.CommonInfo;
 import com.example.parting_soul.news.utils.HttpUtils;
 import com.example.parting_soul.news.utils.JsonParseTool;
 import com.example.parting_soul.news.utils.LogUtils;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
+import static android.R.attr.top;
 import static com.example.parting_soul.news.utils.CommonInfo.TAG;
 
 
@@ -57,6 +63,26 @@ public class NewsFragment extends BaseFragment implements AdapterView.OnItemClic
      * 请求地址的所有参数
      */
     private String mParams;
+
+    /**
+     * 数据库管理类
+     */
+    private DBManager manager;
+
+    /**
+     * 旧状态时第一个ListView可见项
+     */
+    private int oldFirstVisibleItem;
+
+    /**
+     * 第一个可见的item的pos
+     */
+    private int getOldFirstVisibleItem;
+
+    /**
+     * 第一个listview item距离listview的位置
+     */
+    private int top;
 
     /**
      * 消息处理类
@@ -98,7 +124,6 @@ public class NewsFragment extends BaseFragment implements AdapterView.OnItemClic
             //数据下载完成
             if (msg.obj != null) {
                 mLists = (List<News>) msg.obj;
-                //将数据源绑定到适配器
                 mNewsInfoAdapter = new NewsInfoAdapter(getContext(), mLists, mListView);
                 //为listview设置适配器
                 mListView.setAdapter(mNewsInfoAdapter);
@@ -129,9 +154,37 @@ public class NewsFragment extends BaseFragment implements AdapterView.OnItemClic
     @Override
     public void loadData() {
         if (mIsVisibleToUser && mIsPrepared) {
-            new DownloadNewsThread().start();
-            //子线程下载的同时显示进度条对话框
-            mDialog.show();
+            LogUtils.d(CommonInfo.TAG, "-->" + mNewTypeParam);
+            List<News> data = manager.readNewsCacheFromDatabase(mNewTypeParam);
+            if (data != null && data.size() != 0) {
+                mLists = data;
+                //将数据源绑定到适配器
+                mNewsInfoAdapter = new NewsInfoAdapter(getContext(), mLists, mListView);
+                //为listview设置适配器
+                mListView.setAdapter(mNewsInfoAdapter);
+                mNewsInfoAdapter.notifyDataSetChanged();
+                //恢复原来的位置
+                mListView.setSelectionFromTop(oldFirstVisibleItem, top);
+                LogUtils.d(CommonInfo.TAG, " load from sqlitedatabase");
+            } else {
+                new DownloadNewsThread().start();
+                LogUtils.d(CommonInfo.TAG, " load from web");
+                //子线程下载的同时显示进度条对话框
+                mDialog.show();
+            }
+        }
+    }
+
+    @Override
+    protected void onInVisible() {
+        super.onInVisible();
+        if (mNewsInfoAdapter != null) {
+            oldFirstVisibleItem = mNewsInfoAdapter.getOldFirstVisibleItem();
+            View view = mListView.getChildAt(0);
+            if (view != null) {
+                top = view.getTop();
+            }
+            LogUtils.d(CommonInfo.TAG, "---->invisible " + oldFirstVisibleItem + " " + top);
         }
     }
 
@@ -143,6 +196,8 @@ public class NewsFragment extends BaseFragment implements AdapterView.OnItemClic
         initProgressDialog();
         //得到所有请求参数
         mParams = initRequestUrlParam();
+        //实例化数据库管理类
+        manager = DBManager.getDBManager(getContext());
         LogUtils.d(TAG, "onCreate -->fragment " + mNewTypeParam + " " + this);
     }
 
@@ -219,6 +274,8 @@ public class NewsFragment extends BaseFragment implements AdapterView.OnItemClic
         List<News> lists = null;
         //解析下载的数据
         lists = JsonParseTool.parseJsonWidthJSONObject(result);
+        //将数据加入数据库缓存
+        DBManager.getDBManager(getContext()).updataNewsCacheToDatabase(lists, mNewTypeParam);
         //从消息池取出一个空的消息对象
         Message msg = Message.obtain();
         //将解析后的数据绑定在消息对象上
@@ -248,6 +305,7 @@ public class NewsFragment extends BaseFragment implements AdapterView.OnItemClic
     public void onError(Exception e) {
         mHandler.sendEmptyMessage(CommonInfo.DownloadStatus.DOWNLOAD_FAILED_MSG);
     }
+
 
     /**
      * 子线程进行新闻数据下载，得到json数据并且进行解析,返回新闻类的数组

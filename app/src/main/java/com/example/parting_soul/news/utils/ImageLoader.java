@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.DecimalFormat;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -117,7 +118,6 @@ public class ImageLoader {
             }
         }
         LogUtils.d(CommonInfo.TAG, "loadimage finished");
-
     }
 
     /**
@@ -214,7 +214,7 @@ public class ImageLoader {
             InputStream in = null;
             //标记图片下载是否成功
             boolean isSuccess = false;
-//            boolean isFromSD = true;
+            boolean isFromSD = true;
             try {
                 //从硬盘缓存缓存取得该缓存对象封装类
                 snapshot = mDiskLruCache.get(key);
@@ -238,7 +238,7 @@ public class ImageLoader {
                     }
                     //重新从硬盘缓存缓存取得该缓存对象封装类
                     snapshot = mDiskLruCache.get(key);
-//                    isFromSD = false;
+                    isFromSD = false;
                 }
                 if (snapshot != null) {
                     //得到输入流
@@ -246,7 +246,7 @@ public class ImageLoader {
                     //先将输入流中的数据转化为字符数组，然后缩放至要求的大小，解析为bitmap对象
                     Bitmap bitmap = ImageZoom.decodeSimpleBitmapFromByte(ImageZoom.getBytes(in), CommonInfo.ImageZoomLeve.
                             REQUEST_IMAGE_WIDTH, CommonInfo.ImageZoomLeve.REQUEST_IMAGE_HEIGHT);
-//                    if (isFromSD) LogUtils.d(CommonInfo.TAG, "---->from SD卡" + bitmap);
+                    if (isFromSD) LogUtils.d(CommonInfo.TAG, "---->from SD卡" + bitmap);
                     if (bitmap != null) {
                         //将该对象加入内存中
                         addBitmapToCache(imageUrl, bitmap);
@@ -296,4 +296,30 @@ public class ImageLoader {
         }
     }
 
+    /**
+     * 得到图片缓存的大小，以MB为单位
+     *
+     * @return 图片缓存大小
+     */
+    public double getImageCacheSize() {
+        long size = 0;
+        if (mDiskLruCache != null) {
+            size = mDiskLruCache.size();
+        }
+        DecimalFormat format = new DecimalFormat("#.00");
+        return Double.parseDouble(format.format(size));
+    }
+
+    /**
+     * 删除图片缓存
+     */
+    public void deleteImageCache() {
+        if (mDiskLruCache != null) {
+            try {
+                mDiskLruCache.delete();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

@@ -44,14 +44,14 @@ public abstract class BaseFragment extends Fragment {
     /**
      * 当前页面可见是进行的操作
      */
-    private void onVisible() {
+    protected void onVisible() {
         loadData();
     }
 
     /**
      * 当前页面不可见时操作
      */
-    private void onInVisible() {
+    protected void onInVisible() {
 
     }
 

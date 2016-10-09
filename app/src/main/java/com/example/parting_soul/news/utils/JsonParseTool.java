@@ -3,7 +3,9 @@ package com.example.parting_soul.news.utils;
 import android.text.Html;
 import android.util.Log;
 
+import com.example.parting_soul.news.MyApplication;
 import com.example.parting_soul.news.bean.News;
+import com.example.parting_soul.news.database.DBManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;

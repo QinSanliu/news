@@ -19,8 +19,10 @@ import com.example.parting_soul.news.utils.LogUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.R.attr.scrollX;
 import static android.R.attr.start;
 import static android.media.CamcorderProfile.get;
+import static android.view.View.X;
 import static com.example.parting_soul.news.utils.CommonInfo.TAG;
 
 /**
@@ -63,9 +65,14 @@ public class NewsInfoAdapter extends BaseAdapter implements AbsListView.OnScroll
      */
     private boolean isFirstIn = true;
 
+    private ListView mListView;
+
+    private int oldFirstVisibleItem;
+
     public NewsInfoAdapter(Context context, List<News> lists, ListView listView) {
         mContext = context;
         mLists = lists;
+        mListView = listView;
         mImageLoader = new ImageLoader(context, listView);
         getPicUrl();
         //为listview添加滚动监听
@@ -75,12 +82,22 @@ public class NewsInfoAdapter extends BaseAdapter implements AbsListView.OnScroll
     /**
      * 得到所有图片的URL地址
      */
-    private void getPicUrl() {
+    public void getPicUrl() {
         IMAGE_URLS = new String[mLists.size()];
         for (int i = 0; i < mLists.size(); i++) {
             IMAGE_URLS[i] = mLists.get(i).getPicPath();
         }
     }
+
+    /**
+     * 适配器数据源
+     *
+     * @return List<News>
+     */
+    public List<News> getData() {
+        return mLists;
+    }
+
 
     @Override
     public int getCount() {
@@ -136,6 +153,15 @@ public class NewsInfoAdapter extends BaseAdapter implements AbsListView.OnScroll
         return view;
     }
 
+    /**
+     * 保存第一个可见的item
+     *
+     * @return int
+     */
+    public int getOldFirstVisibleItem() {
+        return oldFirstVisibleItem;
+    }
+
     class NewsHolder {
         ImageView pic;
         TextView title, date, authorName;
@@ -145,6 +171,7 @@ public class NewsInfoAdapter extends BaseAdapter implements AbsListView.OnScroll
     public void onScrollStateChanged(AbsListView view, int scrollState) {
         //如果停止滑动就加载当前可见项的图片
         if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
+            oldFirstVisibleItem = mStart;
             mImageLoader.loadImage(mStart, mEnd);
         } else {
             mImageLoader.cancelAllAsyncTask();
