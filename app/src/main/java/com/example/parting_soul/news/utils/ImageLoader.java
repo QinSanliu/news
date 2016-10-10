@@ -122,7 +122,7 @@ public class ImageLoader {
             //根据图片控件Ta属性上绑定的url从listview中找到图片控件
             ImageView imageView = (ImageView) listView.findViewWithTag(url);
             LogUtils.d(CommonInfo.TAG, "ImageLoader---->loadImage " + imageView + " url = " + url);
-            if (bitmap != null) {
+            if (bitmap != null && imageView != null) {
                 //若成功从缓存中找到图片
                 imageView.setImageBitmap(bitmap);
                 LogUtils.d(CommonInfo.TAG, "ImageLoader-->loadImage--->bitmap from cache");
@@ -260,7 +260,8 @@ public class ImageLoader {
                     //先将输入流中的数据转化为字符数组，然后缩放至要求的大小，解析为bitmap对象
                     Bitmap bitmap = ImageZoom.decodeSimpleBitmapFromByte(ImageZoom.getBytes(in), CommonInfo.ImageZoomLeve.
                             REQUEST_IMAGE_WIDTH, CommonInfo.ImageZoomLeve.REQUEST_IMAGE_HEIGHT);
-                    if (isFromSD) LogUtils.d(CommonInfo.TAG, "ImageLoader-->doBackground---->from SD卡" + bitmap);
+                    if (isFromSD)
+                        LogUtils.d(CommonInfo.TAG, "ImageLoader-->doBackground---->from SD卡" + bitmap);
                     if (bitmap != null) {
                         //将该对象加入内存中
                         addBitmapToCache(imageUrl, bitmap);

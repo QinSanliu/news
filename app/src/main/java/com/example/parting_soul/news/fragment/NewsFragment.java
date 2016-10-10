@@ -9,12 +9,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.parting_soul.news.Interface.HttpCallBack;
-import com.example.parting_soul.news.MyApplication;
 import com.example.parting_soul.news.R;
 import com.example.parting_soul.news.adapter.NewsInfoAdapter;
 import com.example.parting_soul.news.bean.News;
@@ -26,11 +24,9 @@ import com.example.parting_soul.news.utils.ImageLoader;
 import com.example.parting_soul.news.utils.JsonParseTool;
 import com.example.parting_soul.news.utils.LogUtils;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
-import static android.R.attr.top;
+import static android.R.attr.data;
 import static com.example.parting_soul.news.utils.CommonInfo.TAG;
 
 
@@ -96,15 +92,21 @@ public class NewsFragment extends BaseFragment implements AdapterView.OnItemClic
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what) {
-                case CommonInfo.DownloadStatus.DOWNLOAD_FINISH_MSG:
+                case CommonInfo.LoaderStatus.DOWNLOAD_FINISH_MSG:
+                    updateUI(msg);
+                    mDialog.dismiss();
+                    break;
+                case CommonInfo.LoaderStatus.DOWNLOAD_FAILED_MSG:
+                    showError();
+                    mDialog.dismiss();
+                    break;
+                case CommonInfo.LoaderStatus.READ_CACHE_FROM_DATABASE_FINISH:
                     updateUI(msg);
                     break;
-                case CommonInfo.DownloadStatus.DOWNLOAD_FAILED_MSG:
-                    showError();
+                case CommonInfo.LoaderStatus.SHOW_PROGRESS_DIALOG:
+                    mDialog.show();
                     break;
             }
-            //关闭进度条对话框
-            mDialog.dismiss();
         }
 
         /**
@@ -124,11 +126,17 @@ public class NewsFragment extends BaseFragment implements AdapterView.OnItemClic
             //数据下载完成
             if (msg.obj != null) {
                 mLists = (List<News>) msg.obj;
+                //将数据源绑定到适配器
                 mNewsInfoAdapter = new NewsInfoAdapter(getContext(), mLists, mListView);
+                //设置可以加载图片
                 mNewsInfoAdapter.setIsCanLoadImage(true);
                 //为listview设置适配器
                 mListView.setAdapter(mNewsInfoAdapter);
                 mNewsInfoAdapter.notifyDataSetChanged();
+                if (msg.what == CommonInfo.LoaderStatus.READ_CACHE_FROM_DATABASE_FINISH) {
+                    //恢复原来的位置
+                    mListView.setSelectionFromTop(oldFirstVisibleItem, top);
+                }
             }
         }
     };
@@ -155,26 +163,8 @@ public class NewsFragment extends BaseFragment implements AdapterView.OnItemClic
     @Override
     public void loadData() {
         if (mIsVisibleToUser && mIsPrepared) {
-            LogUtils.d(CommonInfo.TAG, "-->" + mNewTypeParam);
-            List<News> data = manager.readNewsCacheFromDatabase(mNewTypeParam);
-            if (data != null && data.size() != 0) {
-                mLists = data;
-                //将数据源绑定到适配器
-                mNewsInfoAdapter = new NewsInfoAdapter(getContext(), mLists, mListView);
-                mNewsInfoAdapter.setIsCanLoadImage(true);
-                //为listview设置适配器
-                mListView.setAdapter(mNewsInfoAdapter);
-                mNewsInfoAdapter.notifyDataSetChanged();
-                //恢复原来的位置
-                mListView.setSelectionFromTop(oldFirstVisibleItem, top);
-                LogUtils.d(CommonInfo.TAG, " load from sqlitedatabase " + oldFirstVisibleItem + " " + top);
-            } else {
-                new DownloadNewsThread().start();
-                LogUtils.d(CommonInfo.TAG, " load from web");
-                //子线程下载的同时显示进度条对话框
-                mDialog.show();
-            }
-
+            new LoaderNewsThread().start();
+           // mDialog.show();
         }
     }
 
@@ -288,16 +278,16 @@ public class NewsFragment extends BaseFragment implements AdapterView.OnItemClic
         List<News> lists = null;
         //解析下载的数据
         lists = JsonParseTool.parseJsonWidthJSONObject(result);
-        //将数据加入数据库缓存
-        DBManager.getDBManager(getContext()).updataNewsCacheToDatabase(lists, mNewTypeParam);
         //从消息池取出一个空的消息对象
         Message msg = Message.obtain();
         //将解析后的数据绑定在消息对象上
         msg.obj = lists;
         //标记为下载完成
-        msg.what = CommonInfo.DownloadStatus.DOWNLOAD_FINISH_MSG;
+        msg.what = CommonInfo.LoaderStatus.DOWNLOAD_FINISH_MSG;
         //Handler将消息发送到消息队列
         mHandler.sendMessage(msg);
+        //将数据加入数据库缓存
+        DBManager.getDBManager(getContext()).updataNewsCacheToDatabase(lists, mNewTypeParam);
     }
 
     /**
@@ -317,19 +307,32 @@ public class NewsFragment extends BaseFragment implements AdapterView.OnItemClic
      */
     @Override
     public void onError(Exception e) {
-        mHandler.sendEmptyMessage(CommonInfo.DownloadStatus.DOWNLOAD_FAILED_MSG);
+        mHandler.sendEmptyMessage(CommonInfo.LoaderStatus.DOWNLOAD_FAILED_MSG);
     }
 
 
     /**
      * 子线程进行新闻数据下载，得到json数据并且进行解析,返回新闻类的数组
      */
-    class DownloadNewsThread extends Thread {
+    class LoaderNewsThread extends Thread {
         @Override
         public void run() {
-            //下载数据
-            HttpUtils.HttpPostMethod(CommonInfo.NewsAPI.Params.REQUEST_URL,
-                    mParams, CommonInfo.ENCODE_TYPE, NewsFragment.this);
+            List<News> data = manager.readNewsCacheFromDatabase(mNewTypeParam);
+            //先从数据库读取对应缓存，若有直接读取，没有则去下载
+            if (data != null && data.size() != 0) {
+                Message msg = Message.obtain();
+                msg.obj = data;
+                msg.what = CommonInfo.LoaderStatus.READ_CACHE_FROM_DATABASE_FINISH;
+                mHandler.sendMessage(msg);
+                LogUtils.d(CommonInfo.TAG, " load from sqlitedatabase " + oldFirstVisibleItem + " " + top);
+            } else {
+                //通知主线程显示进度条
+                mHandler.sendEmptyMessage(CommonInfo.LoaderStatus.SHOW_PROGRESS_DIALOG);
+                //下载数据
+                HttpUtils.HttpPostMethod(CommonInfo.NewsAPI.Params.REQUEST_URL,
+                        mParams, CommonInfo.ENCODE_TYPE, NewsFragment.this);
+                LogUtils.d(CommonInfo.TAG, " load from web");
+            }
         }
     }
 

@@ -1,6 +1,7 @@
 package com.example.parting_soul.news.utils;
 
 import android.text.Html;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.example.parting_soul.news.MyApplication;
@@ -40,23 +41,31 @@ public class JsonParseTool {
                 //遍历每个json对象，并生成对应的新闻类
                 for (int i = 0; i < dataArray.length(); i++) {
                     JSONObject newsJsonObject = dataArray.getJSONObject(i);
+                    boolean isError = false;
                     News news = new News();
                     //根据各json的键值得到对用的数据值
-                    String title = newsJsonObject.getString(CommonInfo.NewsAPI.JSONKEY.RESPONSE_JSON_RESULT_NEWS_TITLE);
-                    String date = newsJsonObject.getString(CommonInfo.NewsAPI.JSONKEY.RESPONSE_JSON_RESULT_NEWS_DATE);
-                    String picPath = newsJsonObject.getString(CommonInfo.NewsAPI.JSONKEY.RESPONSE_JSON_RESULT_NEWS_PICTURE_PATH);
-                    String url = newsJsonObject.getString(CommonInfo.NewsAPI.JSONKEY.RESPONSE_JSON_RESULT_NEWS_URL);
-                    String author_name = newsJsonObject.getString(CommonInfo.NewsAPI.JSONKEY.RESPONSE_JSON_RESULT_NEWS_AUTHOR_NAME);
+                    try {
+                        String title = newsJsonObject.getString(CommonInfo.NewsAPI.JSONKEY.RESPONSE_JSON_RESULT_NEWS_TITLE);
+                        String date = newsJsonObject.getString(CommonInfo.NewsAPI.JSONKEY.RESPONSE_JSON_RESULT_NEWS_DATE);
+                        String picPath = newsJsonObject.getString(CommonInfo.NewsAPI.JSONKEY.RESPONSE_JSON_RESULT_NEWS_PICTURE_PATH);
+                        String url = newsJsonObject.getString(CommonInfo.NewsAPI.JSONKEY.RESPONSE_JSON_RESULT_NEWS_URL);
+                        String author_name = newsJsonObject.getString(CommonInfo.NewsAPI.JSONKEY.RESPONSE_JSON_RESULT_NEWS_AUTHOR_NAME);
+
+                        news.setTitle(title);
+                        news.setDate(date);
+                        news.setPicPath(picPath);
+                        news.setUrl(url);
+                        news.setAuthor_name(author_name);
+                    }catch (Exception e) {
+                        isError = true ;
+                    }
                     //                  String uniqueKey = newsJsonObject.getString(CommonInfo.NewsAPI.JSONKEY.RESPONSE_JSON_RESULT_NEWS_UNIQUE_KEY);
                     //                  String realType = newsJsonObject.getString(CommonInfo.NewsAPI.JSONKEY.RESPONSE_JSON_RESULT_NEWS_REALTYPE);
-                    LogUtils.d(CommonInfo.TAG, "-->picPath " + picPath);
-                    news.setTitle(title);
-                    news.setDate(date);
-                    news.setPicPath(picPath);
-                    news.setUrl(url);
-                    news.setAuthor_name(author_name);
-                    //添加到数组中
-                    lists.add(news);
+
+                    //若数据合法则添加到数组中
+                    if(!isError&&isAvailableData(news)) {
+                        lists.add(news);
+                    }
                 }
             }
         } catch (JSONException e) {
@@ -88,5 +97,19 @@ public class JsonParseTool {
             default:
                 return false;
         }
+    }
+
+    /**
+     * 判断解析出的数据是否有效
+     * @param news
+     * @return boolean
+     */
+    public static boolean isAvailableData(News news) {
+        if(!TextUtils.isEmpty(news.getTitle())&&!TextUtils.isEmpty(news.getAuthor_name())
+                &&!TextUtils.isEmpty(news.getUrl())&&!TextUtils.isEmpty(news.getDate())&&
+                !TextUtils.isEmpty(news.getPicPath())) {
+            return true;
+        }
+        return false;
     }
 }

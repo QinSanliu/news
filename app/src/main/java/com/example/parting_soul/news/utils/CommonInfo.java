@@ -23,9 +23,9 @@ public class CommonInfo {
     public static final int APP_VERSION = 1;
 
     /**
-     * http下载状态描述类
+     * 异步加载状态描述类
      */
-    public class DownloadStatus {
+    public class LoaderStatus {
         /**
          * 下载完成标识字段
          */
@@ -40,6 +40,14 @@ public class CommonInfo {
          * 下载完成移除线程字段
          */
         public static final int DOWNLOAD_FINISH_REMOVE_THREAD_MSG = 111113;
+        /**
+         * 从数据库读取缓存结束
+         */
+        public static final int READ_CACHE_FROM_DATABASE_FINISH = 1111114;
+        /**
+         * 显示进度条
+         */
+        public static final int SHOW_PROGRESS_DIALOG = 1111115;
     }
 
     /**
