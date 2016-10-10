@@ -12,6 +12,7 @@ import java.util.List;
 
 /**
  * Created by parting_soul on 2016/10/9.
+ * 数据库管理类
  */
 
 public class DBManager {

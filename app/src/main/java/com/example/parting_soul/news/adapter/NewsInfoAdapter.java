@@ -1,6 +1,7 @@
 package com.example.parting_soul.news.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,15 +66,21 @@ public class NewsInfoAdapter extends BaseAdapter implements AbsListView.OnScroll
      */
     private boolean isFirstIn = true;
 
+    /**
+     * 新闻数据项
+     */
     private ListView mListView;
 
-    private int oldFirstVisibleItem;
+    /**
+     * 是否可以加载图片
+     */
+    boolean mCanLoagImage;
 
     public NewsInfoAdapter(Context context, List<News> lists, ListView listView) {
         mContext = context;
         mLists = lists;
         mListView = listView;
-        mImageLoader = new ImageLoader(context, listView);
+        mImageLoader = ImageLoader.newInstance(context);
         getPicUrl();
         //为listview添加滚动监听
         listView.setOnScrollListener(this);
@@ -153,26 +160,25 @@ public class NewsInfoAdapter extends BaseAdapter implements AbsListView.OnScroll
         return view;
     }
 
-    /**
-     * 保存第一个可见的item
-     *
-     * @return int
-     */
-    public int getOldFirstVisibleItem() {
-        return oldFirstVisibleItem;
-    }
-
     class NewsHolder {
         ImageView pic;
         TextView title, date, authorName;
+    }
+
+    /**
+     * 设置是否可以加载图片
+     *
+     * @param canLoagImage
+     */
+    public void setIsCanLoadImage(boolean canLoagImage) {
+        mCanLoagImage = canLoagImage;
     }
 
     @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {
         //如果停止滑动就加载当前可见项的图片
         if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
-            oldFirstVisibleItem = mStart;
-            mImageLoader.loadImage(mStart, mEnd);
+            mImageLoader.loadImage(mStart, mEnd, mListView);
         } else {
             mImageLoader.cancelAllAsyncTask();
         }
@@ -182,25 +188,11 @@ public class NewsInfoAdapter extends BaseAdapter implements AbsListView.OnScroll
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
         mStart = firstVisibleItem;
         mEnd = firstVisibleItem + visibleItemCount;
-        LogUtils.i(CommonInfo.TAG, "-->onScroll start = " + mStart + " end = " + mEnd);
-        if (isFirstIn && visibleItemCount > 0) {
-            mImageLoader.loadImage(mStart, mEnd);
+        LogUtils.i(CommonInfo.TAG, "NewsInfoAdapter-->onScroll-->onScroll start = " + mStart + " end = " + mEnd);
+        if (isFirstIn && visibleItemCount > 0 && mCanLoagImage) {
+            mImageLoader.loadImage(mStart, mEnd, mListView);
             isFirstIn = false;
         }
-    }
-
-    /**
-     * 取消所有异步任务下载，供Fragment退出前调用
-     */
-    public void cancelAllSyncTask() {
-        mImageLoader.cancelAllAsyncTask();
-    }
-
-    /**
-     * 将记录同步到journal中,供Fragment onPause时调用
-     */
-    public void flushCache() {
-        mImageLoader.fluchCache();
     }
 
 }

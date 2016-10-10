@@ -9,6 +9,7 @@ import com.example.parting_soul.news.utils.LogUtils;
 
 /**
  * Created by parting_soul on 2016/10/9.
+ * 数据库帮助类
  */
 
 public class SQLiteDatabaseHelper extends SQLiteOpenHelper {

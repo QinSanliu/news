@@ -28,13 +28,9 @@ import libcore.io.DiskLruCache;
 
 public class ImageLoader {
     /**
-     * 新闻数据项
-     */
-    private ListView mListView;
-    /**
      * 异步任务集合
      */
-    private Set<DownLoadImageAsynTask> mTaskSets;
+    private Set<LoadImageAsynTask> mTaskSets;
 
     /**
      * 一级缓存，url和图片的映射
@@ -57,13 +53,17 @@ public class ImageLoader {
     private DiskLruCache mDiskLruCache;
 
     /**
+     * 图片加载类的引用，保证只有一个实例
+     */
+    private static ImageLoader mImageLoader;
+
+    /**
      * 构造方法
      *
      * @param listview 新闻数据项
      */
-    public ImageLoader(Context context, ListView listview) {
-        mListView = listview;
-        mTaskSets = new HashSet<DownLoadImageAsynTask>();
+    private ImageLoader(Context context) {
+        mTaskSets = new HashSet<LoadImageAsynTask>();
         mCache = new LruCache<String, Bitmap>(mCachesMemory) {
             @Override
             protected int sizeOf(String key, Bitmap value) {
@@ -88,36 +88,50 @@ public class ImageLoader {
             e.printStackTrace();
         }
 
-        LogUtils.i(CommonInfo.TAG, "-->mCachesMemory " + mCachesMemory / 1024);
+        LogUtils.i(CommonInfo.TAG, "ImageLoader-->mCachesMemory " + mCachesMemory / 1024);
+    }
+
+    /**
+     * 保证只有一个ImageLoader对象不存在就创建，存在就返回
+     *
+     * @param context 上下文对象
+     * @return ImageLoader
+     */
+    public static ImageLoader newInstance(Context context) {
+        if (mImageLoader == null) {
+            mImageLoader = new ImageLoader(context);
+        }
+        return mImageLoader;
     }
 
     /**
      * 加载从位置start开始到end之间所有的图片<br>
      * 滚动停止时调用，若存在图片则加载，若不存在则从硬盘获取或网络下载
      *
-     * @param start 可见新闻项的开始位置
-     * @param end   可见新闻项的结束位置
+     * @param start    可见新闻项的开始位置
+     * @param end      可见新闻项的结束位置
+     * @param listView 对应的ListView
      */
-    public void loadImage(int start, int end) {
-        LogUtils.d(CommonInfo.TAG, "--->start = " + start + " end = " + end);
+    public void loadImage(int start, int end, ListView listView) {
+        LogUtils.d(CommonInfo.TAG, "ImageLoader-->loadImage--->start = " + start + " end = " + end);
         for (int i = start; i < end; i++) {
             //找到对应的图片url地址
             String url = NewsInfoAdapter.IMAGE_URLS[i];
             //根据url从一级缓存中找是否有该图片
             Bitmap bitmap = getBitmapFromCache(url);
             //根据图片控件Ta属性上绑定的url从listview中找到图片控件
-            ImageView imageView = (ImageView) mListView.findViewWithTag(url);
-            LogUtils.d(CommonInfo.TAG, "---->loadImage " + imageView + " url = " + url);
+            ImageView imageView = (ImageView) listView.findViewWithTag(url);
+            LogUtils.d(CommonInfo.TAG, "ImageLoader---->loadImage " + imageView + " url = " + url);
             if (bitmap != null) {
                 //若成功从缓存中找到图片
                 imageView.setImageBitmap(bitmap);
-                LogUtils.d(CommonInfo.TAG, "bitmap from cache");
+                LogUtils.d(CommonInfo.TAG, "ImageLoader-->loadImage--->bitmap from cache");
             } else {
                 //找不到图片则从SD卡或者网络下载图片
                 downLoadImage(url, imageView);
             }
         }
-        LogUtils.d(CommonInfo.TAG, "loadimage finished");
+        LogUtils.d(CommonInfo.TAG, "ImageLoader-->loadimage finished");
     }
 
     /**
@@ -132,11 +146,11 @@ public class ImageLoader {
         if (bitmap != null) {
             //加载缓存中的图片
             imageView.setImageBitmap(bitmap);
-            LogUtils.d(CommonInfo.TAG, "bitmap from cache");
+            LogUtils.d(CommonInfo.TAG, "ImageLoader-->loadImage-->url-->bitmap from cache");
         } else {
             //缓存中没有找到该图片，显示默认图片
             imageView.setImageResource(R.mipmap.imageview_default_bc);
-            LogUtils.d(CommonInfo.TAG, "bitmap from default");
+            LogUtils.d(CommonInfo.TAG, "ImageLoader-->loadImage-->url-->bitmap from default");
         }
     }
 
@@ -181,7 +195,7 @@ public class ImageLoader {
      * @param imageView 显示图片的控件
      */
     public void downLoadImage(final String url, ImageView imageView) {
-        DownLoadImageAsynTask task = new DownLoadImageAsynTask(url, imageView);
+        LoadImageAsynTask task = new LoadImageAsynTask(url, imageView);
         task.execute(url);
         mTaskSets.add(task);
     }
@@ -190,7 +204,7 @@ public class ImageLoader {
      * 异步任务加载图片，若图片在硬盘中找到，则取出加入到内存，并显示
      * 若在硬盘中不存在，则从网络下载图片，并且加入硬盘缓存和内存，显示图片
      */
-    class DownLoadImageAsynTask extends AsyncTask<String, Void, Bitmap> {
+    class LoadImageAsynTask extends AsyncTask<String, Void, Bitmap> {
         /**
          * 待显示图片的控件
          */
@@ -200,7 +214,7 @@ public class ImageLoader {
          */
         private String mUrl;
 
-        public DownLoadImageAsynTask(String url, ImageView imageView) {
+        public LoadImageAsynTask(String url, ImageView imageView) {
             mImageView = imageView;
             mUrl = url;
         }
@@ -234,7 +248,7 @@ public class ImageLoader {
                             //放弃此次提交
                             editor.abort();
                         }
-                        LogUtils.d(CommonInfo.TAG, "bitmap from web");
+                        LogUtils.d(CommonInfo.TAG, "ImageLoader-->doBackground-->bitmap from web");
                     }
                     //重新从硬盘缓存缓存取得该缓存对象封装类
                     snapshot = mDiskLruCache.get(key);
@@ -246,7 +260,7 @@ public class ImageLoader {
                     //先将输入流中的数据转化为字符数组，然后缩放至要求的大小，解析为bitmap对象
                     Bitmap bitmap = ImageZoom.decodeSimpleBitmapFromByte(ImageZoom.getBytes(in), CommonInfo.ImageZoomLeve.
                             REQUEST_IMAGE_WIDTH, CommonInfo.ImageZoomLeve.REQUEST_IMAGE_HEIGHT);
-                    if (isFromSD) LogUtils.d(CommonInfo.TAG, "---->from SD卡" + bitmap);
+                    if (isFromSD) LogUtils.d(CommonInfo.TAG, "ImageLoader-->doBackground---->from SD卡" + bitmap);
                     if (bitmap != null) {
                         //将该对象加入内存中
                         addBitmapToCache(imageUrl, bitmap);

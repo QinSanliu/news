@@ -22,6 +22,7 @@ import com.example.parting_soul.news.database.DBManager;
 import com.example.parting_soul.news.utils.AbstractDownLoadHandler;
 import com.example.parting_soul.news.utils.CommonInfo;
 import com.example.parting_soul.news.utils.HttpUtils;
+import com.example.parting_soul.news.utils.ImageLoader;
 import com.example.parting_soul.news.utils.JsonParseTool;
 import com.example.parting_soul.news.utils.LogUtils;
 
@@ -73,16 +74,15 @@ public class NewsFragment extends BaseFragment implements AdapterView.OnItemClic
      * 旧状态时第一个ListView可见项
      */
     private int oldFirstVisibleItem;
-
-    /**
-     * 第一个可见的item的pos
-     */
-    private int getOldFirstVisibleItem;
-
     /**
      * 第一个listview item距离listview的位置
      */
     private int top;
+
+    /**
+     * 图片加载类
+     */
+    private ImageLoader mImageLoader;
 
     /**
      * 消息处理类
@@ -125,6 +125,7 @@ public class NewsFragment extends BaseFragment implements AdapterView.OnItemClic
             if (msg.obj != null) {
                 mLists = (List<News>) msg.obj;
                 mNewsInfoAdapter = new NewsInfoAdapter(getContext(), mLists, mListView);
+                mNewsInfoAdapter.setIsCanLoadImage(true);
                 //为listview设置适配器
                 mListView.setAdapter(mNewsInfoAdapter);
                 mNewsInfoAdapter.notifyDataSetChanged();
@@ -160,18 +161,20 @@ public class NewsFragment extends BaseFragment implements AdapterView.OnItemClic
                 mLists = data;
                 //将数据源绑定到适配器
                 mNewsInfoAdapter = new NewsInfoAdapter(getContext(), mLists, mListView);
+                mNewsInfoAdapter.setIsCanLoadImage(true);
                 //为listview设置适配器
                 mListView.setAdapter(mNewsInfoAdapter);
                 mNewsInfoAdapter.notifyDataSetChanged();
                 //恢复原来的位置
                 mListView.setSelectionFromTop(oldFirstVisibleItem, top);
-                LogUtils.d(CommonInfo.TAG, " load from sqlitedatabase");
+                LogUtils.d(CommonInfo.TAG, " load from sqlitedatabase " + oldFirstVisibleItem + " " + top);
             } else {
                 new DownloadNewsThread().start();
                 LogUtils.d(CommonInfo.TAG, " load from web");
                 //子线程下载的同时显示进度条对话框
                 mDialog.show();
             }
+
         }
     }
 
@@ -179,13 +182,16 @@ public class NewsFragment extends BaseFragment implements AdapterView.OnItemClic
     protected void onInVisible() {
         super.onInVisible();
         if (mNewsInfoAdapter != null) {
-            oldFirstVisibleItem = mNewsInfoAdapter.getOldFirstVisibleItem();
+            //当前页面不可见就设置为不加载图片
+            mNewsInfoAdapter.setIsCanLoadImage(false);
+            //保存侧滑前listview中第一个可见项目的位置
+            oldFirstVisibleItem = mListView.getFirstVisiblePosition();
             View view = mListView.getChildAt(0);
             if (view != null) {
                 top = view.getTop();
             }
-            LogUtils.d(CommonInfo.TAG, "---->invisible " + oldFirstVisibleItem + " " + top);
         }
+        LogUtils.d(CommonInfo.TAG, "InvisibletoUser " + oldFirstVisibleItem + " " + top + " " + mNewTypeParam);
     }
 
     @Override
@@ -198,6 +204,8 @@ public class NewsFragment extends BaseFragment implements AdapterView.OnItemClic
         mParams = initRequestUrlParam();
         //实例化数据库管理类
         manager = DBManager.getDBManager(getContext());
+        //得到图片加载类
+        mImageLoader = ImageLoader.newInstance(getContext());
         LogUtils.d(TAG, "onCreate -->fragment " + mNewTypeParam + " " + this);
     }
 
@@ -245,8 +253,9 @@ public class NewsFragment extends BaseFragment implements AdapterView.OnItemClic
     public void onPause() {
         super.onPause();
         Log.d(TAG, "onPause -->fragment " + mNewTypeParam);
-        if (mNewsInfoAdapter != null) {
-            mNewsInfoAdapter.flushCache();
+        if (mImageLoader != null) {
+            //将图片同步记录写入journal文件
+            mImageLoader.fluchCache();
         }
     }
 
@@ -254,9 +263,14 @@ public class NewsFragment extends BaseFragment implements AdapterView.OnItemClic
     public void onDestroyView() {
         super.onDestroyView();
         Log.d(TAG, "onDestroyView -->fragment " + mNewTypeParam);
-        if (mNewsInfoAdapter != null) {
-            mNewsInfoAdapter.cancelAllSyncTask();
+        //退出当前pager，停止所有加载图片的异步任务
+        if (mImageLoader != null) {
+            mImageLoader.cancelAllAsyncTask();
         }
+        //UI被销毁，item位置重新初始化
+        top = 0;
+        oldFirstVisibleItem = 0;
+        mNewsInfoAdapter = null;
     }
 
     @Override

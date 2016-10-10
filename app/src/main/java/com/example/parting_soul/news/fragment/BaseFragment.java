@@ -1,15 +1,6 @@
 package com.example.parting_soul.news.fragment;
 
-import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-import com.example.parting_soul.news.utils.LogUtils;
-
-import static com.example.parting_soul.news.utils.CommonInfo.TAG;
 
 /**
  * Created by parting_soul on 2016/10/6.
@@ -38,7 +29,6 @@ public abstract class BaseFragment extends Fragment {
             mIsVisibleToUser = false;
             onInVisible();
         }
-        LogUtils.d(TAG, "isVisibleToUser -->fragment " + isVisibleToUser + " " + this);
     }
 
     /**
