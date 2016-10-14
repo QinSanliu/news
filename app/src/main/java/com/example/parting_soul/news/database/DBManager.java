@@ -99,15 +99,17 @@ public class DBManager {
 
     public void addNewsCacheToDataBase(List<News> news, String newsType) {
         getConnected();
-        for (News n : news) {
-            ContentValues values = new ContentValues();
-            values.put(NEWS_TABLE_TITLE, n.getTitle());
-            values.put(NEWS_TABLE_PICPATH, n.getPicPath());
-            values.put(NEWS_TABLE_AUTHOR_NAME, n.getAuthor_name());
-            values.put(NEWS_TABLE_URL, n.getUrl());
-            values.put(NEWS_TABLE_DATE, n.getDate());
-            values.put(NEWS_TABLE_NEWS_TYPE, newsType);
-            database.insert(NEWS_TABLE_NAME, null, values);
+        if (news != null && newsType != null) {
+            for (News n : news) {
+                ContentValues values = new ContentValues();
+                values.put(NEWS_TABLE_TITLE, n.getTitle());
+                values.put(NEWS_TABLE_PICPATH, n.getPicPath());
+                values.put(NEWS_TABLE_AUTHOR_NAME, n.getAuthor_name());
+                values.put(NEWS_TABLE_URL, n.getUrl());
+                values.put(NEWS_TABLE_DATE, n.getDate());
+                values.put(NEWS_TABLE_NEWS_TYPE, newsType);
+                database.insert(NEWS_TABLE_NAME, null, values);
+            }
         }
     }
 
@@ -131,8 +133,10 @@ public class DBManager {
         getConnected();
         Cursor cursor = database.query(NEWS_TABLE_NAME, null, NEWS_TABLE_NEWS_TYPE + " = ? ",
                 new String[]{newsType}, null, null, null, null);
-        List<News> lists = new ArrayList<News>();
+        List<News> lists = null;
+        boolean isHaveCache = false;
         if (cursor != null) {
+            lists = new ArrayList<News>();
             while (cursor.moveToNext()) {
                 News news = new News();
                 news.setTitle(cursor.getString(cursor.getColumnIndex(NEWS_TABLE_TITLE)));
@@ -141,8 +145,10 @@ public class DBManager {
                 news.setDate(cursor.getString(cursor.getColumnIndex(NEWS_TABLE_DATE)));
                 news.setPicPath(cursor.getString(cursor.getColumnIndex(NEWS_TABLE_PICPATH)));
                 lists.add(news);
+                isHaveCache = true;
             }
         }
+        if (!isHaveCache) lists = null;
         return lists;
     }
 

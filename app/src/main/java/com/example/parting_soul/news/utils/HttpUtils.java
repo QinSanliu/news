@@ -1,10 +1,7 @@
 package com.example.parting_soul.news.utils;
 
-import com.example.parting_soul.news.Interface.HttpCallBack;
-
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -75,14 +72,13 @@ public class HttpUtils {
     /**
      * 利用Http的Post方法获取资源
      *
-     * @param path     网络地址
-     * @param param    网络地址代封装中的参数
-     * @param encode   请求的编码方式
-     * @param callback 回调方法
-     * @return void
+     * @param path   网络地址
+     * @param param  网络地址代封装中的参数
+     * @param encode 请求的编码方式
+     * @return String
      */
-    public static void HttpPostMethod(String path, String param, String encode, HttpCallBack callback) {
-        StringBuilder result = new StringBuilder();
+    public static String HttpPostMethod(String path, String param, String encode) {
+        String result = "";
         HttpURLConnection conn = null;
         BufferedReader reader = null;
         try {
@@ -107,13 +103,13 @@ public class HttpUtils {
             reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), encode));
             String line = null;
             while ((line = reader.readLine()) != null) {
-                result.append(line);
+                result += line;
             }
-            callback.onResult(result.toString());
+
         } catch (MalformedURLException e) {
-            callback.onError(e);
+            return null;
         } catch (IOException e) {
-            callback.onError(e);
+            return null;
         } finally {
             conn.disconnect();
             if (reader != null) {
@@ -126,6 +122,7 @@ public class HttpUtils {
                 }
             }
         }
+        return result;
     }
 
 }

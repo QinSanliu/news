@@ -45,4 +45,7 @@
 
     <string name="left_menu_login_name">parting_soul</string>
     <string name="left_menu_login_mailbox">982068238@qq.com</string>
+
+    <string name="reload">重新加载</string>
+    <string name="empty">什么都没有</string>
 </resources>

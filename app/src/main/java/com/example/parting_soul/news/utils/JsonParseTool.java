@@ -28,6 +28,7 @@ public class JsonParseTool {
      * @return List<News> 新闻类的数组
      */
     public static List<News> parseJsonWidthJSONObject(String jsonString) {
+        if (jsonString == null) return null;
         List<News> lists = new ArrayList<News>();
         try {
             //得到根json对象
@@ -56,14 +57,14 @@ public class JsonParseTool {
                         news.setPicPath(picPath);
                         news.setUrl(url);
                         news.setAuthor_name(author_name);
-                    }catch (Exception e) {
-                        isError = true ;
+                    } catch (Exception e) {
+                        isError = true;
                     }
                     //                  String uniqueKey = newsJsonObject.getString(CommonInfo.NewsAPI.JSONKEY.RESPONSE_JSON_RESULT_NEWS_UNIQUE_KEY);
                     //                  String realType = newsJsonObject.getString(CommonInfo.NewsAPI.JSONKEY.RESPONSE_JSON_RESULT_NEWS_REALTYPE);
 
                     //若数据合法则添加到数组中
-                    if(!isError&&isAvailableData(news)) {
+                    if (!isError && isAvailableData(news)) {
                         lists.add(news);
                     }
                 }
@@ -101,12 +102,13 @@ public class JsonParseTool {
 
     /**
      * 判断解析出的数据是否有效
+     *
      * @param news
      * @return boolean
      */
     public static boolean isAvailableData(News news) {
-        if(!TextUtils.isEmpty(news.getTitle())&&!TextUtils.isEmpty(news.getAuthor_name())
-                &&!TextUtils.isEmpty(news.getUrl())&&!TextUtils.isEmpty(news.getDate())&&
+        if (!TextUtils.isEmpty(news.getTitle()) && !TextUtils.isEmpty(news.getAuthor_name())
+                && !TextUtils.isEmpty(news.getUrl()) && !TextUtils.isEmpty(news.getDate()) &&
                 !TextUtils.isEmpty(news.getPicPath())) {
             return true;
         }

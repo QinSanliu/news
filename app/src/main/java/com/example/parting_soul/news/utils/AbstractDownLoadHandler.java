@@ -3,6 +3,8 @@ package com.example.parting_soul.news.utils;
 import android.os.Handler;
 import android.os.Message;
 
+import com.example.parting_soul.news.fragment.NewsFragment;
+
 /**
  * Created by parting_soul on 2016/10/6.
  * 抽象类 消息处理类
@@ -20,4 +22,5 @@ public abstract class AbstractDownLoadHandler extends Handler {
      * @param msg
      */
     protected abstract void updateUI(Message msg);
+
 }
