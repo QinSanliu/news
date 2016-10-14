@@ -116,7 +116,7 @@ public class ImageLoader {
         LogUtils.d(CommonInfo.TAG, "ImageLoader-->loadImage--->start = " + start + " end = " + end);
         for (int i = start; i < end; i++) {
             //找到对应的图片url地址
-            String url = NewsInfoAdapter.IMAGE_URLS[i];
+            String url = ((NewsInfoAdapter) listView.getAdapter()).IMAGE_URLS[i];
             //根据url从一级缓存中找是否有该图片
             Bitmap bitmap = getBitmapFromCache(url);
             //根据图片控件Ta属性上绑定的url从listview中找到图片控件
@@ -146,11 +146,11 @@ public class ImageLoader {
         if (bitmap != null) {
             //加载缓存中的图片
             imageView.setImageBitmap(bitmap);
-            LogUtils.d(CommonInfo.TAG, "ImageLoader-->loadImage-->url-->bitmap from cache");
+//            LogUtils.d(CommonInfo.TAG, "ImageLoader-->loadImage-->url-->bitmap from cache");
         } else {
             //缓存中没有找到该图片，显示默认图片
             imageView.setImageResource(R.mipmap.imageview_default_bc);
-            LogUtils.d(CommonInfo.TAG, "ImageLoader-->loadImage-->url-->bitmap from default");
+//            LogUtils.d(CommonInfo.TAG, "ImageLoader-->loadImage-->url-->bitmap from default");
         }
     }
 

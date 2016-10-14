@@ -228,7 +228,6 @@ public class NewsFragment extends BaseFragment<News> implements AdapterView.OnIt
         } else {
             String result = HttpUtils.HttpPostMethod(CommonInfo.NewsAPI.Params.REQUEST_URL,
                     mParams, CommonInfo.ENCODE_TYPE);
-            LogUtils.d(CommonInfo.TAG, "---->" + result);
             lists = parseJsonData(result);
         }
         mLists = lists;

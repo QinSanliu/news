@@ -42,9 +42,9 @@ public class NewsInfoAdapter extends BaseAdapter implements AbsListView.OnScroll
     private Context mContext;
 
     /**
-     * 图片的url地址数组
+     * 图片的url地址数组,注意不能用静态
      */
-    public static String[] IMAGE_URLS;
+    public String[] IMAGE_URLS;
 
     /**
      * listview可见项的起始位置
@@ -152,10 +152,8 @@ public class NewsInfoAdapter extends BaseAdapter implements AbsListView.OnScroll
 
         String url = mLists.get(position).getPicPath();
         LogUtils.d(CommonInfo.TAG, "---->" + url + " ++ " + holder.pic);
-        if (url != null) {
-            holder.pic.setTag(url);
-            mImageLoader.loadImage(url, holder.pic);
-        }
+        holder.pic.setTag(url);
+        mImageLoader.loadImage(url, holder.pic);
 //        LogUtils.d(TAG, "getView: " + mLists.get(position).getTitle() + " " + position + " " + mLists.get(position).getPicPath());
         return view;
     }
