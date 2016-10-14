@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -26,6 +27,7 @@ import com.example.parting_soul.news.utils.LogUtils;
 
 import java.util.List;
 
+import static android.view.View.inflate;
 import static com.example.parting_soul.news.customview.LoadingPager.LoadState;
 import static com.example.parting_soul.news.utils.CommonInfo.TAG;
 
@@ -138,7 +140,7 @@ public class NewsFragment extends BaseFragment<News> implements AdapterView.OnIt
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        LogUtils.d(TAG, "onAttach -->fragment");
+        LogUtils.d(TAG, "+DEBUG onAttach -->fragment");
     }
 
     @Override
@@ -167,7 +169,7 @@ public class NewsFragment extends BaseFragment<News> implements AdapterView.OnIt
         manager = DBManager.getDBManager(getActivity());
         //得到图片加载类
         mImageLoader = ImageLoader.newInstance(getActivity());
-        LogUtils.d(TAG, "onCreate -->fragment " + mNewTypeParam + " " + this);
+        LogUtils.d(TAG, "+onCreate -->fragment " + mNewTypeParam + " " + this);
     }
 
 
@@ -191,10 +193,13 @@ public class NewsFragment extends BaseFragment<News> implements AdapterView.OnIt
      */
     @Override
     public View createSuccessPage() {
-        View view = View.inflate(getActivity(), R.layout.news_fragment, null);
-        mListView = (ListView) view.findViewById(R.id.news_lists);
-        mListView.setOnItemClickListener(this);
-        Log.d(TAG, "createSuccessPage -->fragment " + mNewTypeParam);
+        View view = null;
+        if (getActivity() != null) {
+            view = View.inflate(getActivity(), R.layout.news_fragment, null);
+            mListView = (ListView) view.findViewById(R.id.news_lists);
+            mListView.setOnItemClickListener(this);
+        }
+        Log.d(TAG, "+DEBUG createSuccessPage -->fragment " + mNewTypeParam);
         return view;
     }
 
@@ -225,6 +230,7 @@ public class NewsFragment extends BaseFragment<News> implements AdapterView.OnIt
         List<News> lists = null;
         if (!isNetworkAvailable()) {
             lists = manager.readNewsCacheFromDatabase(mNewTypeParam);
+            LogUtils.d(CommonInfo.TAG, "network unavailable " + mNewTypeParam);
         } else {
             String result = HttpUtils.HttpPostMethod(CommonInfo.NewsAPI.Params.REQUEST_URL,
                     mParams, CommonInfo.ENCODE_TYPE);
@@ -245,27 +251,27 @@ public class NewsFragment extends BaseFragment<News> implements AdapterView.OnIt
         //解析下载的数据
         lists = JsonParseTool.parseJsonWidthJSONObject(result);
         //将数据写入数据库
-        manager.updataNewsCacheToDatabase(mLists, mNewTypeParam);
+        manager.updataNewsCacheToDatabase(lists, mNewTypeParam);
         return lists;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        LogUtils.d(TAG, "onActivityCreated -->fragment " + mNewTypeParam);
+        LogUtils.d(TAG, "+DEBUG onActivityCreated -->fragment " + mNewTypeParam);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        Log.d(TAG, "onResume -->fragment " + mNewTypeParam);
+        Log.d(TAG, "+DEBUG onResume -->fragment " + mNewTypeParam);
     }
 
 
     @Override
     public void onPause() {
         super.onPause();
-        Log.d(TAG, "onPause -->fragment " + mNewTypeParam);
+        Log.d(TAG, "+DEBUG onPause -->fragment " + mNewTypeParam);
         if (mImageLoader != null) {
             //将图片同步记录写入journal文件
             mImageLoader.fluchCache();
@@ -275,7 +281,7 @@ public class NewsFragment extends BaseFragment<News> implements AdapterView.OnIt
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        Log.d(TAG, "onDestroyView -->fragment " + mNewTypeParam);
+        Log.d(TAG, "+DEBUG onDestroyView -->fragment " + mNewTypeParam);
         //退出当前pager，停止所有加载图片的异步任务
         if (mImageLoader != null) {
             mImageLoader.cancelAllAsyncTask();

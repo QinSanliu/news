@@ -147,12 +147,14 @@ public abstract class LoadingPager extends RelativeLayout {
         //获取数据成功则显示显示数据界面
         if (currentState == STATE_SUCCESS) {
             mSuccessfulPage = createSuccessPage();
-            addView(mSuccessfulPage, new RelativeLayout.LayoutParams(LayoutParams.
-                    MATCH_PARENT, LayoutParams.MATCH_PARENT));
-            mSuccessfulPage.setVisibility(View.VISIBLE);
-            //页面显示成功，更新界面中的UI
-            updataUI();
-            LogUtils.d(CommonInfo.TAG, "success");
+            if (mSuccessfulPage != null) {
+                addView(mSuccessfulPage, new RelativeLayout.LayoutParams(LayoutParams.
+                        MATCH_PARENT, LayoutParams.MATCH_PARENT));
+                mSuccessfulPage.setVisibility(View.VISIBLE);
+                //页面显示成功，更新界面中的UI
+                updataUI();
+                LogUtils.d(CommonInfo.TAG, "success");
+            }
         }
     }
 

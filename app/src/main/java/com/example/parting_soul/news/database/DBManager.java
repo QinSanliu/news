@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.example.parting_soul.news.bean.News;
+import com.example.parting_soul.news.utils.CommonInfo;
+import com.example.parting_soul.news.utils.LogUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -149,6 +151,7 @@ public class DBManager {
             }
         }
         if (!isHaveCache) lists = null;
+        LogUtils.d(CommonInfo.TAG, "-->" + lists);
         return lists;
     }
 
