@@ -1,7 +1,7 @@
 package com.example.parting_soul.news.customview;
 
-import android.app.Activity;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Button;
@@ -159,29 +159,13 @@ public abstract class LoadingPager extends RelativeLayout {
     }
 
     /**
-     * 根据从网络取值结果加载不同的页面
+     * 根据从网络或数据库取值结果加载不同的页面
      */
     public void show() {
         if (currentState == STATE_EMPTY || currentState == STATE_ERROR || currentState == STATE_UNKNOWN) {
             currentState = STATE_LOADING;
             LogUtils.d(CommonInfo.TAG, "LoadingPager show current" + currentState);
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    final LoadState result = loadData();
-                    LogUtils.d(CommonInfo.TAG, "LoadingPager show result" + result);
-                    //在主线程更新界面
-                    ((Activity) mContext).runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (result != null) {
-                                currentState = result.getValue();
-                                showPages();
-                            }
-                        }
-                    });
-                }
-            }).start();
+            new LoadDataAsyncTask().execute();
         }
     }
 
@@ -199,7 +183,7 @@ public abstract class LoadingPager extends RelativeLayout {
 
 
     /**
-     * 从网络获取数据
+     * 从网络或数据库获取数据
      *
      * @return 返回获取状态
      */
@@ -219,6 +203,29 @@ public abstract class LoadingPager extends RelativeLayout {
 
         public int getValue() {
             return value;
+        }
+    }
+
+    /**
+     * 异步任务进行加载数据
+     */
+    class LoadDataAsyncTask extends AsyncTask<Void, Void, LoadState> {
+
+
+        @SuppressWarnings("WrongThread")
+        @Override
+        protected LoadState doInBackground(Void... params) {
+            return loadData();
+        }
+
+        @Override
+        protected void onPostExecute(LoadState loadState) {
+            super.onPostExecute(loadState);
+            //根据加载结果显示相应的页面信息
+            if (loadState != null) {
+                currentState = loadState.getValue();
+                showPages();
+            }
         }
     }
 
