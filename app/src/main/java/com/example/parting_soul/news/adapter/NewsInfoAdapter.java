@@ -1,7 +1,6 @@
 package com.example.parting_soul.news.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,14 +16,7 @@ import com.example.parting_soul.news.utils.CommonInfo;
 import com.example.parting_soul.news.utils.ImageLoader;
 import com.example.parting_soul.news.utils.LogUtils;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import static android.R.attr.scrollX;
-import static android.R.attr.start;
-import static android.media.CamcorderProfile.get;
-import static android.view.View.X;
-import static com.example.parting_soul.news.utils.CommonInfo.TAG;
 
 /**
  * Created by parting_soul on 2016/10/4.

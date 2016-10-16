@@ -108,7 +108,6 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
      */
     private HorizontalNavigation mHorizontalNavigation;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

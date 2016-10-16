@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -24,10 +23,10 @@ import com.example.parting_soul.news.utils.HttpUtils;
 import com.example.parting_soul.news.utils.ImageLoader;
 import com.example.parting_soul.news.utils.JsonParseTool;
 import com.example.parting_soul.news.utils.LogUtils;
+import com.yalantis.phoenix.PullToRefreshView;
 
 import java.util.List;
 
-import static android.view.View.inflate;
 import static com.example.parting_soul.news.customview.LoadingPager.LoadState;
 import static com.example.parting_soul.news.utils.CommonInfo.TAG;
 
@@ -37,7 +36,12 @@ import static com.example.parting_soul.news.utils.CommonInfo.TAG;
  * 新闻碎片类
  */
 
-public class NewsFragment extends BaseFragment<News> implements AdapterView.OnItemClickListener {
+public class NewsFragment extends BaseFragment<News> implements AdapterView.OnItemClickListener
+        , PullToRefreshView.OnRefreshListener {
+    /**
+     * 第三方下拉刷新类
+     */
+    private PullToRefreshView mPullToRefreshView;
     /**
      * 存放新闻项的listview
      */
@@ -79,63 +83,63 @@ public class NewsFragment extends BaseFragment<News> implements AdapterView.OnIt
     private ImageLoader mImageLoader;
 
 
-//    /**
-//     * 消息处理类
-//     */
-//    private AbstractDownLoadHandler mHandler = new AbstractDownLoadHandler() {
-//
-//        /**
-//         * 该方法在主线程调用
-//         * @param msg Looper从消息队列取出的消息
-//         */
-//        @Override
-//        public void handleMessage(Message msg) {
-//            super.handleMessage(msg);
-//            switch (msg.what) {
-//                case CommonInfo.LoaderStatus.DOWNLOAD_FINISH_MSG:
-//
-//                    break;
-//                case CommonInfo.LoaderStatus.READ_CACHE_FROM_DATABASE_FINISH:
-//
-//                    break;
-//            }
-//        }
-//
-//        /**
-//         * 下载错误时要处理的逻辑代码段
-//         */
-//        @Override
-//        protected void showError() {
-//
-//        }
-//
-//        /**
-//         * 下载正确则更新相应的UI
-//         * @param msg
-//         */
-//        @Override
-//        protected void updateUI(Message msg) {
-//            //数据下载完成
-//            if (msg.obj != null) {
-//                mLists = (List<News>) msg.obj;
-//                //将数据源绑定到适配器
-//                mNewsInfoAdapter = new NewsInfoAdapter(getActivity(), mLists, mListView);
-//                //设置可以加载图片
-//                mNewsInfoAdapter.setIsCanLoadImage(true);
-//                //为listview设置适配器
-//                mListView.setAdapter(mNewsInfoAdapter);
-//                mNewsInfoAdapter.notifyDataSetChanged();
-//
-//                LogUtils.d(CommonInfo.TAG, "-->lists 1" + mLists.size());
-//
-//
+    /**
+     * 消息处理类
+     */
+    private AbstractDownLoadHandler mHandler = new AbstractDownLoadHandler() {
+
+        /**
+         * 该方法在主线程调用
+         * @param msg Looper从消息队列取出的消息
+         */
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case CommonInfo.LoaderStatus.DOWNLOAD_FINISH_MSG:
+                    updateUI(msg);
+                    break;
+                default:
+
+            }
+            mPullToRefreshView.setRefreshing(false);
+        }
+
+        /**
+         * 下载错误时要处理的逻辑代码段
+         */
+        @Override
+        protected void showError() {
+
+        }
+
+        /**
+         * 下载正确则更新相应的UI
+         * @param msg
+         */
+        @Override
+        protected void updateUI(Message msg) {
+            //数据下载完成
+            if (msg.obj != null) {
+                mLists = (List<News>) msg.obj;
+                //将数据源绑定到适配器
+                mNewsInfoAdapter = new NewsInfoAdapter(getActivity(), mLists, mListView);
+                //设置可以加载图片
+                mNewsInfoAdapter.setIsCanLoadImage(true);
+                //为listview设置适配器
+                mListView.setAdapter(mNewsInfoAdapter);
+                mNewsInfoAdapter.notifyDataSetChanged();
+
+                LogUtils.d(CommonInfo.TAG, "-->lists 1" + mLists.size());
+
+
 //                if (msg.what == CommonInfo.LoaderStatus.READ_CACHE_FROM_DATABASE_FINISH) {
 //                    //恢复原来的位置
 //                    mListView.setSelectionFromTop(oldFirstVisibleItem, top);
 //                }
-//            }
-//        }
-//    };
+            }
+        }
+    };
 
     @Override
     public void onAttach(Activity activity) {
@@ -197,7 +201,9 @@ public class NewsFragment extends BaseFragment<News> implements AdapterView.OnIt
         if (getActivity() != null) {
             view = View.inflate(getActivity(), R.layout.news_fragment, null);
             mListView = (ListView) view.findViewById(R.id.news_lists);
+            mPullToRefreshView = (PullToRefreshView) view.findViewById(R.id.pull_to_refresh);
             mListView.setOnItemClickListener(this);
+            mPullToRefreshView.setOnRefreshListener(this);
         }
         Log.d(TAG, "+DEBUG createSuccessPage -->fragment " + mNewTypeParam);
         return view;
@@ -295,7 +301,6 @@ public class NewsFragment extends BaseFragment<News> implements AdapterView.OnIt
     /**
      * 检测当的网络（WLAN、4G/3G/2G）状态
      *
-     * @param context Context
      * @return true 表示网络可用
      */
     public static boolean isNetworkAvailable() {
@@ -316,34 +321,20 @@ public class NewsFragment extends BaseFragment<News> implements AdapterView.OnIt
 
     }
 
-//    /**
-//     * 下载成功时调用,该方法在子线程调用
-//     *
-//     * @param result 字符串形式的下载的结果
-//     */
-//    @Override
-//    public void onResult(String result) {
-//
-//    }
-//
-//    /**
-//     * 下载成功时调用,该方法在子线程调用
-//     *
-//     * @param result 字符数组形式的下载结果
-//     */
-//    @Override
-//    public void onResult(byte[] result) {
-//
-//    }
-//
-//    /**
-//     * 产生异常时调用,该方法在子线程调用
-//     *
-//     * @param e 异常类型
-//     */
-//    @Override
-//    public void onError(Exception e) {
-//        //       mHandler.sendEmptyMessage(CommonInfo.LoaderStatus.DOWNLOAD_FAILED_MSG);
-//    }
-
+    @Override
+    public void onRefresh() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<News> lists = null;
+                String result = HttpUtils.HttpPostMethod(CommonInfo.NewsAPI.Params.REQUEST_URL,
+                        mParams, CommonInfo.ENCODE_TYPE);
+                lists = parseJsonData(result);
+                Message msg = Message.obtain();
+                msg.obj = lists;
+                msg.what = CommonInfo.LoaderStatus.DOWNLOAD_FINISH_MSG;
+                mHandler.sendMessage(msg);
+            }
+        }).start();
+    }
 }

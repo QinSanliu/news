@@ -57,11 +57,7 @@ public class ImageLoader {
      */
     private static ImageLoader mImageLoader;
 
-    /**
-     * 构造方法
-     *
-     * @param listview 新闻数据项
-     */
+
     private ImageLoader(Context context) {
         mTaskSets = new HashSet<LoadImageAsynTask>();
         mCache = new LruCache<String, Bitmap>(mCachesMemory) {
@@ -191,7 +187,7 @@ public class ImageLoader {
     /**
      * 启动异步任务加载图片，并将异步任务加入集合
      *
-     * @param path      图片路径
+     * @param url       图片路径
      * @param imageView 显示图片的控件
      */
     public void downLoadImage(final String url, ImageView imageView) {
@@ -290,7 +286,11 @@ public class ImageLoader {
             super.onPostExecute(bitmap);
             if (mImageView != null && mImageView.getTag().equals(mUrl)) {
                 //判断控件的tag标志是否与url一致
-                mImageView.setImageBitmap(bitmap);
+                if (bitmap != null) {
+                    mImageView.setImageBitmap(bitmap);
+                } else {
+                    mImageView.setImageResource(R.mipmap.imageview_error_bc);
+                }
             }
             //异步任务图片加载完成，移除该任务
             mTaskSets.remove(this);
