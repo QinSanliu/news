@@ -14,6 +14,7 @@ import android.widget.ListView;
 
 import com.example.parting_soul.news.MyApplication;
 import com.example.parting_soul.news.R;
+import com.example.parting_soul.news.activity.NewsMessageActivity;
 import com.example.parting_soul.news.adapter.NewsInfoAdapter;
 import com.example.parting_soul.news.bean.News;
 import com.example.parting_soul.news.database.DBManager;
@@ -318,7 +319,8 @@ public class NewsFragment extends BaseFragment<News> implements AdapterView.OnIt
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+        String url = mLists.get(position).getUrl();
+        NewsMessageActivity.startActivity(getActivity(), url);
     }
 
     @Override

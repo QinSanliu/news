@@ -1,4 +1,4 @@
-package com.example.parting_soul.news;
+package com.example.parting_soul.news.activity;
 
 
 import android.os.Bundle;
@@ -14,6 +14,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.example.parting_soul.news.R;
 import com.example.parting_soul.news.adapter.LeftMenuItemAdapter;
 import com.example.parting_soul.news.adapter.NewsFragmentAdapter;
 import com.example.parting_soul.news.bean.MenuItemApi;
