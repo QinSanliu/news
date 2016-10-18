@@ -61,6 +61,7 @@ public class NewsMessageActivity extends AppCompatActivity implements View.OnCli
             mWebView.loadUrl(url);
         }
     }
+    
 
     /**
      * 其他activity启动该Activity的接口

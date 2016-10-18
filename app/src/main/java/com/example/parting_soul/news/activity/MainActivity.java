@@ -109,6 +109,16 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
      */
     private HorizontalNavigation mHorizontalNavigation;
 
+    /**
+     * 左侧菜单底部设置View
+     */
+    private TextView mLeftMenuSettingsView;
+
+    /**
+     * 左侧菜单底部退出View
+     */
+    private TextView mLeftMenuExitView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -142,7 +152,6 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
         mNavigation_item_width = mScreenWith / itemNum;
         //为ViewPager绑定监听器
         mNewsViewPager.addOnPageChangeListener(this);
-
     }
 
     /**
@@ -164,6 +173,8 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
                 mDrawerLayout.openDrawer(mLeft_draw_menu_layout);
             }
         });
+        //初始化左侧底部按钮
+        getLeftMenuBottomView();
     }
 
     /**
@@ -259,6 +270,26 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
         }
     }
 
+    /**
+     * 找到左侧侧滑菜单底部的设置和退出按钮，并设置监听，点击触发不同的事件
+     */
+    public void getLeftMenuBottomView() {
+        mLeftMenuSettingsView = (TextView) mLeft_draw_menu_layout.findViewById(R.id.settings);
+        mLeftMenuExitView = (TextView) mLeft_draw_menu_layout.findViewById(R.id.exit);
+        mLeftMenuSettingsView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //设置View被点击，则启动设置的Activity
+                SettingsPreferenceActivity.startActivity(MainActivity.this);
+            }
+        });
+        mLeftMenuExitView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity.this.finish();
+            }
+        });
+    }
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {

@@ -8,7 +8,7 @@ import android.content.Context;
  * 用于随时获得程序的上下文对象
  */
 
-public class MyApplication extends Application {
+public class NewsApplication extends Application {
     private static Context context;
 
     @Override

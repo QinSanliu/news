@@ -46,6 +46,44 @@
     <string name="left_menu_login_name">parting_soul</string>
     <string name="left_menu_login_mailbox">982068238@qq.com</string>
 
+
+    <!-- 设置界面的项目名和key-->
+    <string name="preference">偏好</string>
+    <string name="internet">网络</string>
+    <string name="language">语言</string>
+    <string name="font_size">字体</string>
+    <string name="night_mode">夜间模式</string>
+    <string name="is_night_mode">当前处于夜间模式</string>
+    <string name="is_light_mode">当前处于白天模式</string>
+    <string name="exit_be_sure">退出确认</string>
+    <string name="exit_by_press_twice">按两次退出</string>
+    <string name="exit_dir">直接退出</string>
+    <string name="no_pic_mode">无图模式</string>
+    <string name="only_load_pic_wifi_useful">仅在Wifi下加载图片</string>
+    <string name="load_pic_net_useful">有网络下加载图片</string>
+    <string name="clear_pic_cache">清除图片缓存</string>
+    <string name="clear_all_cache">清除所有缓存</string>
+
+    <string-array name="language_title">
+        <item>简体中文</item>
+        <item>English</item>
+    </string-array>
+    <string-array name="language_key">
+        <item>Chinese</item>
+        <item>English</item>
+    </string-array>
+    <string-array name="font_size_title">
+        <item>小</item>
+        <item>中</item>
+        <item>大</item>
+    </string-array>
+    <string-array name="font_size_key">
+        <item>small</item>
+        <item>normal</item>
+        <item>big</item>
+    </string-array>
+
+    <!--网络数据加载错误时显示的内容 -->
     <string name="reload">重新加载</string>
     <string name="empty">什么都没有</string>
 </resources>

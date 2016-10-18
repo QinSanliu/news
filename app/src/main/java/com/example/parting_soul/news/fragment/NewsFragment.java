@@ -12,7 +12,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.example.parting_soul.news.MyApplication;
+import com.example.parting_soul.news.NewsApplication;
 import com.example.parting_soul.news.R;
 import com.example.parting_soul.news.activity.NewsMessageActivity;
 import com.example.parting_soul.news.adapter.NewsInfoAdapter;
@@ -241,6 +241,7 @@ public class NewsFragment extends BaseFragment<News> implements AdapterView.OnIt
         } else {
             String result = HttpUtils.HttpPostMethod(CommonInfo.NewsAPI.Params.REQUEST_URL,
                     mParams, CommonInfo.ENCODE_TYPE);
+            Log.d(CommonInfo.TAG, "-->" + result);
             lists = parseJsonData(result);
         }
         mLists = lists;
@@ -305,7 +306,7 @@ public class NewsFragment extends BaseFragment<News> implements AdapterView.OnIt
      * @return true 表示网络可用
      */
     public static boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) MyApplication.getContext().
+        ConnectivityManager connectivityManager = (ConnectivityManager) NewsApplication.getContext().
                 getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo info = connectivityManager.getActiveNetworkInfo();
         if (info != null && info.isConnected()) {

@@ -164,6 +164,7 @@ public abstract class LoadingPager extends RelativeLayout {
     public void show() {
         if (currentState == STATE_EMPTY || currentState == STATE_ERROR || currentState == STATE_UNKNOWN) {
             currentState = STATE_LOADING;
+            showPages();
             LogUtils.d(CommonInfo.TAG, "LoadingPager show current" + currentState);
             new LoadDataAsyncTask().execute();
         }

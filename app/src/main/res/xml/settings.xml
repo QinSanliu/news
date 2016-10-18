@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:key="preferences"
+        android:layout="@layout/preference_category_widget"
+        android:title="@string/preference">
+        <ListPreference
+            android:defaultValue="Chinese"
+            android:entries="@array/language_title"
+            android:entryValues="@array/language_key"
+            android:key="language"
+            android:layout="@layout/preference_item"
+            android:title="@string/language" />
+        <ListPreference
+            android:defaultValue="small"
+            android:entries="@array/font_size_title"
+            android:entryValues="@array/font_size_key"
+            android:key="font_size"
+            android:layout="@layout/preference_item"
+            android:title="@string/font_size" />
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="is_night"
+            android:layout="@layout/preference_item"
+            android:summaryOff="@string/is_light_mode"
+            android:summaryOn="@string/is_night_mode"
+            android:title="@string/night_mode" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="back_by_twice"
+            android:layout="@layout/preference_item"
+            android:summaryOff="@string/exit_dir"
+            android:summaryOn="@string/exit_by_press_twice"
+            android:title="@string/exit_be_sure" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:key="network"
+        android:layout="@layout/preference_category_widget"
+        android:title="@string/internet">
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="no_picture"
+            android:layout="@layout/preference_item"
+            android:summaryOff="@string/load_pic_net_useful"
+            android:summaryOn="@string/only_load_pic_wifi_useful"
+            android:title="@string/no_pic_mode" />
+
+        <Preference
+            android:key="no_picture"
+            android:layout="@layout/preference_item"
+            android:title="@string/clear_pic_cache" />
+        <Preference
+            android:key="clean_all_cache"
+            android:layout="@layout/preference_item"
+            android:title="@string/clear_all_cache" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

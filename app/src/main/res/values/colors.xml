@@ -22,4 +22,6 @@
 
     <color name="black_font">#0F0F0F</color>  <!-- 黑色字体-->
 
+    <color name="settings_sumary_font_color">#AAAAAA</color>
+
 </resources>

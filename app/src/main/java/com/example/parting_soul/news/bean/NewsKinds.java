@@ -1,6 +1,6 @@
 package com.example.parting_soul.news.bean;
 
-import com.example.parting_soul.news.MyApplication;
+import com.example.parting_soul.news.NewsApplication;
 import com.example.parting_soul.news.R;
 
 import java.util.HashMap;
@@ -19,7 +19,7 @@ public class NewsKinds {
      * @return String[]
      */
     public static String[] getNewsTypes() {
-        return MyApplication.getContext().getResources().getStringArray(R.array.news_type);
+        return NewsApplication.getContext().getResources().getStringArray(R.array.news_type);
     }
 
     /**
@@ -28,7 +28,7 @@ public class NewsKinds {
      * @return String[]
      */
     public static String[] getNewsTypeResquestParams() {
-        return MyApplication.getContext().getResources().getStringArray(R.array.news_type_request_param);
+        return NewsApplication.getContext().getResources().getStringArray(R.array.news_type_request_param);
     }
 
     /**

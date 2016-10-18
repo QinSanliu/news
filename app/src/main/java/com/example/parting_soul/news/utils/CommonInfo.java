@@ -195,6 +195,7 @@ public class CommonInfo {
              * 返回码大于200000,服务器发生错误
              */
             public static final int RESPONSE_JSON_SERVER_ERROR = 200000;
+
         }
     }
 
