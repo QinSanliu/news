@@ -1,5 +1,6 @@
 package com.example.parting_soul.news.fragment.settings;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
@@ -8,6 +9,8 @@ import android.preference.PreferenceFragment;
 
 import com.example.parting_soul.news.R;
 import com.example.parting_soul.news.bean.Settings;
+import com.example.parting_soul.news.customview.PreferenceWithTip;
+import com.example.parting_soul.news.database.cache.CacheManager;
 import com.example.parting_soul.news.utils.CommonInfo;
 import com.example.parting_soul.news.utils.LogUtils;
 
@@ -28,7 +31,7 @@ public class SettingsPreferenceFragment extends PreferenceFragment
 
     private CheckBoxPreference mNoPicModePreference;
 
-    private Preference mClearPicCachePreference;
+    private PreferenceWithTip mClearPicCachePreference;
 
     private Preference mClearAllCachePreference;
 
@@ -48,13 +51,17 @@ public class SettingsPreferenceFragment extends PreferenceFragment
         mNightModePreference = (CheckBoxPreference) findPreference(Settings.IS_NIGHT_KEY);
         mExitBeSurePreference = (CheckBoxPreference) findPreference(Settings.BACK_BY_TWICE_KEY);
         mNoPicModePreference = (CheckBoxPreference) findPreference(Settings.NO_PICTURE_KEY);
-        mClearPicCachePreference = findPreference(Settings.CLEAR_PIC_CACHE);
+        mClearPicCachePreference = (PreferenceWithTip) findPreference(Settings.CLEAR_PIC_CACHE);
         mClearAllCachePreference = findPreference(Settings.CLEAR_ALL_CACHE);
+
         if (mLanguagePreference != null && mFontPreference != null && mNightModePreference != null
                 && mExitBeSurePreference != null && mNoPicModePreference != null
                 && mClearPicCachePreference != null && mClearAllCachePreference != null) {
-
+            LogUtils.d(CommonInfo.TAG, "-->1111111111" + mClearPicCachePreference);
         }
+
+
+        mClearPicCachePreference.setTip(CacheManager.getPicSize());
 
         mNightModePreference.setChecked(Settings.is_night_mode);
         mNoPicModePreference.setChecked(Settings.is_no_picture_mode);
@@ -68,6 +75,8 @@ public class SettingsPreferenceFragment extends PreferenceFragment
         mNightModePreference.setOnPreferenceClickListener(this);
         mNoPicModePreference.setOnPreferenceClickListener(this);
         mNoPicModePreference.setOnPreferenceChangeListener(this);
+        mExitBeSurePreference.setOnPreferenceClickListener(this);
+        mExitBeSurePreference.setOnPreferenceChangeListener(this);
         mClearPicCachePreference.setOnPreferenceClickListener(this);
         mClearAllCachePreference.setOnPreferenceClickListener(this);
     }
@@ -120,5 +129,10 @@ public class SettingsPreferenceFragment extends PreferenceFragment
             LogUtils.d(CommonInfo.TAG, "mClearAllCachePreference " + mClearAllCachePreference.isSelectable());
         }
         return false;
+    }
+
+    public void showClearPicCacheDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        
     }
 }

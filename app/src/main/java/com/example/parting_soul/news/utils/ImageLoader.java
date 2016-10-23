@@ -10,12 +10,12 @@ import android.widget.ListView;
 
 import com.example.parting_soul.news.R;
 import com.example.parting_soul.news.adapter.NewsInfoAdapter;
+import com.example.parting_soul.news.bean.Settings;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.text.DecimalFormat;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -57,6 +57,7 @@ public class ImageLoader {
      */
     private static ImageLoader mImageLoader;
 
+    private Settings mSettings = Settings.newsInstance();
 
     private ImageLoader(Context context) {
         mTaskSets = new HashSet<LoadImageAsynTask>();
@@ -228,7 +229,8 @@ public class ImageLoader {
             try {
                 //从硬盘缓存缓存取得该缓存对象封装类
                 snapshot = mDiskLruCache.get(key);
-                if (snapshot == null) {
+                if (snapshot == null && (!Settings.is_no_picture_mode || Settings.is_no_picture_mode
+                        && NetworkInfo.isWifiAvailable())) {
                     //若没有在缓存中找到，则需要从网络下载
                     //得到写入缓存操作类
                     DiskLruCache.Editor editor = mDiskLruCache.edit(key);
@@ -312,17 +314,16 @@ public class ImageLoader {
     }
 
     /**
-     * 得到图片缓存的大小，以MB为单位
+     * 得到图片缓存的大小，以B为单位
      *
-     * @return 图片缓存大小
+     * @return long 图片缓存大小
      */
-    public double getImageCacheSize() {
+    public long getImageCacheSize() {
         long size = 0;
         if (mDiskLruCache != null) {
             size = mDiskLruCache.size();
         }
-        DecimalFormat format = new DecimalFormat("#.00");
-        return Double.parseDouble(format.format(size));
+        return size;
     }
 
     /**

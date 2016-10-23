@@ -16,11 +16,25 @@ public class Settings {
      */
     public static final String SETTINGS_XML_NAME = "settings.xml";
 
+    /**
+     * 默认为日间模式
+     */
     public static boolean is_night_mode = false;
 
+    /**
+     * 默认为按两次退出
+     */
     public static boolean is_back_by_twice = true;
 
+    /**
+     * 默认为非无图模式
+     */
     public static boolean is_no_picture_mode = false;
+
+    /**
+     * 连按两次返回键的有效间隔时间
+     */
+    public static long EXIT_TIME = 5000;
 
     /**
      * 语言选择项的Key

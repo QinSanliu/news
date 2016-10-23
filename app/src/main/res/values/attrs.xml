@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <attr name="containerBackground" format="reference|color"></attr>
-    <attr name="cardBackground" format="reference|color"></attr>
-    <attr name="titleColor" format="reference|color"></attr>
-    <attr name="textColor" format="reference|color"></attr>
-    <attr name="selectorBtn" format="reference"></attr>
-    <attr name="selectorListItem" format="reference"></attr>
+    <declare-styleable name="preferencetitletip">
+        <attr name="pretitle" format="string"></attr>
+        <attr name="pretip" format="string"></attr>
+    </declare-styleable>
 </resources>

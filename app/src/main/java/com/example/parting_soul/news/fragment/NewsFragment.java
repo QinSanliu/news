@@ -1,9 +1,6 @@
 package com.example.parting_soul.news.fragment;
 
 import android.app.Activity;
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.annotation.Nullable;
@@ -12,11 +9,11 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.example.parting_soul.news.NewsApplication;
 import com.example.parting_soul.news.R;
 import com.example.parting_soul.news.activity.NewsMessageActivity;
 import com.example.parting_soul.news.adapter.NewsInfoAdapter;
 import com.example.parting_soul.news.bean.News;
+import com.example.parting_soul.news.bean.Settings;
 import com.example.parting_soul.news.database.DBManager;
 import com.example.parting_soul.news.utils.AbstractDownLoadHandler;
 import com.example.parting_soul.news.utils.CommonInfo;
@@ -24,6 +21,7 @@ import com.example.parting_soul.news.utils.HttpUtils;
 import com.example.parting_soul.news.utils.ImageLoader;
 import com.example.parting_soul.news.utils.JsonParseTool;
 import com.example.parting_soul.news.utils.LogUtils;
+import com.example.parting_soul.news.utils.NetworkInfo;
 import com.yalantis.phoenix.PullToRefreshView;
 
 import java.util.List;
@@ -83,6 +81,10 @@ public class NewsFragment extends BaseFragment<News> implements AdapterView.OnIt
      */
     private ImageLoader mImageLoader;
 
+    /**
+     * 设置对象类
+     */
+    private Settings mSettings = Settings.newsInstance();
 
     /**
      * 消息处理类
@@ -235,7 +237,7 @@ public class NewsFragment extends BaseFragment<News> implements AdapterView.OnIt
     @Override
     public LoadState loadData() {
         List<News> lists = null;
-        if (!isNetworkAvailable()) {
+        if (!NetworkInfo.isNetworkAvailable()) {
             lists = manager.readNewsCacheFromDatabase(mNewTypeParam);
             LogUtils.d(CommonInfo.TAG, "network unavailable " + mNewTypeParam);
         } else {
@@ -299,24 +301,6 @@ public class NewsFragment extends BaseFragment<News> implements AdapterView.OnIt
         oldFirstVisibleItem = 0;
         mNewsInfoAdapter = null;
     }
-
-    /**
-     * 检测当的网络（WLAN、4G/3G/2G）状态
-     *
-     * @return true 表示网络可用
-     */
-    public static boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) NewsApplication.getContext().
-                getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo info = connectivityManager.getActiveNetworkInfo();
-        if (info != null && info.isConnected()) {
-            if (info.getState() == NetworkInfo.State.CONNECTED) {
-                return true;
-            }
-        }
-        return false;
-    }
-
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:pre="http://schemas.android.com/apk/res/com.example.parting_soul.news">
 
     <PreferenceCategory
         android:layout="@layout/preference_category_widget"
@@ -46,10 +47,11 @@
             android:summaryOn="@string/only_load_pic_wifi_useful"
             android:title="@string/no_pic_mode" />
 
-        <Preference
+        <com.example.parting_soul.news.customview.PreferenceWithTip
             android:key="no_picture_cache"
             android:layout="@layout/preference_item"
-            android:title="@string/clear_pic_cache" />
+            pre:pretip="0B"
+            pre:pretitle="@string/clear_pic_cache" />
         <Preference
             android:key="clean_all_cache"
             android:layout="@layout/preference_item"

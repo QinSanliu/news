@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
@@ -42,6 +43,7 @@ public class NewsMessageActivity extends AppCompatActivity implements View.OnCli
      */
     private ImageView mBackView;
 
+    private String mUrl;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -55,13 +57,21 @@ public class NewsMessageActivity extends AppCompatActivity implements View.OnCli
         mWebView = (WebView) findViewById(webView);
         Intent result = getIntent();
         if (result != null) {
-            String url = result.getStringExtra(URL_KEY);
+            mUrl = result.getStringExtra(URL_KEY);
             mWebView.getSettings().setJavaScriptEnabled(true);
-            mWebView.setWebViewClient(new WebViewClient());
-            mWebView.loadUrl(url);
+            mWebView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+            mWebView.getSettings().setDomStorageEnabled(true);
+            mWebView.loadUrl(mUrl);
+            mWebView.setWebViewClient(new WebViewClient() {
+                @Override
+                public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                    view.loadUrl(url);
+                    return true;
+                }
+            });
         }
     }
-    
+
 
     /**
      * 其他activity启动该Activity的接口
@@ -85,9 +95,13 @@ public class NewsMessageActivity extends AppCompatActivity implements View.OnCli
      */
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK && mWebView.canGoBack()) {
-            mWebView.goBack();
-            return true;
+        if (keyCode == KeyEvent.KEYCODE_BACK && mWebView != null && mWebView.canGoBack()) {
+            if (mWebView.getUrl().equals(mUrl)) {
+                return super.onKeyDown(keyCode, event);
+            } else {
+                mWebView.goBack();
+                return true;
+            }
         }
         return super.onKeyDown(keyCode, event);
     }
@@ -101,4 +115,5 @@ public class NewsMessageActivity extends AppCompatActivity implements View.OnCli
     public void onClick(View v) {
         this.finish();
     }
+
 }

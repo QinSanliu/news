@@ -3,6 +3,7 @@ package com.example.parting_soul.news.activity;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -13,12 +14,14 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.parting_soul.news.R;
 import com.example.parting_soul.news.adapter.LeftMenuItemAdapter;
 import com.example.parting_soul.news.adapter.NewsFragmentAdapter;
 import com.example.parting_soul.news.bean.MenuItemApi;
 import com.example.parting_soul.news.bean.NewsKinds;
+import com.example.parting_soul.news.bean.Settings;
 import com.example.parting_soul.news.customview.HorizontalNavigation;
 import com.example.parting_soul.news.fragment.NewsFragment;
 import com.example.parting_soul.news.utils.CommonInfo;
@@ -119,6 +122,16 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
      */
     private TextView mLeftMenuExitView;
 
+    /**
+     * 设置
+     */
+    private Settings mSettings;
+
+    /**
+     * 按下返回键的时间
+     */
+    private long mExitTime;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -127,6 +140,7 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
         initLeftDrawerLayout();
         initViewPager();
         initHorizontalNavigationItem();
+        mSettings = Settings.newsInstance();
         LogUtils.currentLevel = LogUtils.DEBUG;
     }
 
@@ -311,4 +325,16 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
 
     }
 
+    @Override
+    public void onBackPressed() {
+        if (mDrawerLayout.isDrawerOpen(mLeft_draw_menu_layout)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+            return;
+        } else if (Settings.is_back_by_twice && (System.currentTimeMillis() - mExitTime) > Settings.EXIT_TIME) {
+            mExitTime = System.currentTimeMillis();
+            Toast.makeText(this, "再按一次退出", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        super.onBackPressed();
+    }
 }
