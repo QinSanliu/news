@@ -23,12 +23,13 @@
 
         <TextView
             android:id="@android:id/summary"
+            android:paddingTop="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@android:id/title"
             android:text="summary"
             android:textColor="@color/settings_sumary_font_color"
-            android:textSize="14sp" />
+            android:textSize="13sp" />
     </RelativeLayout>
 
     <LinearLayout
@@ -36,6 +37,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right|center_vertical"
-        android:orientation="vertical"></LinearLayout>
+        android:orientation="vertical"/>
 
 </LinearLayout>

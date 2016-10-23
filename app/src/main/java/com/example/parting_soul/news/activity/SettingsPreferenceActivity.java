@@ -6,6 +6,8 @@ import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageView;
 
 import com.example.parting_soul.news.R;
 import com.example.parting_soul.news.fragment.settings.SettingsPreferenceFragment;
@@ -17,16 +19,31 @@ import com.example.parting_soul.news.fragment.settings.SettingsPreferenceFragmen
 
 public class SettingsPreferenceActivity extends Activity {
 
+    /**
+     * 设置界面
+     */
     private SettingsPreferenceFragment mPreferenceFragment;
+
+    /**
+     * 返回按钮
+     */
+    private ImageView mBackView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_settings);
+        mBackView = (ImageView) findViewById(R.id.back_to_left_menu);
         if (savedInstanceState == null) {
             mPreferenceFragment = new SettingsPreferenceFragment();
             replaceFragment(R.id.settings_container, mPreferenceFragment);
         }
+        mBackView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SettingsPreferenceActivity.this.finish();
+            }
+        });
     }
 
     /**

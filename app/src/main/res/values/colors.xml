@@ -5,6 +5,7 @@
     <color name="colorAccent">#FF4081</color>
 
     <color name="title_bc_red">#FF4500</color> <!--标题背景-->
+    <color name="bc">#FF5000</color>
     <color name="title_font_bc_wite">#FFFFFF</color> <!--标题字体颜色 -->
 
     <color name="left_draw_bc">#FCFCFC</color>  <!-- 左侧侧滑菜单背景-->
@@ -23,5 +24,16 @@
     <color name="black_font">#0F0F0F</color>  <!-- 黑色字体-->
 
     <color name="settings_sumary_font_color">#AAAAAA</color>
+
+
+    <color name="white">#fafafa</color>
+    <color name="white_dark">#f3f3f3</color>
+    <color name="gray_light">#cccccc</color>
+    <color name="gray">#777</color>
+    <color name="gray_dark">#383838</color>
+    <color name="green_light">#8e9ea4</color>
+    <color name="green">#34515c</color>
+    <color name="green_dark">#1e3e4a</color>
+    <color name="night_mask">#90000000</color>
 
 </resources>

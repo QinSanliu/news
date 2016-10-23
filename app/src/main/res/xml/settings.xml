@@ -2,7 +2,6 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory
-        android:key="preferences"
         android:layout="@layout/preference_category_widget"
         android:title="@string/preference">
         <ListPreference
@@ -37,7 +36,6 @@
             android:title="@string/exit_be_sure" />
     </PreferenceCategory>
     <PreferenceCategory
-        android:key="network"
         android:layout="@layout/preference_category_widget"
         android:title="@string/internet">
         <CheckBoxPreference
@@ -49,7 +47,7 @@
             android:title="@string/no_pic_mode" />
 
         <Preference
-            android:key="no_picture"
+            android:key="no_picture_cache"
             android:layout="@layout/preference_item"
             android:title="@string/clear_pic_cache" />
         <Preference
