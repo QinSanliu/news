@@ -17,6 +17,7 @@ import com.example.parting_soul.news.customview.PreferenceWithTip;
 import com.example.parting_soul.news.utils.CommonInfo;
 import com.example.parting_soul.news.utils.LogUtils;
 import com.example.parting_soul.news.utils.cache.CacheManager;
+import com.example.parting_soul.news.utils.theme.ThemeChangeManager;
 
 /**
  * Created by parting_soul on 2016/10/18.
@@ -33,7 +34,7 @@ public class SettingsPreferenceFragment extends PreferenceFragment
 
     private CheckBoxPreference mExitBeSurePreference;
 
-    private Preference mThemeChangePreference;
+    private ListPreference mThemeChangePreference;
 
     private CheckBoxPreference mNoPicModePreference;
 
@@ -54,7 +55,7 @@ public class SettingsPreferenceFragment extends PreferenceFragment
 
         mLanguagePreference = (ListPreference) findPreference(Settings.LANUAGE_KEY);
         mFontPreference = (ListPreference) findPreference(Settings.FONT_SIZE_KEY);
-        mThemeChangePreference = (Preference) findPreference(Settings.THEME_CHANGE_KEY);
+        mThemeChangePreference = (ListPreference) findPreference(Settings.THEME_CHANGE_KEY);
         mNightModePreference = (CheckBoxPreference) findPreference(Settings.IS_NIGHT_KEY);
         mExitBeSurePreference = (CheckBoxPreference) findPreference(Settings.BACK_BY_TWICE_KEY);
         mNoPicModePreference = (CheckBoxPreference) findPreference(Settings.NO_PICTURE_KEY);
@@ -78,6 +79,8 @@ public class SettingsPreferenceFragment extends PreferenceFragment
         mLanguagePreference.setOnPreferenceClickListener(this);
         mFontPreference.setOnPreferenceClickListener(this);
         mFontPreference.setOnPreferenceChangeListener(this);
+        mThemeChangePreference.setOnPreferenceChangeListener(this);
+        mThemeChangePreference.setOnPreferenceClickListener(this);
         mNightModePreference.setOnPreferenceChangeListener(this);
         mNightModePreference.setOnPreferenceClickListener(this);
         mNoPicModePreference.setOnPreferenceClickListener(this);
@@ -98,6 +101,11 @@ public class SettingsPreferenceFragment extends PreferenceFragment
             return true;
         } else if (preference == mFontPreference) {
             LogUtils.d(CommonInfo.TAG, "mFontPreference " + mFontPreference.getValue());
+            return true;
+        } else if (preference == mThemeChangePreference) {
+            mSettings.putString(Settings.THEME_CHANGE_KEY, newValue.toString());
+            ThemeChangeManager.changeTitleTheme(getActivity());
+            getActivity().recreate();
             return true;
         } else if (preference == mNightModePreference) {
 //            LogUtils.d(CommonInfo.TAG, "mNightModePreference " + mNightModePreference.isChecked());
@@ -124,6 +132,8 @@ public class SettingsPreferenceFragment extends PreferenceFragment
             LogUtils.d(CommonInfo.TAG, "mLanguagePreference " + mLanguagePreference.getValue());
         } else if (preference == mFontPreference) {
             LogUtils.d(CommonInfo.TAG, "mFontPreference " + mFontPreference.getValue());
+        } else if (preference == mThemeChangePreference) {
+
         } else if (preference == mNightModePreference) {
             LogUtils.d(CommonInfo.TAG, "mNightModePreference " + mNightModePreference.isChecked());
         } else if (preference == mExitBeSurePreference) {

@@ -83,7 +83,18 @@
         <item>normal</item>
         <item>big</item>
     </string-array>
-
+    <string-array name="theme_title">
+        <item>红色</item>
+        <item>蓝色</item>
+        <item>绿色</item>
+        <item>紫色</item>
+    </string-array>
+    <string-array name="theme_key">
+        <item>red</item>
+        <item>blue</item>
+        <item>green</item>
+        <item>purple</item>
+    </string-array>
     <string name="tip">提示</string>
     <string name="tip_content">确定要清除所有缓存吗?</string>
     <string name="certain">确定</string>

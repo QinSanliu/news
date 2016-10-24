@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.example.parting_soul.news.R;
+import com.example.parting_soul.news.utils.theme.ThemeChangeManager;
 
 import static com.example.parting_soul.news.R.id.webView;
 
@@ -48,6 +49,7 @@ public class NewsMessageActivity extends AppCompatActivity implements View.OnCli
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ThemeChangeManager.changeTitleTheme(this);
         setContentView(R.layout.layout_news_msg);
         mTitleLayout = (RelativeLayout) findViewById(R.id.title_layout);
         mBackView = (ImageView) mTitleLayout.findViewById(R.id.open_draw);

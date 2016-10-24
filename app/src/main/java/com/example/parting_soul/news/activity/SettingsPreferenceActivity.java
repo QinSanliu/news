@@ -11,6 +11,7 @@ import android.widget.ImageView;
 
 import com.example.parting_soul.news.R;
 import com.example.parting_soul.news.fragment.settings.SettingsPreferenceFragment;
+import com.example.parting_soul.news.utils.theme.ThemeChangeManager;
 
 /**
  * Created by parting_soul on 2016/10/18.
@@ -32,6 +33,7 @@ public class SettingsPreferenceActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ThemeChangeManager.changeTitleTheme(this);
         setContentView(R.layout.layout_settings);
         mBackView = (ImageView) findViewById(R.id.back_to_left_menu);
         if (savedInstanceState == null) {
@@ -41,6 +43,7 @@ public class SettingsPreferenceActivity extends Activity {
         mBackView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                refreshActivity();
                 SettingsPreferenceActivity.this.finish();
             }
         });
@@ -66,5 +69,18 @@ public class SettingsPreferenceActivity extends Activity {
         Intent intent = new Intent();
         intent.setClass(context, SettingsPreferenceActivity.class);
         context.startActivity(intent);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        refreshActivity();
+        finish();
+    }
+
+    public void refreshActivity() {
+        Intent mIntent = new Intent(this, MainActivity.class);
+        mIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(mIntent);
     }
 }

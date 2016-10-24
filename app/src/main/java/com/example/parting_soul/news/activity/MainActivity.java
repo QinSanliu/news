@@ -27,6 +27,7 @@ import com.example.parting_soul.news.fragment.NewsFragment;
 import com.example.parting_soul.news.utils.CommonInfo;
 import com.example.parting_soul.news.utils.LogUtils;
 import com.example.parting_soul.news.utils.WindowSizeTool;
+import com.example.parting_soul.news.utils.theme.ThemeChangeManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -135,6 +136,7 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ThemeChangeManager.changeTitleTheme(this);
         setContentView(R.layout.drawer_layout);
         init();
         initLeftDrawerLayout();
@@ -225,7 +227,7 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
             TextView textView = new TextView(this);
             textView.setText(NEWS_TYPES[i]);
             textView.setGravity(Gravity.CENTER);
-            textView.setBackgroundResource(R.drawable.navigation_item_state_bc);
+            textView.setBackgroundResource(ThemeChangeManager.getNavigationResoureStateBK());
             textView.setTextAppearance(this, R.style.navigation_item_front_state_style);
             textView.setLayoutParams(params);
             //设置唯一的识别标志

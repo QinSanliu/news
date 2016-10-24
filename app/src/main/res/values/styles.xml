@@ -3,9 +3,28 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimaryDark">@color/bc</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="DayTheme_red" parent="AppTheme">
+        <item name="colorPrimaryDark">@color/title_bc_red_dark</item>
+        <item name="title_theme">@color/title_bc_red</item>
+    </style>
+
+    <style name="DayTheme_blue" parent="AppTheme">
+        <item name="title_theme">@color/title_bc_blue</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+    </style>
+
+    <style name="DayTheme_green" parent="AppTheme">
+        <item name="colorPrimaryDark">@color/title_bc_green_dark</item>
+        <item name="title_theme">@color/title_bc_green</item>
+    </style>
+
+    <style name="DayTheme_purple" parent="AppTheme">
+        <item name="colorPrimaryDark">@color/title_bc_purple_dark</item>
+        <item name="title_theme">@color/title_bc_purple</item>
     </style>
 
     <!-- 左侧侧滑菜单底部的按钮风格-->
@@ -23,6 +42,5 @@
         <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/navigation_item_font_state_color</item>
     </style>
-
 
 </resources>
