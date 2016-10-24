@@ -14,7 +14,7 @@ public class Settings {
     /**
      * 存储设置键值对的文件名
      */
-    public static final String SETTINGS_XML_NAME = "settings.xml";
+    public static final String SETTINGS_XML_NAME = "settings";
 
     /**
      * 默认为日间模式
@@ -47,6 +47,11 @@ public class Settings {
     public static final String FONT_SIZE_KEY = "font_size";
 
     /**
+     * 主题换肤
+     */
+    public static final String THEME_CHANGE_KEY = "change_theme";
+
+    /**
      * 夜间模式项的Key
      */
     public static final String IS_NIGHT_KEY = "is_night";
@@ -62,14 +67,14 @@ public class Settings {
     public static final String NO_PICTURE_KEY = "no_picture";
 
     /**
-     * 清除图片缓存的Key
-     */
-    public static final String CLEAR_PIC_CACHE = "no_picture_cache";
-
-    /**
      * 清除所有缓存的Key
      */
     public static final String CLEAR_ALL_CACHE = "clean_all_cache";
+
+    /**
+     * 重置所有设置
+     */
+    public static final String RESET_KEY = "reset";
 
     /**
      * 单例类
@@ -113,6 +118,10 @@ public class Settings {
 
     public boolean getBoolean(String key, boolean def) {
         return mPreferences.getBoolean(key, def);
+    }
+
+    public void initAllSettings() {
+
     }
 
 }

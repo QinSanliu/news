@@ -1,11 +1,8 @@
-package com.example.parting_soul.news.database;
+package com.example.parting_soul.news.utils.cache.database;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
-import com.example.parting_soul.news.utils.CommonInfo;
-import com.example.parting_soul.news.utils.LogUtils;
 
 /**
  * Created by parting_soul on 2016/10/9.
@@ -16,7 +13,7 @@ public class SQLiteDatabaseHelper extends SQLiteOpenHelper {
     /**
      * 数据库名
      */
-    private static final String DATABASE_NAME = "news.db";
+    public static final String DATABASE_NAME = "news.db";
     /**
      * 数据库版本
      */

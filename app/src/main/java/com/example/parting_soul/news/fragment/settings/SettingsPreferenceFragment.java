@@ -1,18 +1,22 @@
 package com.example.parting_soul.news.fragment.settings;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.widget.Toast;
 
+import com.example.parting_soul.news.Interface.ClearCacheCallBack;
 import com.example.parting_soul.news.R;
 import com.example.parting_soul.news.bean.Settings;
 import com.example.parting_soul.news.customview.PreferenceWithTip;
-import com.example.parting_soul.news.database.cache.CacheManager;
 import com.example.parting_soul.news.utils.CommonInfo;
 import com.example.parting_soul.news.utils.LogUtils;
+import com.example.parting_soul.news.utils.cache.CacheManager;
 
 /**
  * Created by parting_soul on 2016/10/18.
@@ -29,11 +33,13 @@ public class SettingsPreferenceFragment extends PreferenceFragment
 
     private CheckBoxPreference mExitBeSurePreference;
 
+    private Preference mThemeChangePreference;
+
     private CheckBoxPreference mNoPicModePreference;
 
-    private PreferenceWithTip mClearPicCachePreference;
+    private PreferenceWithTip mClearAllCachePreference;
 
-    private Preference mClearAllCachePreference;
+    private Preference mResetPreference;
 
     private Settings mSettings;
 
@@ -48,20 +54,21 @@ public class SettingsPreferenceFragment extends PreferenceFragment
 
         mLanguagePreference = (ListPreference) findPreference(Settings.LANUAGE_KEY);
         mFontPreference = (ListPreference) findPreference(Settings.FONT_SIZE_KEY);
+        mThemeChangePreference = (Preference) findPreference(Settings.THEME_CHANGE_KEY);
         mNightModePreference = (CheckBoxPreference) findPreference(Settings.IS_NIGHT_KEY);
         mExitBeSurePreference = (CheckBoxPreference) findPreference(Settings.BACK_BY_TWICE_KEY);
         mNoPicModePreference = (CheckBoxPreference) findPreference(Settings.NO_PICTURE_KEY);
-        mClearPicCachePreference = (PreferenceWithTip) findPreference(Settings.CLEAR_PIC_CACHE);
-        mClearAllCachePreference = findPreference(Settings.CLEAR_ALL_CACHE);
+        mClearAllCachePreference = (PreferenceWithTip) findPreference(Settings.CLEAR_ALL_CACHE);
+        mResetPreference = (Preference) findPreference(Settings.RESET_KEY);
 
         if (mLanguagePreference != null && mFontPreference != null && mNightModePreference != null
                 && mExitBeSurePreference != null && mNoPicModePreference != null
-                && mClearPicCachePreference != null && mClearAllCachePreference != null) {
-            LogUtils.d(CommonInfo.TAG, "-->1111111111" + mClearPicCachePreference);
+                && mClearAllCachePreference != null) {
+            LogUtils.d(CommonInfo.TAG, "-->1111111111" + mClearAllCachePreference);
         }
 
 
-        mClearPicCachePreference.setTip(CacheManager.getPicSize());
+        mClearAllCachePreference.setTip(CacheManager.getCacheSize());
 
         mNightModePreference.setChecked(Settings.is_night_mode);
         mNoPicModePreference.setChecked(Settings.is_no_picture_mode);
@@ -77,8 +84,8 @@ public class SettingsPreferenceFragment extends PreferenceFragment
         mNoPicModePreference.setOnPreferenceChangeListener(this);
         mExitBeSurePreference.setOnPreferenceClickListener(this);
         mExitBeSurePreference.setOnPreferenceChangeListener(this);
-        mClearPicCachePreference.setOnPreferenceClickListener(this);
         mClearAllCachePreference.setOnPreferenceClickListener(this);
+
     }
 
     @Override
@@ -123,16 +130,59 @@ public class SettingsPreferenceFragment extends PreferenceFragment
             LogUtils.d(CommonInfo.TAG, "mExitBeSurePreference " + mExitBeSurePreference.isChecked());
         } else if (preference == mNoPicModePreference) {
             LogUtils.d(CommonInfo.TAG, "mNoPicModePreference " + mNoPicModePreference.isChecked());
-        } else if (preference == mClearPicCachePreference) {
-            LogUtils.d(CommonInfo.TAG, "mClearPicCachePreference " + mClearPicCachePreference.isSelectable());
         } else if (preference == mClearAllCachePreference) {
-            LogUtils.d(CommonInfo.TAG, "mClearAllCachePreference " + mClearAllCachePreference.isSelectable());
+            LogUtils.d(CommonInfo.TAG, "mClearPicCachePreference " + mClearAllCachePreference.isSelectable());
+            showClearPicCacheDialog();
         }
         return false;
     }
 
+    /**
+     * 显示清除缓存的对话框
+     */
     public void showClearPicCacheDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(R.string.tip).setMessage(R.string.tip_content)
+                .setPositiveButton(R.string.certain, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        final ProgressDialog progressDialog = showProgressDialog();
+                        CacheManager.clearAllCache(new ClearCacheCallBack() {
+                            @Override
+                            public void finish(boolean isSuccess) {
+                                progressDialog.dismiss();
+                                checkClearState(isSuccess);
+                            }
+                        });
+                    }
+                }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        }).show();
+    }
+
+    /**
+     * 检查清除是否成功
+     *
+     * @param isSuccess
+     */
+    private void checkClearState(boolean isSuccess) {
+        if (isSuccess) {
+            Toast.makeText(getActivity(), getResources().getText(R.string.clear_success), Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getActivity(), getResources().getText(R.string.clear_failed), Toast.LENGTH_SHORT).show();
+        }
+        mClearAllCachePreference.setTip(CacheManager.getCacheSize());
+    }
+
+    private ProgressDialog showProgressDialog() {
+        ProgressDialog dialog = new ProgressDialog(getActivity());
+        dialog.setTitle(R.string.tip);
+        dialog.setMessage(getResources().getString(R.string.clearing));
+        dialog.setCancelable(false);
+        dialog.show();
+        return dialog;
     }
 }

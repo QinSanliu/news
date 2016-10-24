@@ -5,21 +5,20 @@ import android.util.Log;
 
 import com.example.parting_soul.news.bean.News;
 import com.example.parting_soul.news.bean.NewsKinds;
-import com.example.parting_soul.news.database.DBManager;
-import com.example.parting_soul.news.database.SQLiteDatabaseHelper;
 import com.example.parting_soul.news.utils.CommonInfo;
-import com.example.parting_soul.news.utils.DiskLruCacheHelper;
 import com.example.parting_soul.news.utils.LogUtils;
 import com.example.parting_soul.news.utils.MD5Utils;
+import com.example.parting_soul.news.utils.cache.DiskLruCacheHelper;
+import com.example.parting_soul.news.utils.cache.database.DBManager;
+import com.example.parting_soul.news.utils.cache.database.SQLiteDatabaseHelper;
 
 import org.junit.Test;
 
+import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import static android.R.attr.top;
 
 /**
  * Created by parting_soul on 2016/10/5.
@@ -111,5 +110,14 @@ public class AndroidTestUnit extends AndroidTestCase {
 //            LogUtils.d(CommonInfo.TAG, news1.getTitle() + " " + news1.getAuthor_name() + " " + news1.getPicPath() + " " + news1.getDate());
 //        }
         manager.deleteNewsCacheFromDataBase("top");
+    }
+
+    @Test
+    public void testDatabaseTest() {
+        File file = getContext().getDatabasePath(SQLiteDatabaseHelper.DATABASE_NAME);
+        File root = file.getParentFile();
+        long le = root.length();
+        boolean i = root.delete();
+        LogUtils.d(CommonInfo.TAG, "--" + le + " " + i);
     }
 }

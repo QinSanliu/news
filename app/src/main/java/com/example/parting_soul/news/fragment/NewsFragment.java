@@ -14,7 +14,7 @@ import com.example.parting_soul.news.activity.NewsMessageActivity;
 import com.example.parting_soul.news.adapter.NewsInfoAdapter;
 import com.example.parting_soul.news.bean.News;
 import com.example.parting_soul.news.bean.Settings;
-import com.example.parting_soul.news.database.DBManager;
+import com.example.parting_soul.news.utils.cache.database.DBManager;
 import com.example.parting_soul.news.utils.AbstractDownLoadHandler;
 import com.example.parting_soul.news.utils.CommonInfo;
 import com.example.parting_soul.news.utils.HttpUtils;
@@ -176,6 +176,9 @@ public class NewsFragment extends BaseFragment<News> implements AdapterView.OnIt
         manager = DBManager.getDBManager(getActivity());
         //得到图片加载类
         mImageLoader = ImageLoader.newInstance(getActivity());
+        if (mImageLoader.diskLruCacheIsClosed()) {
+            mImageLoader.openDiskLruCache();
+        }
         LogUtils.d(TAG, "+onCreate -->fragment " + mNewTypeParam + " " + this);
     }
 

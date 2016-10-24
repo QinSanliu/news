@@ -1,4 +1,4 @@
-package com.example.parting_soul.news.database;
+package com.example.parting_soul.news.utils.cache.database;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -73,9 +73,21 @@ public class DBManager {
      */
     private static DBManager manager;
 
+    /**
+     * 是否是第一次打开数据库
+     */
+    public static boolean isFirst = true;
+
+    /**
+     * 数据库为空时的文件大小
+     */
+    public static long databaseSize;
+
+    private Context mContext;
 
     private DBManager(Context context) {
         helper = new SQLiteDatabaseHelper(context);
+        mContext = context;
     }
 
     public static DBManager getDBManager(Context context) {
@@ -86,10 +98,14 @@ public class DBManager {
     }
 
     /**
-     * 打开或创建数据库
+     * 打开或创建数据库,并得到数据库为空时的文件大小
      */
     public void getConnected() {
         database = helper.getReadableDatabase();
+        if (isFirst) {
+            databaseSize = mContext.getDatabasePath(SQLiteDatabaseHelper.DATABASE_NAME).length();
+            isFirst = false;
+        }
     }
 
     /**
@@ -124,6 +140,17 @@ public class DBManager {
         getConnected();
         database.delete(NEWS_TABLE_NAME, NEWS_TABLE_NEWS_TYPE + " = ? ", new String[]{newsType});
     }
+
+    /**
+     * 移除所有数据缓存
+     */
+    public boolean deleteAllCacheFromDataBase() {
+        getConnected();
+        int result = database.delete(NEWS_TABLE_NAME, null, null);
+        if (result != -1) return true;
+        return false;
+    }
+
 
     /**
      * 从数据库读取缓存

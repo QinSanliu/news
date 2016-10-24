@@ -1,4 +1,4 @@
-package com.example.parting_soul.news.utils;
+package com.example.parting_soul.news.utils.cache;
 
 import android.content.Context;
 import android.content.pm.PackageInfo;

@@ -11,6 +11,7 @@ import android.widget.ListView;
 import com.example.parting_soul.news.R;
 import com.example.parting_soul.news.adapter.NewsInfoAdapter;
 import com.example.parting_soul.news.bean.Settings;
+import com.example.parting_soul.news.utils.cache.DiskLruCacheHelper;
 
 import java.io.File;
 import java.io.IOException;
@@ -57,6 +58,8 @@ public class ImageLoader {
      */
     private static ImageLoader mImageLoader;
 
+    private Context mContext;
+
     private Settings mSettings = Settings.newsInstance();
 
     private ImageLoader(Context context) {
@@ -68,9 +71,18 @@ public class ImageLoader {
                 return value.getByteCount() / 1024;
             }
         };
+        mContext = context;
+        openDiskLruCache();
+        LogUtils.i(CommonInfo.TAG, "ImageLoader-->mCachesMemory " + mCachesMemory / 1024);
+    }
 
+
+    /**
+     * 打开硬盘缓存
+     */
+    public void openDiskLruCache() {
         //得到缓存图片的文件夹对象
-        File cacheDir = DiskLruCacheHelper.getCacheFile(context,
+        File cacheDir = DiskLruCacheHelper.getCacheFile(mContext,
                 CommonInfo.Cache.IMAGE_CACHE_DIR_NAME);
         //若该文件不存在则创建文件夹
         if (!cacheDir.exists()) {
@@ -79,13 +91,11 @@ public class ImageLoader {
 
         try {
             //生成硬盘缓存管理类 参数依次为缓存文件对象,app版本号，一个key对应多少个键,缓存容量总大小
-            mDiskLruCache = DiskLruCache.open(cacheDir, DiskLruCacheHelper.getVersion(context),
+            mDiskLruCache = DiskLruCache.open(cacheDir, DiskLruCacheHelper.getVersion(mContext),
                     1, CommonInfo.Cache.IMAGE_CACHE_SIZE);
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        LogUtils.i(CommonInfo.TAG, "ImageLoader-->mCachesMemory " + mCachesMemory / 1024);
     }
 
     /**
@@ -227,6 +237,9 @@ public class ImageLoader {
             boolean isSuccess = false;
             boolean isFromSD = true;
             try {
+                if (mDiskLruCache.isClosed()) {
+                    openDiskLruCache();
+                }
                 //从硬盘缓存缓存取得该缓存对象封装类
                 snapshot = mDiskLruCache.get(key);
                 if (snapshot == null && (!Settings.is_no_picture_mode || Settings.is_no_picture_mode
@@ -304,7 +317,7 @@ public class ImageLoader {
      * 将记录同步到journal中
      */
     public void fluchCache() {
-        if (mDiskLruCache != null) {
+        if (mDiskLruCache != null && !mDiskLruCache.isClosed()) {
             try {
                 mDiskLruCache.flush();
             } catch (IOException e) {
@@ -320,7 +333,7 @@ public class ImageLoader {
      */
     public long getImageCacheSize() {
         long size = 0;
-        if (mDiskLruCache != null) {
+        if (mDiskLruCache != null && !mDiskLruCache.isClosed()) {
             size = mDiskLruCache.size();
         }
         return size;
@@ -329,13 +342,37 @@ public class ImageLoader {
     /**
      * 删除图片缓存
      */
-    public void deleteImageCache() {
-        if (mDiskLruCache != null) {
+    public boolean deleteImageCache() {
+        if (mDiskLruCache != null && !mDiskLruCache.isClosed()) {
             try {
                 mDiskLruCache.delete();
+                return true;
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+        return false;
+    }
+
+    /**
+     * 关闭硬盘缓存
+     */
+    public void closeDiskLruCache() {
+        if (mDiskLruCache != null && !mDiskLruCache.isClosed()) {
+            try {
+                mDiskLruCache.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * 当前硬盘缓存是否关闭
+     *
+     * @return
+     */
+    public boolean diskLruCacheIsClosed() {
+        return mDiskLruCache.isClosed();
     }
 }
