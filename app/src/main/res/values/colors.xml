@@ -4,6 +4,11 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
 
+    <color name="nightColorPrimary">#3b3b3b</color>
+    <color name="nightColorPrimaryDark">#383838</color>
+    <color name="nightColorAccent">#a72b55</color>
+    <color name="nightTitleBackgroundColor">#383838</color>
+
     <color name="title_bc_red">#FF4500</color> <!--标题背景-->
     <color name="title_bc_red_dark">#FFEE0000</color>
     <color name="title_bc_blue">#3F51B5</color>
@@ -11,6 +16,8 @@
     <color name="title_bc_green_dark">#FF216668</color>
     <color name="title_bc_purple">#7A55FF</color>
     <color name="title_bc_purple_dark">#FF7A44FF</color>
+    <color name="title_bc_black">#3b3b3b</color>
+    <color name="title_bc_black_dark">#383838</color>
 
     <color name="title_font_bc_wite">#FFFFFF</color> <!--标题字体颜色 -->
 
@@ -21,6 +28,7 @@
     <color name="left_draw_login_text_bc_white">#FFFFFF</color> <!--左侧侧滑菜单登陆状态信息字体色-->
 
     <color name="navigation_bc">#FAFAFA</color> <!-- 导航条背景色-->
+    <color name="navigation_item_background_default_night">#383838</color>
     <color name="navigation_item_background_default">#FAFAFA</color> <!-- 导航按钮默认背景白色 -->
     <color name="navigation_item_background_selected">#FF4500</color> <!-- 导航按钮selected背景红色 -->
     <color name="navigation_item_font_default_color">#0F0F0F</color>    <!-- 导航按钮字体默认为黑色 -->
@@ -37,6 +45,7 @@
     <color name="gray_light">#cccccc</color>
     <color name="gray">#777</color>
     <color name="gray_dark">#383838</color>
+    <color name="gray_dark_dark">#393940</color>
     <color name="green_light">#8e9ea4</color>
     <color name="green">#34515c</color>
     <color name="green_dark">#1e3e4a</color>

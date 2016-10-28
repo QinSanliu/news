@@ -12,6 +12,7 @@ import com.example.parting_soul.news.utils.LogUtils;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.example.parting_soul.news.utils.theme.ThemeChangeManager.Color.BLACK;
 import static com.example.parting_soul.news.utils.theme.ThemeChangeManager.Color.BLUE;
 import static com.example.parting_soul.news.utils.theme.ThemeChangeManager.Color.GREEN;
 import static com.example.parting_soul.news.utils.theme.ThemeChangeManager.Color.PURPLE;
@@ -37,6 +38,7 @@ public class ThemeChangeManager {
         map.put(colorKeys[1], BLUE);
         map.put(colorKeys[2], GREEN);
         map.put(colorKeys[3], PURPLE);
+        map.put(colorKeys[4], BLACK);
     }
 
     public enum Color {
@@ -61,9 +63,27 @@ public class ThemeChangeManager {
                     activity.setTheme(R.style.DayTheme_purple);
                     break;
                 case BLACK:
+                    activity.setTheme(R.style.DayTheme_black);
                     break;
             }
         }
+    }
+
+    /**
+     * 夜间模式更换成功则返回true
+     *
+     * @param activity
+     * @return
+     */
+    public static boolean changeDayNightMode(Activity activity) {
+        boolean is_night_mode = Settings.is_night_mode = Settings.newsInstance().
+                getBoolean(Settings.IS_NIGHT_KEY, false);
+        LogUtils.d(CommonInfo.TAG, "--->55555" + is_night_mode);
+        if (is_night_mode) {
+            activity.setTheme(R.style.NightTheme);
+            return true;
+        }
+        return false;
     }
 
     public static int getNavigationResoureStateBK() {
@@ -77,12 +97,18 @@ public class ThemeChangeManager {
                 case PURPLE:
                     return R.drawable.navigation_item_state_bc_purple;
                 case BLACK:
-                    return -1;
+                    return R.drawable.navigation_item_state_bc_black;
                 case RED:
                 default:
                     return R.drawable.navigation_item_state_bc_red;
             }
         }
         return R.drawable.navigation_item_state_bc_red;
+    }
+
+    public static void changeThemeMode(Activity activity) {
+        if (!changeDayNightMode(activity)) {
+            changeTitleTheme(activity);
+        }
     }
 }

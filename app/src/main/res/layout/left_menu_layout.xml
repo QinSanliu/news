@@ -8,39 +8,43 @@
     android:orientation="vertical">
 
     <RelativeLayout
+        android:id="@+id/left_menu_top_layout"
         android:layout_width="match_parent"
         android:layout_height="180dp"
-        android:background="@mipmap/left_menu_top_bg">
+        android:background="@mipmap/left_top_bg"
+        android:clickable="true">
+
         <com.example.parting_soul.news.customview.LeftLoginImageView
             android:id="@+id/login_image"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:layout_marginTop="40dp"
             android:layout_marginLeft="20dp"
+            android:layout_marginTop="40dp"
             android:scaleType="center"
-            android:src="@mipmap/login"/>
+            android:src="@mipmap/login" />
+
         <TextView
             android:id="@+id/login_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/login_image"
+            android:layout_below="@id/login_image"
             android:layout_marginLeft="5dp"
             android:layout_marginTop="10dp"
             android:text="@string/left_menu_login_name"
-            android:textSize="13sp"
-            android:layout_below="@id/login_image"
             android:textColor="@color/left_draw_login_text_bc_white"
-            android:layout_alignLeft="@id/login_image"/>
+            android:textSize="13sp" />
 
         <TextView
             android:id="@+id/login_mailbox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/login_name"
+            android:layout_below="@id/login_name"
             android:layout_marginTop="5dp"
             android:text="@string/left_menu_login_mailbox"
-            android:textSize="10sp"
             android:textColor="@color/left_draw_login_text_bc_white"
-            android:layout_below="@id/login_name"
-            android:layout_alignLeft="@id/login_name"/>
+            android:textSize="10sp" />
     </RelativeLayout>
 
     <ListView
@@ -48,17 +52,21 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:background="?attr/theme_backgroundColor"
         android:divider="@null" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
+        android:background="?attr/theme_leftMenu_bottom_style"
         android:gravity="center">
 
         <TextView
             android:id="@+id/settings"
             style="@style/left_bottom_button_style"
-            android:text="@string/left_menu_bottom_settings" />
+            android:background="?attr/theme_leftMenu_bottom_style"
+            android:text="@string/left_menu_bottom_settings"
+            android:textColor="?attr/theme_textColor" />
 
         <ImageView
             android:layout_width="1dp"
@@ -68,6 +76,8 @@
         <TextView
             android:id="@+id/exit"
             style="@style/left_bottom_button_style"
-            android:text="@string/left_menu_bottom_exit" />
+            android:background="?attr/theme_leftMenu_bottom_style"
+            android:text="@string/left_menu_bottom_exit"
+            android:textColor="?attr/theme_textColor" />
     </LinearLayout>
 </LinearLayout>

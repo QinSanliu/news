@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@android:id/title"
             android:text="summary"
-            android:textColor="@color/settings_sumary_font_color"
+            android:textColor="@color/gray"
             android:textSize="13sp" />
     </RelativeLayout>
 

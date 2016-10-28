@@ -63,6 +63,12 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
      */
     private LinearLayout mLeft_draw_menu_layout;
 
+
+    /**
+     * 左侧菜单顶部布局
+     */
+    private RelativeLayout mLeft_menu_top_layout;
+
     /**
      * 左侧菜单适配器
      */
@@ -136,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ThemeChangeManager.changeTitleTheme(this);
+        ThemeChangeManager.changeThemeMode(this);
         setContentView(R.layout.drawer_layout);
         init();
         initLeftDrawerLayout();
@@ -227,8 +233,14 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
             TextView textView = new TextView(this);
             textView.setText(NEWS_TYPES[i]);
             textView.setGravity(Gravity.CENTER);
-            textView.setBackgroundResource(ThemeChangeManager.getNavigationResoureStateBK());
-            textView.setTextAppearance(this, R.style.navigation_item_front_state_style);
+            if (Settings.is_night_mode) {
+                textView.setBackgroundResource(R.drawable.navigation_item_state_bc_night);
+                textView.setTextAppearance(this, R.style.navigation_item_front_state_style_night);
+            } else {
+                textView.setBackgroundResource(ThemeChangeManager.getNavigationResoureStateBK());
+                textView.setTextAppearance(this, R.style.navigation_item_front_state_style);
+            }
+
             textView.setLayoutParams(params);
             //设置唯一的识别标志
             textView.setId(i);

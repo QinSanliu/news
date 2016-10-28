@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:maxLines="2"
             android:text="text"
-            android:textColor="@color/black_font"
+            android:textColor="?attr/theme_textColor"
             android:textSize="20sp" />
 
         <LinearLayout
@@ -41,7 +41,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="新华网"
-                android:textColor="@color/black_font" />
+                android:textColor="?attr/theme_textColor"/>
 
             <TextView
                 android:id="@+id/news_date"
@@ -50,7 +50,7 @@
                 android:layout_weight="1"
                 android:paddingLeft="10dp"
                 android:text="2016-10-04 19:56"
-                android:textColor="@color/black_font" />
+                android:textColor="?attr/theme_textColor" />
         </LinearLayout>
     </RelativeLayout>
 

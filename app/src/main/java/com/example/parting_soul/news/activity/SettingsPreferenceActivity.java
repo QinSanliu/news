@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.example.parting_soul.news.R;
+import com.example.parting_soul.news.bean.Settings;
 import com.example.parting_soul.news.fragment.settings.SettingsPreferenceFragment;
 import com.example.parting_soul.news.utils.theme.ThemeChangeManager;
 
@@ -33,7 +34,7 @@ public class SettingsPreferenceActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ThemeChangeManager.changeTitleTheme(this);
+        ThemeChangeManager.changeThemeMode(this);
         setContentView(R.layout.layout_settings);
         mBackView = (ImageView) findViewById(R.id.back_to_left_menu);
         if (savedInstanceState == null) {
@@ -43,7 +44,7 @@ public class SettingsPreferenceActivity extends Activity {
         mBackView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                refreshActivity();
+                checkRefresh();
                 SettingsPreferenceActivity.this.finish();
             }
         });
@@ -74,10 +75,23 @@ public class SettingsPreferenceActivity extends Activity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        refreshActivity();
+        checkRefresh();
         finish();
     }
 
+    /**
+     * 判断是否刷新Activity
+     */
+    public void checkRefresh() {
+        if (Settings.isRefresh) {
+            refreshActivity();
+            Settings.isRefresh = false;
+        }
+    }
+
+    /**
+     * 重启Activity
+     */
     public void refreshActivity() {
         Intent mIntent = new Intent(this, MainActivity.class);
         mIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

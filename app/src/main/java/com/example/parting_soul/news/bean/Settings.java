@@ -32,6 +32,11 @@ public class Settings {
     public static boolean is_no_picture_mode = false;
 
     /**
+     * 是否刷新activity
+     */
+    public static boolean isRefresh = false;
+
+    /**
      * 连按两次返回键的有效间隔时间
      */
     public static long EXIT_TIME = 5000;

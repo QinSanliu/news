@@ -49,7 +49,7 @@ public class NewsMessageActivity extends AppCompatActivity implements View.OnCli
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ThemeChangeManager.changeTitleTheme(this);
+        ThemeChangeManager.changeThemeMode(this);
         setContentView(R.layout.layout_news_msg);
         mTitleLayout = (RelativeLayout) findViewById(R.id.title_layout);
         mBackView = (ImageView) mTitleLayout.findViewById(R.id.open_draw);
@@ -71,6 +71,7 @@ public class NewsMessageActivity extends AppCompatActivity implements View.OnCli
                     return true;
                 }
             });
+            mWebView.setVisibility(View.VISIBLE);
         }
     }
 

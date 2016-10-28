@@ -8,6 +8,9 @@ import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.parting_soul.news.Interface.ClearCacheCallBack;
@@ -105,12 +108,15 @@ public class SettingsPreferenceFragment extends PreferenceFragment
         } else if (preference == mThemeChangePreference) {
             mSettings.putString(Settings.THEME_CHANGE_KEY, newValue.toString());
             ThemeChangeManager.changeTitleTheme(getActivity());
+            Settings.isRefresh = true;
             getActivity().recreate();
             return true;
         } else if (preference == mNightModePreference) {
 //            LogUtils.d(CommonInfo.TAG, "mNightModePreference " + mNightModePreference.isChecked());
             Settings.is_night_mode = Boolean.parseBoolean(newValue.toString());
             mSettings.putBoolean(Settings.IS_NIGHT_KEY, Settings.is_night_mode);
+            Settings.isRefresh = true;
+            getActivity().recreate();
             return true;
         } else if (preference == mExitBeSurePreference) {
             //           LogUtils.d(CommonInfo.TAG, "mExitBeSurePreference " + mExitBeSurePreference.isChecked());
@@ -194,5 +200,14 @@ public class SettingsPreferenceFragment extends PreferenceFragment
         dialog.setCancelable(false);
         dialog.show();
         return dialog;
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = super.onCreateView(inflater, container, savedInstanceState);
+        if (Settings.is_night_mode) {
+            view.setBackgroundResource(R.color.nightColorPrimary);
+        }
+        return view;
     }
 }
