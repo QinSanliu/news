@@ -10,4 +10,7 @@
     <attr name="theme_backgroundColor" format="color|reference"></attr>
     <attr name="theme_textColor" format="color|reference"></attr>
     <attr name="theme_leftMenu_bottom_style" format="color|reference|fraction"></attr>
+    <attr name="news_item_textSize" format="dimension"></attr>
+    <attr name="menu_item_textSize" format="dimension"></attr>
+    <attr name="setting_item_textSize" format="dimension"></attr>
 </resources>

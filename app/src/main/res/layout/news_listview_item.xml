@@ -40,8 +40,9 @@
                 android:id="@+id/news_author_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="?attr/theme_textColor"
                 android:text="新华网"
-                android:textColor="?attr/theme_textColor"/>
+                android:textSize="13sp"/>
 
             <TextView
                 android:id="@+id/news_date"
@@ -50,7 +51,8 @@
                 android:layout_weight="1"
                 android:paddingLeft="10dp"
                 android:text="2016-10-04 19:56"
-                android:textColor="?attr/theme_textColor" />
+                android:textColor="?attr/theme_textColor"
+                android:textSize="13sp"/>
         </LinearLayout>
     </RelativeLayout>
 

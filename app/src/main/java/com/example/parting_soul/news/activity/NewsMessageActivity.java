@@ -14,7 +14,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.example.parting_soul.news.R;
-import com.example.parting_soul.news.utils.theme.ThemeChangeManager;
+import com.example.parting_soul.news.utils.style.ThemeChangeManager;
 
 import static com.example.parting_soul.news.R.id.webView;
 

@@ -15,6 +15,7 @@ import com.example.parting_soul.news.bean.News;
 import com.example.parting_soul.news.utils.CommonInfo;
 import com.example.parting_soul.news.utils.ImageLoader;
 import com.example.parting_soul.news.utils.LogUtils;
+import com.example.parting_soul.news.utils.style.FontChangeManager;
 
 import java.util.List;
 
@@ -68,6 +69,8 @@ public class NewsInfoAdapter extends BaseAdapter implements AbsListView.OnScroll
      */
     boolean mCanLoagImage;
 
+    private static int textStyleId;
+
     public NewsInfoAdapter(Context context, List<News> lists, ListView listView) {
         mContext = context;
         mLists = lists;
@@ -76,6 +79,7 @@ public class NewsInfoAdapter extends BaseAdapter implements AbsListView.OnScroll
         getPicUrl();
         //为listview添加滚动监听
         listView.setOnScrollListener(this);
+        textStyleId = FontChangeManager.changeFontSize();
     }
 
     /**
@@ -138,6 +142,7 @@ public class NewsInfoAdapter extends BaseAdapter implements AbsListView.OnScroll
         }
         //为UI控件设置值
         holder.title.setText(mLists.get(position).getTitle());
+        holder.title.setTextAppearance(mContext,textStyleId);
         holder.authorName.setText(mLists.get(position).getAuthor_name());
         holder.date.setText(mLists.get(position).getDate());
 //        holder.pic.setImageResource(R.mipmap.imageview_default_bc);

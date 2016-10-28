@@ -12,7 +12,7 @@ import android.widget.ImageView;
 import com.example.parting_soul.news.R;
 import com.example.parting_soul.news.bean.Settings;
 import com.example.parting_soul.news.fragment.settings.SettingsPreferenceFragment;
-import com.example.parting_soul.news.utils.theme.ThemeChangeManager;
+import com.example.parting_soul.news.utils.style.ThemeChangeManager;
 
 /**
  * Created by parting_soul on 2016/10/18.

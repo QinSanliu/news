@@ -1,4 +1,4 @@
-package com.example.parting_soul.news.utils.theme;
+package com.example.parting_soul.news.utils.style;
 
 import android.app.Activity;
 import android.content.Context;
@@ -12,15 +12,15 @@ import com.example.parting_soul.news.utils.LogUtils;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.example.parting_soul.news.utils.theme.ThemeChangeManager.Color.BLACK;
-import static com.example.parting_soul.news.utils.theme.ThemeChangeManager.Color.BLUE;
-import static com.example.parting_soul.news.utils.theme.ThemeChangeManager.Color.GREEN;
-import static com.example.parting_soul.news.utils.theme.ThemeChangeManager.Color.PURPLE;
-import static com.example.parting_soul.news.utils.theme.ThemeChangeManager.Color.RED;
+import static com.example.parting_soul.news.utils.style.ThemeChangeManager.Color.BLACK;
+import static com.example.parting_soul.news.utils.style.ThemeChangeManager.Color.BLUE;
+import static com.example.parting_soul.news.utils.style.ThemeChangeManager.Color.GREEN;
+import static com.example.parting_soul.news.utils.style.ThemeChangeManager.Color.PURPLE;
+import static com.example.parting_soul.news.utils.style.ThemeChangeManager.Color.RED;
 
 /**
  * Created by parting_soul on 2016/10/24.
- * 主题颜色管理类
+ * Theme切换管理类
  */
 
 public class ThemeChangeManager {
@@ -111,4 +111,5 @@ public class ThemeChangeManager {
             changeTitleTheme(activity);
         }
     }
+
 }

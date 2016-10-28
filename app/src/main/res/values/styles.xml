@@ -58,7 +58,8 @@
         <item name="colorAccent">@color/title_bc_blue</item>
         <item name="theme_textColor">@color/gray</item>
         <item name="theme_backgroundColor">@color/nightColorPrimary</item>
-        <item name="theme_leftMenu_bottom_style">@drawable/left_menu_bottom_button_bc_state_night</item>
+        <item name="theme_leftMenu_bottom_style">@drawable/left_menu_bottom_button_bc_state_night
+        </item>
     </style>
 
     <!-- 左侧侧滑菜单底部的按钮风格-->
@@ -81,4 +82,15 @@
         <item name="android:textColor">@color/navigation_item_font_state_color_night</item>
     </style>
 
+    <style name="news_item_font_style_small">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="news_item_font_style_normal">
+        <item name="android:textSize">23sp</item>
+    </style>
+
+    <style name="news_item_font_style_large">
+        <item name="android:textSize">25sp</item>
+    </style>
 </resources>

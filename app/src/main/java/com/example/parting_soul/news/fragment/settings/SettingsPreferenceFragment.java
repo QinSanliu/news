@@ -20,7 +20,7 @@ import com.example.parting_soul.news.customview.PreferenceWithTip;
 import com.example.parting_soul.news.utils.CommonInfo;
 import com.example.parting_soul.news.utils.LogUtils;
 import com.example.parting_soul.news.utils.cache.CacheManager;
-import com.example.parting_soul.news.utils.theme.ThemeChangeManager;
+import com.example.parting_soul.news.utils.style.ThemeChangeManager;
 
 /**
  * Created by parting_soul on 2016/10/18.
@@ -104,6 +104,8 @@ public class SettingsPreferenceFragment extends PreferenceFragment
             return true;
         } else if (preference == mFontPreference) {
             LogUtils.d(CommonInfo.TAG, "mFontPreference " + mFontPreference.getValue());
+            mSettings.putString(Settings.FONT_SIZE_KEY, newValue.toString());
+            Settings.isRefresh = true;
             return true;
         } else if (preference == mThemeChangePreference) {
             mSettings.putString(Settings.THEME_CHANGE_KEY, newValue.toString());

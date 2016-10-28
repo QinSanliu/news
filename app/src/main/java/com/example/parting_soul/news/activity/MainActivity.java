@@ -27,7 +27,7 @@ import com.example.parting_soul.news.fragment.NewsFragment;
 import com.example.parting_soul.news.utils.CommonInfo;
 import com.example.parting_soul.news.utils.LogUtils;
 import com.example.parting_soul.news.utils.WindowSizeTool;
-import com.example.parting_soul.news.utils.theme.ThemeChangeManager;
+import com.example.parting_soul.news.utils.style.ThemeChangeManager;
 
 import java.util.ArrayList;
 import java.util.List;
