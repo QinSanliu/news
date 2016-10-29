@@ -38,7 +38,7 @@
     <string name="activity">活动</string>
     <string name="offline">离线</string>
     <string name="night">夜间</string>
-    <string name="abdout">关于</string>
+    <string name="about">关于</string>
     <string name="feedback">反馈</string>
     <string name="left_menu_bottom_settings">设置</string>
     <string name="left_menu_bottom_exit">退出</string>
@@ -106,9 +106,26 @@
     <string name="clear_success">清除成功!</string>
     <string name="clear_failed">清除失败</string>
 
+    <string name="warning">警告</string>
+    <string name="init_settings_msg">是否要重置所有的设置?</string>
+
     <!--网络数据加载错误时显示的内容 -->
     <string name="reload">重新加载</string>
     <string name="empty">什么都没有</string>
 
-
+    <string name="author">作者</string>
+    <string name="copyright">版权</string>
+    <string name="application_brief">应用简介</string>
+    <string name="current_version">当前版本</string>
+    <string name="share">分享</string>
+    <string name="author_github">作者 GitHub</string>
+    <string name="github">https://github.com/PartingSoul</string>
+    <string name="mailbox">邮箱</string>
+    <string name="mailbox_summary">982068238@qq.com</string>
+    <string name="data">数据</string>
+    <string name="data_summary">所有数据图片来源于网络,版权属于原作者</string>
+    <string name="note">注意</string>
+    <string name="note_summary">该应用禁止用于商业目的</string>
+    <string name="license">license</string>
+    <string name="license_summary"></string>
 </resources>

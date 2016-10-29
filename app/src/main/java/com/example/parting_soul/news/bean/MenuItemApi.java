@@ -51,7 +51,7 @@ public class MenuItemApi {
         mLists.add(item);
 
         item = new MenuItemInfo();
-        item.setNameId(R.string.abdout);
+        item.setNameId(R.string.about);
         item.setImageId(R.mipmap.ic_about);
         mLists.add(item);
 

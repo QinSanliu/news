@@ -17,7 +17,7 @@ import android.widget.ImageView;
  * 自定义圆形图片控件
  */
 
-public class LeftLoginImageView extends ImageView {
+public class CircleImageView extends ImageView {
     /**
      * 圆形控件的半径
      */
@@ -28,17 +28,17 @@ public class LeftLoginImageView extends ImageView {
      */
     private Paint mPaint;
 
-    public LeftLoginImageView(Context context) {
+    public CircleImageView(Context context) {
         super(context);
         init();
     }
 
-    public LeftLoginImageView(Context context, AttributeSet attrs) {
+    public CircleImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public LeftLoginImageView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public CircleImageView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }

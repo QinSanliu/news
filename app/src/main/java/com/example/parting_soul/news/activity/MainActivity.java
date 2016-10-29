@@ -1,6 +1,8 @@
 package com.example.parting_soul.news.activity;
 
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
@@ -9,7 +11,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.ImageView;
+import android.widget.AdapterView;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -20,8 +23,10 @@ import com.example.parting_soul.news.R;
 import com.example.parting_soul.news.adapter.LeftMenuItemAdapter;
 import com.example.parting_soul.news.adapter.NewsFragmentAdapter;
 import com.example.parting_soul.news.bean.MenuItemApi;
+import com.example.parting_soul.news.bean.MenuItemInfo;
 import com.example.parting_soul.news.bean.NewsKinds;
 import com.example.parting_soul.news.bean.Settings;
+import com.example.parting_soul.news.customview.CircleImageView;
 import com.example.parting_soul.news.customview.HorizontalNavigation;
 import com.example.parting_soul.news.fragment.NewsFragment;
 import com.example.parting_soul.news.utils.CommonInfo;
@@ -33,7 +38,8 @@ import com.example.parting_soul.news.utils.style.ThemeChangeManager;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener {
+public class MainActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener,
+        AdapterView.OnItemClickListener {
     /**
      * 新闻的类型，显示在导航条中
      */
@@ -42,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
     /**
      * 左上方打开侧滑抽屉的图片
      */
-    private ImageView mOpenDraw;
+    private ImageButton mOpenDraw;
 
     /**
      * 应用程序的名字，显示于标题中间
@@ -121,6 +127,11 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
     private HorizontalNavigation mHorizontalNavigation;
 
     /**
+     * 左侧圆形图片控件
+     */
+    private CircleImageView mLoginImageView;
+
+    /**
      * 左侧菜单底部设置View
      */
     private TextView mLeftMenuSettingsView;
@@ -158,7 +169,7 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
      * 进行一些初始化操作
      */
     private void init() {
-        mOpenDraw = (ImageView) findViewById(R.id.open_draw);
+        mOpenDraw = (ImageButton) findViewById(R.id.open_draw);
         mTitle = (TextView) findViewById(R.id.title_name);
         mTitle_layout = (RelativeLayout) findViewById(R.id.title_layout);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -188,7 +199,16 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
         mLeftMenuListView = (ListView) findViewById(R.id.menu_listview);
         mMenuAdpater = new LeftMenuItemAdapter(this, MenuItemApi.getMenuItems());
         mLeftMenuListView.setAdapter(mMenuAdpater);
+        mLeftMenuListView.setOnItemClickListener(this);
         mMenuAdpater.notifyDataSetChanged();
+        mLoginImageView = (CircleImageView) findViewById(R.id.login_image);
+
+        mLoginImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AboutActivity.startActivity(MainActivity.this);
+            }
+        });
 
         //给左上方的图片控件添加监听,触发则打开侧滑左菜单
         mOpenDraw.setOnClickListener(new View.OnClickListener() {
@@ -352,6 +372,39 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
             return;
         }
         super.onBackPressed();
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        MenuItemInfo info = (MenuItemInfo) mMenuAdpater.getItem(position);
+        switch (info.getNameId()) {
+            case R.string.message:
+                break;
+            case R.string.collection:
+                break;
+            case R.string.activity:
+                break;
+            case R.string.offline:
+                break;
+            case R.string.night:
+                ThemeChangeManager.setNightMode(this);
+                this.recreate();
+                break;
+            case R.string.about:
+                AboutActivity.startActivity(this);
+                break;
+            case R.string.feedback:
+                break;
+        }
+    }
+
+    /**
+     * 重启Activity
+     */
+    public static void refreshActivity(Context context) {
+        Intent mIntent = new Intent(context, MainActivity.class);
+        mIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        context.startActivity(mIntent);
     }
 
 }

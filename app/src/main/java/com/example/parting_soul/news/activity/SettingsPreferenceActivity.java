@@ -7,7 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.ImageView;
+import android.widget.ImageButton;
 
 import com.example.parting_soul.news.R;
 import com.example.parting_soul.news.bean.Settings;
@@ -30,7 +30,7 @@ public class SettingsPreferenceActivity extends AppCompatActivity {
     /**
      * 返回按钮
      */
-    private ImageView mBackView;
+    private ImageButton mBackView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +38,7 @@ public class SettingsPreferenceActivity extends AppCompatActivity {
         ThemeChangeManager.changeThemeMode(this);
         LanguageChangeManager.changeLanguage();
         setContentView(R.layout.layout_settings);
-        mBackView = (ImageView) findViewById(R.id.back_to_left_menu);
+        mBackView = (ImageButton) findViewById(R.id.back_to_left_menu);
         if (savedInstanceState == null) {
             mPreferenceFragment = new SettingsPreferenceFragment();
             replaceFragment(R.id.settings_container, mPreferenceFragment);
@@ -86,17 +86,9 @@ public class SettingsPreferenceActivity extends AppCompatActivity {
      */
     public void checkRefresh() {
         if (Settings.isRefresh) {
-            refreshActivity();
+            MainActivity.refreshActivity(this);
             Settings.isRefresh = false;
         }
     }
 
-    /**
-     * 重启Activity
-     */
-    public void refreshActivity() {
-        Intent mIntent = new Intent(this, MainActivity.class);
-        mIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(mIntent);
-    }
 }

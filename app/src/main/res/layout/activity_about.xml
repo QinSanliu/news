@@ -4,11 +4,13 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <include layout="@layout/webview_head_layout" />
+    <include layout="@layout/about_head_layout" />
+    <include layout="@layout/layout_about"/>
 
-    <WebView
-        android:id="@+id/webView"
+    <FrameLayout
+        android:id="@+id/about_fragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1">
+    </FrameLayout>
 </LinearLayout>

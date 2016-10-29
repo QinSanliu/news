@@ -82,6 +82,11 @@ public class Settings {
     public static final String RESET_KEY = "reset";
 
     /**
+     * About的KEY
+     */
+    public static final String ABOUT_KEY = "about";
+
+    /**
      * 单例类
      */
     private static Settings mSettings;
@@ -125,8 +130,19 @@ public class Settings {
         return mPreferences.getBoolean(key, def);
     }
 
+    /**
+     * 重置所有设置
+     */
     public void initAllSettings() {
-
+        putString(Settings.LANUAGE_KEY, "zh");
+        putString(Settings.FONT_SIZE_KEY, "small");
+        putString(Settings.THEME_CHANGE_KEY, "red");
+        putBoolean(Settings.IS_NIGHT_KEY, false);
+        putBoolean(Settings.BACK_BY_TWICE_KEY, true);
+        putBoolean(Settings.NO_PICTURE_KEY, false);
+        is_no_picture_mode = mPreferences.getBoolean(NO_PICTURE_KEY, false);
+        is_night_mode = mPreferences.getBoolean(IS_NIGHT_KEY, false);
+        is_back_by_twice = mPreferences.getBoolean(BACK_BY_TWICE_KEY, true);
     }
 
 }

@@ -15,7 +15,7 @@
         android:background="@mipmap/left_top_bg"
         android:clickable="true">
 
-        <com.example.parting_soul.news.customview.LeftLoginImageView
+        <com.example.parting_soul.news.customview.CircleImageView
             android:id="@+id/login_image"
             android:layout_width="60dp"
             android:layout_height="60dp"

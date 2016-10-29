@@ -86,6 +86,11 @@ public class ThemeChangeManager {
         return false;
     }
 
+    public static void setNightMode(Activity activity) {
+        Settings.is_night_mode = !Settings.is_night_mode;
+        Settings.newsInstance().putBoolean(Settings.IS_NIGHT_KEY, Settings.is_night_mode);
+    }
+
     public static int getNavigationResoureStateBK() {
         currentColor = map.get(Settings.newsInstance().getString(Settings.THEME_CHANGE_KEY, ""));
         if (currentColor != null) {

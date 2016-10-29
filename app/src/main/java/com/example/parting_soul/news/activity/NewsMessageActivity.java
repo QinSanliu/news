@@ -10,8 +10,7 @@ import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.ImageButton;
 
 import com.example.parting_soul.news.R;
 import com.example.parting_soul.news.utils.style.LanguageChangeManager;
@@ -36,14 +35,9 @@ public class NewsMessageActivity extends AppCompatActivity implements View.OnCli
     private WebView mWebView;
 
     /**
-     * 标题的布局
-     */
-    private RelativeLayout mTitleLayout;
-
-    /**
      * 标题中的返回按钮
      */
-    private ImageView mBackView;
+    private ImageButton mBackView;
 
     private String mUrl;
 
@@ -53,9 +47,7 @@ public class NewsMessageActivity extends AppCompatActivity implements View.OnCli
         ThemeChangeManager.changeThemeMode(this);
         LanguageChangeManager.changeLanguage();
         setContentView(R.layout.layout_news_msg);
-        mTitleLayout = (RelativeLayout) findViewById(R.id.title_layout);
-        mBackView = (ImageView) mTitleLayout.findViewById(R.id.open_draw);
-        mBackView.setImageResource(R.mipmap.back);
+        mBackView = (ImageButton) findViewById(R.id.back_forward);
         mBackView.setOnClickListener(this);
 
         mWebView = (WebView) findViewById(webView);

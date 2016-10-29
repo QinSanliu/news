@@ -33,7 +33,6 @@
             android:summaryOff="@string/is_light_mode"
             android:summaryOn="@string/is_night_mode"
             android:title="@string/night_mode" />
-
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="back_by_twice"
@@ -61,6 +60,10 @@
             android:layout="@layout/preference_item"
             pre:pretip="0B"
             pre:pretitle="@string/clear_all_cache" />
+        <Preference
+            android:key="about"
+            android:layout="@layout/preference_item"
+            android:title="@string/about" />
     </PreferenceCategory>
 
 </PreferenceScreen>

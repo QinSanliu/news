@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.example.parting_soul.news.Interface.ClearCacheCallBack;
 import com.example.parting_soul.news.R;
+import com.example.parting_soul.news.activity.AboutActivity;
 import com.example.parting_soul.news.bean.Settings;
 import com.example.parting_soul.news.customview.PreferenceWithTip;
 import com.example.parting_soul.news.utils.CommonInfo;
@@ -46,6 +47,8 @@ public class SettingsPreferenceFragment extends PreferenceFragment
 
     private Preference mResetPreference;
 
+    private Preference mAboutPreference;
+
     private Settings mSettings;
 
     @Override
@@ -65,6 +68,7 @@ public class SettingsPreferenceFragment extends PreferenceFragment
         mNoPicModePreference = (CheckBoxPreference) findPreference(Settings.NO_PICTURE_KEY);
         mClearAllCachePreference = (PreferenceWithTip) findPreference(Settings.CLEAR_ALL_CACHE);
         mResetPreference = (Preference) findPreference(Settings.RESET_KEY);
+        mAboutPreference = (Preference) findPreference(Settings.ABOUT_KEY);
 
         if (mLanguagePreference != null && mFontPreference != null && mNightModePreference != null
                 && mExitBeSurePreference != null && mNoPicModePreference != null
@@ -80,19 +84,14 @@ public class SettingsPreferenceFragment extends PreferenceFragment
         mExitBeSurePreference.setChecked(Settings.is_back_by_twice);
 
         mLanguagePreference.setOnPreferenceChangeListener(this);
-        mLanguagePreference.setOnPreferenceClickListener(this);
-        mFontPreference.setOnPreferenceClickListener(this);
         mFontPreference.setOnPreferenceChangeListener(this);
         mThemeChangePreference.setOnPreferenceChangeListener(this);
-        mThemeChangePreference.setOnPreferenceClickListener(this);
         mNightModePreference.setOnPreferenceChangeListener(this);
-        mNightModePreference.setOnPreferenceClickListener(this);
-        mNoPicModePreference.setOnPreferenceClickListener(this);
+        mResetPreference.setOnPreferenceClickListener(this);
         mNoPicModePreference.setOnPreferenceChangeListener(this);
-        mExitBeSurePreference.setOnPreferenceClickListener(this);
         mExitBeSurePreference.setOnPreferenceChangeListener(this);
         mClearAllCachePreference.setOnPreferenceClickListener(this);
-
+        mAboutPreference.setOnPreferenceClickListener(this);
     }
 
     @Override
@@ -138,23 +137,42 @@ public class SettingsPreferenceFragment extends PreferenceFragment
 
     @Override
     public boolean onPreferenceClick(Preference preference) {
-        if (preference == mLanguagePreference) {
-            LogUtils.d(CommonInfo.TAG, "mLanguagePreference " + mLanguagePreference.getValue());
-        } else if (preference == mFontPreference) {
-            LogUtils.d(CommonInfo.TAG, "mFontPreference " + mFontPreference.getValue());
-        } else if (preference == mThemeChangePreference) {
 
-        } else if (preference == mNightModePreference) {
-            LogUtils.d(CommonInfo.TAG, "mNightModePreference " + mNightModePreference.isChecked());
-        } else if (preference == mExitBeSurePreference) {
-            LogUtils.d(CommonInfo.TAG, "mExitBeSurePreference " + mExitBeSurePreference.isChecked());
-        } else if (preference == mNoPicModePreference) {
-            LogUtils.d(CommonInfo.TAG, "mNoPicModePreference " + mNoPicModePreference.isChecked());
+        if (preference == mResetPreference) {
+            LogUtils.d(CommonInfo.TAG, "mRestPreference ");
+            showInitAllSettingsDialog();
+            return true;
         } else if (preference == mClearAllCachePreference) {
             LogUtils.d(CommonInfo.TAG, "mClearPicCachePreference " + mClearAllCachePreference.isSelectable());
             showClearPicCacheDialog();
+            return true;
+        } else if (preference == mAboutPreference) {
+            AboutActivity.startActivity(getActivity());
+            return true;
         }
         return false;
+    }
+
+    /**
+     * 显示重置所有设置的对话框
+     */
+    private void showInitAllSettingsDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(R.string.warning).setMessage(R.string.init_settings_msg)
+                .setPositiveButton(R.string.certain, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mSettings.initAllSettings();
+                        Settings.isRefresh = true;
+                        LanguageChangeManager.changeLanguage();
+                        getActivity().recreate();
+                    }
+                }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        }).show();
     }
 
     /**

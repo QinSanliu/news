@@ -9,7 +9,7 @@
     <string name="activity">Activity</string>
     <string name="offline">Offline</string>
     <string name="night">Nighmode</string>
-    <string name="abdout">About</string>
+    <string name="about">About</string>
     <string name="feedback">Feedback</string>
     <string name="left_menu_bottom_settings">Settings</string>
     <string name="left_menu_bottom_exit">Exit</string>
@@ -53,8 +53,25 @@
     <string name="clearing">Clearing</string>
     <string name="clear_success">Clear success!</string>
     <string name="clear_failed">Clear failed</string>
+
+    <string name="warning">Warning</string>
+    <string name="init_settings_msg">Do you want to reset all settings?</string>
+
     <!--网络数据加载错误时显示的内容 -->
     <string name="reload">Reload</string>
     <string name="empty">nothing</string>
 
+    <string name="author">author</string>
+    <string name="copyright">copyright</string>
+    <string name="application_brief">Application Brief</string>
+    <string name="current_version">Current Version</string>
+    <string name="share">share</string>
+    <string name="author_github">Author GitHub</string>
+    <string name="github">https://github.com/PartingSoul</string>
+    <string name="mailbox">Mailbox</string>
+    <string name="data">Data</string>
+    <string name="data_summary">All data and images from the network, the copyright belongs to the original author.</string>
+    <string name="note">note</string>
+    <string name="note_summary">This application is forbidden for commercial purposes.</string>
+    <string name="license">license</string>
 </resources>
