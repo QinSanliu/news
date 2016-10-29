@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.example.parting_soul.news.R;
+import com.example.parting_soul.news.utils.style.LanguageChangeManager;
 import com.example.parting_soul.news.utils.style.ThemeChangeManager;
 
 import static com.example.parting_soul.news.R.id.webView;
@@ -50,6 +51,7 @@ public class NewsMessageActivity extends AppCompatActivity implements View.OnCli
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ThemeChangeManager.changeThemeMode(this);
+        LanguageChangeManager.changeLanguage();
         setContentView(R.layout.layout_news_msg);
         mTitleLayout = (RelativeLayout) findViewById(R.id.title_layout);
         mBackView = (ImageView) mTitleLayout.findViewById(R.id.open_draw);

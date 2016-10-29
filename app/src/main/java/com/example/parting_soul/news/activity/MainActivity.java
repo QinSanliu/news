@@ -27,6 +27,7 @@ import com.example.parting_soul.news.fragment.NewsFragment;
 import com.example.parting_soul.news.utils.CommonInfo;
 import com.example.parting_soul.news.utils.LogUtils;
 import com.example.parting_soul.news.utils.WindowSizeTool;
+import com.example.parting_soul.news.utils.style.LanguageChangeManager;
 import com.example.parting_soul.news.utils.style.ThemeChangeManager;
 
 import java.util.ArrayList;
@@ -143,6 +144,7 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ThemeChangeManager.changeThemeMode(this);
+        LanguageChangeManager.changeLanguage();
         setContentView(R.layout.drawer_layout);
         init();
         initLeftDrawerLayout();

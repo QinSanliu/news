@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">news</string>
+
+    <!-- 左侧侧滑菜单项标题内容-->
+    <string name="message">Message</string>
+    <string name="collection">Collection</string>
+    <string name="activity">Activity</string>
+    <string name="offline">Offline</string>
+    <string name="night">Nighmode</string>
+    <string name="abdout">About</string>
+    <string name="feedback">Feedback</string>
+    <string name="left_menu_bottom_settings">Settings</string>
+    <string name="left_menu_bottom_exit">Exit</string>
+
+    <!-- 设置界面的项目名和key-->
+    <string name="preference">Preferences</string>
+    <string name="internet">Network</string>
+    <string name="language">Language</string>
+    <string name="font_size">Font</string>
+    <string name="theme_change">Theme skinning</string>
+    <string name="night_mode">NightMode</string>
+    <string name="is_night_mode">Is currently in night mode</string>
+    <string name="is_light_mode">Is currently in day mode</string>
+    <string name="exit_be_sure">Exit confirmation</string>
+    <string name="exit_by_press_twice">Press twice to exit</string>
+    <string name="exit_dir">Direct exit</string>
+    <string name="no_pic_mode">No graph mode</string>
+    <string name="only_load_pic_wifi_useful">Load images only under Wifi</string>
+    <string name="load_pic_net_useful">There are pictures under the network loading</string>
+    <string name="clear_all_cache">Clear all caches</string>
+    <string name="reset_all_preference">Reset all settings</string>
+
+    <string-array name="font_size_title">
+        <item>Small</item>
+        <item>Normal</item>
+        <item>Large</item>
+    </string-array>
+
+    <string-array name="theme_title">
+        <item>red</item>
+        <item>blue</item>
+        <item>green</item>
+        <item>purple</item>
+        <item>black</item>
+    </string-array>
+
+    <string name="tip">Prompt</string>
+    <string name="tip_content">Are you sure you want to clear all the caches?</string>
+    <string name="certain">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="clearing">Clearing</string>
+    <string name="clear_success">Clear success!</string>
+    <string name="clear_failed">Clear failed</string>
+    <!--网络数据加载错误时显示的内容 -->
+    <string name="reload">Reload</string>
+    <string name="empty">nothing</string>
+
+</resources>

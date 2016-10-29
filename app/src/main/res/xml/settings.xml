@@ -6,7 +6,7 @@
         android:layout="@layout/preference_category_widget"
         android:title="@string/preference">
         <ListPreference
-            android:defaultValue="Chinese"
+            android:defaultValue="zh"
             android:entries="@array/language_title"
             android:entryValues="@array/language_key"
             android:key="language"

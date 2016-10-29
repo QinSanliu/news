@@ -20,6 +20,7 @@ import com.example.parting_soul.news.customview.PreferenceWithTip;
 import com.example.parting_soul.news.utils.CommonInfo;
 import com.example.parting_soul.news.utils.LogUtils;
 import com.example.parting_soul.news.utils.cache.CacheManager;
+import com.example.parting_soul.news.utils.style.LanguageChangeManager;
 import com.example.parting_soul.news.utils.style.ThemeChangeManager;
 
 /**
@@ -98,9 +99,10 @@ public class SettingsPreferenceFragment extends PreferenceFragment
     public boolean onPreferenceChange(Preference preference, Object newValue) {
         if (preference == mLanguagePreference) {
             LogUtils.d(CommonInfo.TAG, "mLanguagePreference " + mLanguagePreference.getValue());
-            if (mLanguagePreference.getValue().equals(newValue)) {
-
-            }
+            mSettings.putString(Settings.LANUAGE_KEY, newValue.toString());
+            Settings.isRefresh = true;
+            LanguageChangeManager.changeLanguage();
+            getActivity().recreate();
             return true;
         } else if (preference == mFontPreference) {
             LogUtils.d(CommonInfo.TAG, "mFontPreference " + mFontPreference.getValue());

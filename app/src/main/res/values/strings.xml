@@ -70,8 +70,8 @@
         <item>English</item>
     </string-array>
     <string-array name="language_key">
-        <item>Chinese</item>
-        <item>English</item>
+        <item>zh</item>
+        <item>en</item>
     </string-array>
     <string-array name="font_size_title">
         <item>小</item>
