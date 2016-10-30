@@ -1,4 +1,4 @@
-package com.example.parting_soul.news.utils;
+package com.example.parting_soul.news.utils.network;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;

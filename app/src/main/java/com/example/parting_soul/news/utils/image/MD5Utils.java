@@ -1,4 +1,4 @@
-package com.example.parting_soul.news.utils;
+package com.example.parting_soul.news.utils.image;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

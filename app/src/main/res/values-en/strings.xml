@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">news</string>
+    <string name="app_name">News</string>
 
     <!-- 左侧侧滑菜单项标题内容-->
     <string name="message">Message</string>
@@ -61,17 +61,20 @@
     <string name="reload">Reload</string>
     <string name="empty">nothing</string>
 
-    <string name="author">author</string>
-    <string name="copyright">copyright</string>
+    <string name="author">Author</string>
+    <string name="copyright">Copyright</string>
     <string name="application_brief">Application Brief</string>
     <string name="current_version">Current Version</string>
-    <string name="share">share</string>
+    <string name="share">Share</string>
     <string name="author_github">Author GitHub</string>
     <string name="github">https://github.com/PartingSoul</string>
     <string name="mailbox">Mailbox</string>
     <string name="data">Data</string>
     <string name="data_summary">All data and images from the network, the copyright belongs to the original author.</string>
-    <string name="note">note</string>
+    <string name="note">Note</string>
     <string name="note_summary">This application is forbidden for commercial purposes.</string>
     <string name="license">license</string>
+
+    <string name="message_clipboard">Information has been copied to the clipboard.</string>
+
 </resources>

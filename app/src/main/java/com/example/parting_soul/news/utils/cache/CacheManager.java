@@ -2,7 +2,7 @@ package com.example.parting_soul.news.utils.cache;
 
 import com.example.parting_soul.news.Interface.ClearCacheCallBack;
 import com.example.parting_soul.news.NewsApplication;
-import com.example.parting_soul.news.utils.ImageLoader;
+import com.example.parting_soul.news.utils.image.ImageLoader;
 import com.example.parting_soul.news.utils.cache.database.DBManager;
 import com.example.parting_soul.news.utils.cache.database.SQLiteDatabaseHelper;
 

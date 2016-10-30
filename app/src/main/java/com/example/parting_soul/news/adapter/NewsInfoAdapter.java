@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.example.parting_soul.news.R;
 import com.example.parting_soul.news.bean.News;
 import com.example.parting_soul.news.utils.CommonInfo;
-import com.example.parting_soul.news.utils.ImageLoader;
+import com.example.parting_soul.news.utils.image.ImageLoader;
 import com.example.parting_soul.news.utils.LogUtils;
 import com.example.parting_soul.news.utils.style.FontChangeManager;
 

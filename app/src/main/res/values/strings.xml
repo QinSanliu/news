@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">news</string>
+    <string name="app_name">News</string>
 
     <!-- 横向导航条菜单项名称-->
     <string-array name="news_type">
@@ -128,4 +128,7 @@
     <string name="note_summary">该应用禁止用于商业目的</string>
     <string name="license">license</string>
     <string name="license_summary"></string>
+
+    <string name="message_clipboard">信息已经复制到剪切板</string>
+
 </resources>

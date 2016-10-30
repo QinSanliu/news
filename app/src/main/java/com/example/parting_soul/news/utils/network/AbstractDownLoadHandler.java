@@ -1,9 +1,7 @@
-package com.example.parting_soul.news.utils;
+package com.example.parting_soul.news.utils.network;
 
 import android.os.Handler;
 import android.os.Message;
-
-import com.example.parting_soul.news.fragment.NewsFragment;
 
 /**
  * Created by parting_soul on 2016/10/6.

@@ -38,7 +38,7 @@ public class SettingsPreferenceActivity extends AppCompatActivity {
         ThemeChangeManager.changeThemeMode(this);
         LanguageChangeManager.changeLanguage();
         setContentView(R.layout.layout_settings);
-        mBackView = (ImageButton) findViewById(R.id.back_to_left_menu);
+        mBackView = (ImageButton) findViewById(R.id.back_forward);
         if (savedInstanceState == null) {
             mPreferenceFragment = new SettingsPreferenceFragment();
             replaceFragment(R.id.settings_container, mPreferenceFragment);

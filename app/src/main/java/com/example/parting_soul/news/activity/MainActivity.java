@@ -381,6 +381,7 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
             case R.string.message:
                 break;
             case R.string.collection:
+                CollectionActivity.startActivity(this);
                 break;
             case R.string.activity:
                 break;

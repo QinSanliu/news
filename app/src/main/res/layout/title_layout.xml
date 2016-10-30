@@ -5,12 +5,12 @@
     android:layout_height="70dp">
 
     <LinearLayout
-        android:id="@+id/notify"
-        android:layout_width="match_parent"
-        android:layout_height="25dp"
-        android:background="?attr/colorPrimaryDark"
-        android:fitsSystemWindows="true"
-        android:orientation="horizontal"/>
+    android:id="@+id/notify"
+    android:layout_width="match_parent"
+    android:layout_height="25dp"
+    android:background="?attr/colorPrimaryDark"
+    android:fitsSystemWindows="true"
+    android:orientation="horizontal"/>
 
     <RelativeLayout
         android:layout_width="match_parent"

@@ -1,4 +1,4 @@
-package com.example.parting_soul.news.utils;
+package com.example.parting_soul.news.utils.image;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -11,6 +11,10 @@ import android.widget.ListView;
 import com.example.parting_soul.news.R;
 import com.example.parting_soul.news.adapter.NewsInfoAdapter;
 import com.example.parting_soul.news.bean.Settings;
+import com.example.parting_soul.news.utils.CommonInfo;
+import com.example.parting_soul.news.utils.network.HttpUtils;
+import com.example.parting_soul.news.utils.LogUtils;
+import com.example.parting_soul.news.utils.network.NetworkInfo;
 import com.example.parting_soul.news.utils.cache.DiskLruCacheHelper;
 
 import java.io.File;

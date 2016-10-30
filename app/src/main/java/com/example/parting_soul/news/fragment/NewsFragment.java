@@ -15,13 +15,13 @@ import com.example.parting_soul.news.adapter.NewsInfoAdapter;
 import com.example.parting_soul.news.bean.News;
 import com.example.parting_soul.news.bean.Settings;
 import com.example.parting_soul.news.utils.cache.database.DBManager;
-import com.example.parting_soul.news.utils.AbstractDownLoadHandler;
+import com.example.parting_soul.news.utils.network.AbstractDownLoadHandler;
 import com.example.parting_soul.news.utils.CommonInfo;
-import com.example.parting_soul.news.utils.HttpUtils;
-import com.example.parting_soul.news.utils.ImageLoader;
-import com.example.parting_soul.news.utils.JsonParseTool;
+import com.example.parting_soul.news.utils.network.HttpUtils;
+import com.example.parting_soul.news.utils.image.ImageLoader;
+import com.example.parting_soul.news.utils.network.JsonParseTool;
 import com.example.parting_soul.news.utils.LogUtils;
-import com.example.parting_soul.news.utils.NetworkInfo;
+import com.example.parting_soul.news.utils.network.NetworkInfo;
 import com.yalantis.phoenix.PullToRefreshView;
 
 import java.util.List;

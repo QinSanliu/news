@@ -1,8 +1,9 @@
-package com.example.parting_soul.news.utils;
+package com.example.parting_soul.news.utils.network;
 
 import android.text.TextUtils;
 
 import com.example.parting_soul.news.bean.News;
+import com.example.parting_soul.news.utils.CommonInfo;
 
 import org.json.JSONArray;
 import org.json.JSONException;
