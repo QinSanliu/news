@@ -9,18 +9,20 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.example.parting_soul.news.Interface.callback.CollectionCheckStateNotifiyCallBack;
 import com.example.parting_soul.news.R;
 import com.example.parting_soul.news.activity.NewsMessageActivity;
 import com.example.parting_soul.news.adapter.NewsInfoAdapter;
 import com.example.parting_soul.news.bean.News;
 import com.example.parting_soul.news.bean.Settings;
-import com.example.parting_soul.news.utils.cache.database.DBManager;
-import com.example.parting_soul.news.utils.network.AbstractDownLoadHandler;
+import com.example.parting_soul.news.utils.CollectionCheckStateManager;
 import com.example.parting_soul.news.utils.CommonInfo;
-import com.example.parting_soul.news.utils.network.HttpUtils;
-import com.example.parting_soul.news.utils.image.ImageLoader;
-import com.example.parting_soul.news.utils.network.JsonParseTool;
 import com.example.parting_soul.news.utils.LogUtils;
+import com.example.parting_soul.news.utils.cache.database.DBManager;
+import com.example.parting_soul.news.utils.image.ImageLoader;
+import com.example.parting_soul.news.utils.network.AbstractDownLoadHandler;
+import com.example.parting_soul.news.utils.network.HttpUtils;
+import com.example.parting_soul.news.utils.network.JsonParseTool;
 import com.example.parting_soul.news.utils.network.NetworkInfo;
 import com.yalantis.phoenix.PullToRefreshView;
 
@@ -36,7 +38,7 @@ import static com.example.parting_soul.news.utils.CommonInfo.TAG;
  */
 
 public class NewsFragment extends BaseFragment<News> implements AdapterView.OnItemClickListener
-        , PullToRefreshView.OnRefreshListener {
+        , PullToRefreshView.OnRefreshListener, CollectionCheckStateNotifiyCallBack {
     /**
      * 第三方下拉刷新类
      */
@@ -85,6 +87,16 @@ public class NewsFragment extends BaseFragment<News> implements AdapterView.OnIt
      * 设置对象类
      */
     private Settings mSettings = Settings.newsInstance();
+
+    /**
+     * 当前被选中的新闻项
+     */
+    private News mCurrentSelectedNews;
+
+    /**
+     * 收藏状态回调管理类
+     */
+    private CollectionCheckStateManager mCollectionCheckStateManager;
 
     /**
      * 消息处理类
@@ -148,6 +160,14 @@ public class NewsFragment extends BaseFragment<News> implements AdapterView.OnIt
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         LogUtils.d(TAG, "+DEBUG onAttach -->fragment");
+    }
+
+    @Override
+    protected void onVisible() {
+        super.onVisible();
+        //当前fragment可见时设置回调接口
+        mCollectionCheckStateManager = CollectionCheckStateManager.newInstance();
+        mCollectionCheckStateManager.setmCallBack(this);
     }
 
     @Override
@@ -265,6 +285,8 @@ public class NewsFragment extends BaseFragment<News> implements AdapterView.OnIt
         lists = JsonParseTool.parseJsonWidthJSONObject(result);
         //将数据写入数据库
         manager.updataNewsCacheToDatabase(lists, mNewTypeParam);
+
+        lists = manager.readNewsCacheFromDatabase(mNewTypeParam);
         return lists;
     }
 
@@ -307,8 +329,9 @@ public class NewsFragment extends BaseFragment<News> implements AdapterView.OnIt
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        String url = mLists.get(position).getUrl();
-        NewsMessageActivity.startActivity(getActivity(), url);
+        mCurrentSelectedNews = mLists.get(position);
+        NewsMessageActivity.startActivity(getActivity(), mCurrentSelectedNews.getUrl(),
+                mCurrentSelectedNews.getTitle(), mCurrentSelectedNews.is_collected(), NewsMessageActivity.FROM_NEWSFRAGMENT);
     }
 
     @Override
@@ -326,5 +349,13 @@ public class NewsFragment extends BaseFragment<News> implements AdapterView.OnIt
                 mHandler.sendMessage(msg);
             }
         }).start();
+    }
+
+
+    @Override
+    public void collectedStateChange(boolean isChange) {
+        mCurrentSelectedNews.setIs_collected(isChange);
+        mNewsInfoAdapter.notifyDataSetChanged();
+        LogUtils.d(CommonInfo.TAG, "---->is changes" + isChange);
     }
 }

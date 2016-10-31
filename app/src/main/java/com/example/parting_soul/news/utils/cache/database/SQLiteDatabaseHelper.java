@@ -4,6 +4,9 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.example.parting_soul.news.utils.CommonInfo;
+import com.example.parting_soul.news.utils.LogUtils;
+
 /**
  * Created by parting_soul on 2016/10/9.
  * 数据库帮助类
@@ -21,16 +24,17 @@ public class SQLiteDatabaseHelper extends SQLiteOpenHelper {
 
 
     public static final String CREATE_NEWS_TABLE = "create table " + DBManager.NEWS_TABLE_NAME + "("
-            + DBManager.NEWS_TABLE_ID + " integer primary key autoincrement,"
-            + DBManager.NEWS_TABLE_TITLE + " text,"
+            + DBManager.NEWS_TABLE_TITLE + " text primary key,"
             + DBManager.NEWS_TABLE_URL + " text,"
             + DBManager.NEWS_TABLE_PICPATH + " text,"
             + DBManager.NEWS_TABLE_DATE + " text,"
             + DBManager.NEWS_TABLE_AUTHOR_NAME + " text,"
-            + DBManager.NEWS_TABLE_NEWS_TYPE + " text" + ")";
+            + DBManager.NEWS_TABLE_NEWS_TYPE + " text,"
+            + DBManager.NEWS_TABLE_IS_COLLECTION + " integer default 0 " + ")";
 
     public SQLiteDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        LogUtils.d(CommonInfo.TAG, CREATE_NEWS_TABLE);
     }
 
     /**

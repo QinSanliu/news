@@ -13,8 +13,8 @@ import android.widget.TextView;
 import com.example.parting_soul.news.R;
 import com.example.parting_soul.news.bean.News;
 import com.example.parting_soul.news.utils.CommonInfo;
-import com.example.parting_soul.news.utils.image.ImageLoader;
 import com.example.parting_soul.news.utils.LogUtils;
+import com.example.parting_soul.news.utils.image.ImageLoader;
 import com.example.parting_soul.news.utils.style.FontChangeManager;
 
 import java.util.List;
@@ -142,7 +142,7 @@ public class NewsInfoAdapter extends BaseAdapter implements AbsListView.OnScroll
         }
         //为UI控件设置值
         holder.title.setText(mLists.get(position).getTitle());
-        holder.title.setTextAppearance(mContext,textStyleId);
+        holder.title.setTextAppearance(mContext, textStyleId);
         holder.authorName.setText(mLists.get(position).getAuthor_name());
         holder.date.setText(mLists.get(position).getDate());
 //        holder.pic.setImageResource(R.mipmap.imageview_default_bc);

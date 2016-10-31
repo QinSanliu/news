@@ -24,6 +24,11 @@ public class News {
     private String date;
 
     /**
+     * 是否被收藏
+     */
+    private boolean is_collected;
+
+    /**
      * 作者名字
      */
     private String author_name;
@@ -67,5 +72,12 @@ public class News {
     public void setAuthor_name(String author_name) {
         this.author_name = author_name;
     }
-    
+
+    public boolean is_collected() {
+        return is_collected;
+    }
+
+    public void setIs_collected(boolean is_collected) {
+        this.is_collected = is_collected;
+    }
 }

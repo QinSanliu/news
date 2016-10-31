@@ -130,5 +130,7 @@
     <string name="license_summary"></string>
 
     <string name="message_clipboard">信息已经复制到剪切板</string>
+    <string name="is_collected">已收藏</string>
+    <string name="cancel_collected">取消收藏</string>
 
 </resources>

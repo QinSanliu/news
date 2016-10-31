@@ -39,6 +39,7 @@
             android:textSize="25sp" />
 
         <CheckBox
+            android:id="@+id/is_collectedBox"
             style="@style/CustomCollectCheckBox"
             android:layout_width="30dp"
             android:layout_height="30dp"

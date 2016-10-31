@@ -59,6 +59,11 @@ public class DBManager {
     public static final String NEWS_TABLE_NEWS_TYPE = "news_type";
 
     /**
+     * 是否被收藏
+     */
+    public static final String NEWS_TABLE_IS_COLLECTION = "news_is_collected";
+
+    /**
      * 数据库帮助类
      */
     private SQLiteDatabaseHelper helper;
@@ -117,6 +122,7 @@ public class DBManager {
 
     public void addNewsCacheToDataBase(List<News> news, String newsType) {
         getConnected();
+        long re = -1;
         if (news != null && newsType != null) {
             for (News n : news) {
                 ContentValues values = new ContentValues();
@@ -126,19 +132,21 @@ public class DBManager {
                 values.put(NEWS_TABLE_URL, n.getUrl());
                 values.put(NEWS_TABLE_DATE, n.getDate());
                 values.put(NEWS_TABLE_NEWS_TYPE, newsType);
-                database.insert(NEWS_TABLE_NAME, null, values);
+                re = database.insert(NEWS_TABLE_NAME, null, values);
             }
+            LogUtils.d(CommonInfo.TAG, "----->" + news.size() + " " + re);
         }
     }
 
     /**
-     * 移除缓存
+     * 移除所有缓存
      *
      * @param newsType
      */
     public void deleteNewsCacheFromDataBase(String newsType) {
         getConnected();
-        database.delete(NEWS_TABLE_NAME, NEWS_TABLE_NEWS_TYPE + " = ? ", new String[]{newsType});
+        database.delete(NEWS_TABLE_NAME, NEWS_TABLE_NEWS_TYPE + " = ? and " + NEWS_TABLE_IS_COLLECTION + " = ? "
+                , new String[]{newsType, "0"});
     }
 
     /**
@@ -146,7 +154,7 @@ public class DBManager {
      */
     public boolean deleteAllCacheFromDataBase() {
         getConnected();
-        int result = database.delete(NEWS_TABLE_NAME, null, null);
+        int result = database.delete(NEWS_TABLE_NAME, NEWS_TABLE_IS_COLLECTION + " = ? ", new String[]{"0"});
         if (result != -1) return true;
         return false;
     }
@@ -173,6 +181,7 @@ public class DBManager {
                 news.setUrl(cursor.getString(cursor.getColumnIndex(NEWS_TABLE_URL)));
                 news.setDate(cursor.getString(cursor.getColumnIndex(NEWS_TABLE_DATE)));
                 news.setPicPath(cursor.getString(cursor.getColumnIndex(NEWS_TABLE_PICPATH)));
+                news.setIs_collected(cursor.getInt(cursor.getColumnIndex(NEWS_TABLE_IS_COLLECTION)) == 1);
                 lists.add(news);
                 isHaveCache = true;
             }
@@ -193,4 +202,63 @@ public class DBManager {
         addNewsCacheToDataBase(news, newsType);
     }
 
+    /**
+     * 读取收藏的新闻项
+     *
+     * @return
+     */
+    public List<News> readCollectionNews() {
+        getConnected();
+        Cursor cursor = database.query(NEWS_TABLE_NAME, null, NEWS_TABLE_IS_COLLECTION + " = ? ",
+                new String[]{"1"}, null, null, null, null);
+        List<News> lists = new ArrayList<News>();
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                News news = new News();
+                news.setTitle(cursor.getString(cursor.getColumnIndex(NEWS_TABLE_TITLE)));
+                news.setAuthor_name(cursor.getString(cursor.getColumnIndex(NEWS_TABLE_AUTHOR_NAME)));
+                news.setUrl(cursor.getString(cursor.getColumnIndex(NEWS_TABLE_URL)));
+                news.setDate(cursor.getString(cursor.getColumnIndex(NEWS_TABLE_DATE)));
+                news.setPicPath(cursor.getString(cursor.getColumnIndex(NEWS_TABLE_PICPATH)));
+                news.setIs_collected(cursor.getInt(cursor.getColumnIndex(NEWS_TABLE_IS_COLLECTION)) == 1);
+                lists.add(news);
+            }
+        }
+        return lists;
+    }
+
+    /**
+     * 添加收藏新闻项
+     *
+     * @param title
+     * @return boolean
+     */
+    public boolean addNewsCollectionToDataBase(String title) {
+        getConnected();
+        int result = -1;
+        if (title != null) {
+            ContentValues values = new ContentValues();
+            values.put(NEWS_TABLE_IS_COLLECTION, "1");
+            result = database.update(NEWS_TABLE_NAME, values, NEWS_TABLE_TITLE + " = ? ", new String[]{title});
+        }
+        LogUtils.d(CommonInfo.TAG, "asdff" + result);
+        return result == -1 ? false : true;
+    }
+
+    /**
+     * 移除收藏新闻项
+     *
+     * @param title
+     * @return boolean
+     */
+    public boolean deleteNewsCollectionFromDataBase(String title) {
+        getConnected();
+        int result = -1;
+        if (title != null) {
+            ContentValues values = new ContentValues();
+            values.put(NEWS_TABLE_IS_COLLECTION, "0");
+            result = database.update(NEWS_TABLE_NAME, values, NEWS_TABLE_TITLE + " = ? ", new String[]{title});
+        }
+        return result == -1 ? false : true;
+    }
 }

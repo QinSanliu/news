@@ -76,5 +76,7 @@
     <string name="license">license</string>
 
     <string name="message_clipboard">Information has been copied to the clipboard.</string>
+    <string name="is_collected">The news is collected.</string>
+    <string name="cancel_collected">The news is not collected.</string>
 
 </resources>

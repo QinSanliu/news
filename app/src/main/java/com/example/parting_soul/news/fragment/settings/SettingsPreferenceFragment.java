@@ -13,7 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.example.parting_soul.news.Interface.ClearCacheCallBack;
+import com.example.parting_soul.news.Interface.callback.ClearCacheCallBack;
 import com.example.parting_soul.news.R;
 import com.example.parting_soul.news.activity.AboutActivity;
 import com.example.parting_soul.news.bean.Settings;
