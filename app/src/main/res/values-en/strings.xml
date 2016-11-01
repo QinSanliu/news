@@ -4,10 +4,10 @@
     <string name="app_name">News</string>
 
     <!-- 左侧侧滑菜单项标题内容-->
-    <string name="message">Message</string>
+    <string name="news">News</string>
+    <string name="weichat">Featured</string>
+    <string name="funny">Happy</string>
     <string name="collection">Collection</string>
-    <string name="activity">Activity</string>
-    <string name="offline">Offline</string>
     <string name="night">Nighmode</string>
     <string name="about">About</string>
     <string name="feedback">Feedback</string>

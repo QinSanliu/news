@@ -33,10 +33,10 @@
     <string name="title_name">NewsDemo</string>
 
     <!-- 左侧侧滑菜单项标题内容-->
-    <string name="message">消息</string>
+    <string name="news">新闻</string>
+    <string name="weichat">精选</string>
+    <string name="funny">搞笑</string>
     <string name="collection">收藏</string>
-    <string name="activity">活动</string>
-    <string name="offline">离线</string>
     <string name="night">夜间</string>
     <string name="about">关于</string>
     <string name="feedback">反馈</string>

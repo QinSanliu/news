@@ -378,14 +378,14 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         MenuItemInfo info = (MenuItemInfo) mMenuAdpater.getItem(position);
         switch (info.getNameId()) {
-            case R.string.message:
+            case R.string.news:
+                break;
+            case R.string.weichat:
+                break;
+            case R.string.funny:
                 break;
             case R.string.collection:
                 CollectionActivity.startActivity(this);
-                break;
-            case R.string.activity:
-                break;
-            case R.string.offline:
                 break;
             case R.string.night:
                 ThemeChangeManager.setNightMode(this);
@@ -393,8 +393,6 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
                 break;
             case R.string.about:
                 AboutActivity.startActivity(this);
-                break;
-            case R.string.feedback:
                 break;
         }
     }

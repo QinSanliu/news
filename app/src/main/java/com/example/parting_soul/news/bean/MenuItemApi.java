@@ -21,33 +21,28 @@ public class MenuItemApi {
         mLists = new ArrayList<MenuItemInfo>();
         MenuItemInfo item = new MenuItemInfo();
 
-        item.setNameId(R.string.message);
-        item.setImageId(R.mipmap.ic_drawer_message_normal);
+        item.setNameId(R.string.news);
+        item.setImageId(R.mipmap.news);
+        mLists.add(item);
+
+        item = new MenuItemInfo();
+        item.setNameId(R.string.weichat);
+        item.setImageId(R.mipmap.weichat);
+        mLists.add(item);
+
+        item = new MenuItemInfo();
+        item.setNameId(R.string.funny);
+        item.setImageId(R.mipmap.happy);
         mLists.add(item);
 
         item = new MenuItemInfo();
         item.setNameId(R.string.collection);
-        item.setImageId(R.mipmap.ic_drawer_favorite_normal);
-        mLists.add(item);
-
-        item = new MenuItemInfo();
-        item.setNameId(R.string.activity);
-        item.setImageId(R.mipmap.left_drawer_activity);
-        mLists.add(item);
-
-        item = new MenuItemInfo();
-        item.setNameId(R.string.offline);
-        item.setImageId(R.mipmap.ic_drawer_offline_normal);
+        item.setImageId(R.mipmap.collection);
         mLists.add(item);
 
         item = new MenuItemInfo();
         item.setNameId(R.string.night);
         item.setImageId(R.mipmap.ic_night);
-        mLists.add(item);
-
-        item = new MenuItemInfo();
-        item.setNameId(R.string.feedback);
-        item.setImageId(R.mipmap.ic_drawer_feedback_normal);
         mLists.add(item);
 
         item = new MenuItemInfo();
