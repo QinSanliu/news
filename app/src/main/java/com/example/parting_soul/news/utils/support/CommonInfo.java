@@ -1,4 +1,4 @@
-package com.example.parting_soul.news.utils;
+package com.example.parting_soul.news.utils.support;
 
 /**
  * Created by parting_soul on 2016/10/5.

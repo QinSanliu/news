@@ -3,11 +3,11 @@ package com.example.parting_soul.news.utils.style;
 import android.app.Activity;
 import android.content.Context;
 
-import com.example.parting_soul.news.NewsApplication;
+import com.example.parting_soul.news.utils.support.NewsApplication;
 import com.example.parting_soul.news.R;
 import com.example.parting_soul.news.bean.Settings;
-import com.example.parting_soul.news.utils.CommonInfo;
-import com.example.parting_soul.news.utils.LogUtils;
+import com.example.parting_soul.news.utils.support.CommonInfo;
+import com.example.parting_soul.news.utils.support.LogUtils;
 
 import java.util.HashMap;
 import java.util.Map;

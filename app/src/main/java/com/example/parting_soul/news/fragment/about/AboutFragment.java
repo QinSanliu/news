@@ -16,7 +16,7 @@ import com.example.parting_soul.news.R;
 import com.example.parting_soul.news.activity.ApplicationBriefActivity;
 import com.example.parting_soul.news.bean.About;
 import com.example.parting_soul.news.bean.Settings;
-import com.example.parting_soul.news.utils.VersionManager;
+import com.example.parting_soul.news.utils.support.VersionManager;
 
 /**
  * Created by parting_soul on 2016/10/29.

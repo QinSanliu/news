@@ -3,7 +3,7 @@ package com.example.parting_soul.news.utils.style;
 import android.content.Context;
 import android.content.res.Configuration;
 
-import com.example.parting_soul.news.NewsApplication;
+import com.example.parting_soul.news.utils.support.NewsApplication;
 import com.example.parting_soul.news.R;
 import com.example.parting_soul.news.bean.Settings;
 

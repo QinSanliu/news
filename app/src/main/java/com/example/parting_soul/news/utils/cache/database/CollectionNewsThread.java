@@ -3,10 +3,10 @@ package com.example.parting_soul.news.utils.cache.database;
 import android.content.Context;
 
 import com.example.parting_soul.news.Interface.callback.CollectionNewsCallBack;
-import com.example.parting_soul.news.NewsApplication;
+import com.example.parting_soul.news.utils.support.NewsApplication;
 import com.example.parting_soul.news.bean.News;
-import com.example.parting_soul.news.utils.CommonInfo;
-import com.example.parting_soul.news.utils.LogUtils;
+import com.example.parting_soul.news.utils.support.CommonInfo;
+import com.example.parting_soul.news.utils.support.LogUtils;
 
 import java.util.List;
 

@@ -12,8 +12,8 @@ import android.widget.TextView;
 
 import com.example.parting_soul.news.R;
 import com.example.parting_soul.news.bean.News;
-import com.example.parting_soul.news.utils.CommonInfo;
-import com.example.parting_soul.news.utils.LogUtils;
+import com.example.parting_soul.news.utils.support.CommonInfo;
+import com.example.parting_soul.news.utils.support.LogUtils;
 import com.example.parting_soul.news.utils.image.ImageLoader;
 import com.example.parting_soul.news.utils.style.FontChangeManager;
 
@@ -125,7 +125,7 @@ public class NewsInfoAdapter extends BaseAdapter implements AbsListView.OnScroll
         NewsHolder holder = null;
         if (convertView == null) {
             //没有可重用的布局，就加载一个布局
-            view = LayoutInflater.from(mContext).inflate(R.layout.news_listview_item, null);
+            view = LayoutInflater.from(mContext).inflate(R.layout.news_detail__listview_item, null);
             //找到布局中所有的UI控件并且绑定在Holder中
             holder = new NewsHolder();
             holder.title = (TextView) view.findViewById(R.id.news_title);

@@ -1,4 +1,4 @@
-package com.example.parting_soul.news.utils;
+package com.example.parting_soul.news.utils.support;
 
 import com.example.parting_soul.news.Interface.callback.CollectionCheckStateNotifiyCallBack;
 

@@ -11,18 +11,18 @@ import java.util.List;
  * 新闻页面适配器
  */
 
-public class NewsFragmentAdapter extends FragmentStatePagerAdapter {
+public class NewsDetailFragmentAdapter extends FragmentStatePagerAdapter {
 
     /**
      * 数据源
      */
     private List<Fragment> mLists;
 
-    public NewsFragmentAdapter(FragmentManager fm) {
+    public NewsDetailFragmentAdapter(FragmentManager fm) {
         super(fm);
     }
 
-    public NewsFragmentAdapter(FragmentManager fm, List<Fragment> lists) {
+    public NewsDetailFragmentAdapter(FragmentManager fm, List<Fragment> lists) {
         super(fm);
         mLists = lists;
     }

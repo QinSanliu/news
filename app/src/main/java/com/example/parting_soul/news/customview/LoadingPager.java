@@ -8,8 +8,8 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 
 import com.example.parting_soul.news.R;
-import com.example.parting_soul.news.utils.CommonInfo;
-import com.example.parting_soul.news.utils.LogUtils;
+import com.example.parting_soul.news.utils.support.CommonInfo;
+import com.example.parting_soul.news.utils.support.LogUtils;
 
 
 /**

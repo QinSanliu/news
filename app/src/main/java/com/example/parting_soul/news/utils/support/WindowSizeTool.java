@@ -1,4 +1,4 @@
-package com.example.parting_soul.news.utils;
+package com.example.parting_soul.news.utils.support;
 
 import android.app.Activity;
 import android.util.DisplayMetrics;

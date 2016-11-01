@@ -3,7 +3,7 @@ package com.example.parting_soul.news.utils.network;
 import android.content.Context;
 import android.net.ConnectivityManager;
 
-import com.example.parting_soul.news.NewsApplication;
+import com.example.parting_soul.news.utils.support.NewsApplication;
 
 /**
  * Created by parting_soul on 2016/10/23.

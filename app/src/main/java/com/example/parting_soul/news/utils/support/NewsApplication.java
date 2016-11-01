@@ -1,4 +1,4 @@
-package com.example.parting_soul.news;
+package com.example.parting_soul.news.utils.support;
 
 import android.app.Application;
 import android.content.Context;

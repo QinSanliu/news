@@ -1,4 +1,4 @@
-package com.example.parting_soul.news.fragment;
+package com.example.parting_soul.news.fragment.news;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -15,9 +15,10 @@ import com.example.parting_soul.news.activity.NewsMessageActivity;
 import com.example.parting_soul.news.adapter.NewsInfoAdapter;
 import com.example.parting_soul.news.bean.News;
 import com.example.parting_soul.news.bean.Settings;
-import com.example.parting_soul.news.utils.CollectionCheckStateManager;
-import com.example.parting_soul.news.utils.CommonInfo;
-import com.example.parting_soul.news.utils.LogUtils;
+import com.example.parting_soul.news.fragment.support.BaseFragment;
+import com.example.parting_soul.news.utils.support.CollectionCheckStateManager;
+import com.example.parting_soul.news.utils.support.CommonInfo;
+import com.example.parting_soul.news.utils.support.LogUtils;
 import com.example.parting_soul.news.utils.cache.database.DBManager;
 import com.example.parting_soul.news.utils.image.ImageLoader;
 import com.example.parting_soul.news.utils.network.AbstractDownLoadHandler;
@@ -29,7 +30,7 @@ import com.yalantis.phoenix.PullToRefreshView;
 import java.util.List;
 
 import static com.example.parting_soul.news.customview.LoadingPager.LoadState;
-import static com.example.parting_soul.news.utils.CommonInfo.TAG;
+import static com.example.parting_soul.news.utils.support.CommonInfo.TAG;
 
 
 /**
@@ -37,7 +38,7 @@ import static com.example.parting_soul.news.utils.CommonInfo.TAG;
  * 新闻碎片类
  */
 
-public class NewsFragment extends BaseFragment<News> implements AdapterView.OnItemClickListener
+public class NewsDetailFragment extends BaseFragment<News> implements AdapterView.OnItemClickListener
         , PullToRefreshView.OnRefreshListener, CollectionCheckStateNotifiyCallBack {
     /**
      * 第三方下拉刷新类
@@ -225,7 +226,7 @@ public class NewsFragment extends BaseFragment<News> implements AdapterView.OnIt
     public View createSuccessPage() {
         View view = null;
         if (getActivity() != null) {
-            view = View.inflate(getActivity(), R.layout.news_fragment, null);
+            view = View.inflate(getActivity(), R.layout.news_detail_fragment, null);
             mListView = (ListView) view.findViewById(R.id.news_lists);
             mPullToRefreshView = (PullToRefreshView) view.findViewById(R.id.pull_to_refresh);
             mListView.setOnItemClickListener(this);

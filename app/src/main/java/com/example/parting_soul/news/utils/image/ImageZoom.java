@@ -3,8 +3,8 @@ package com.example.parting_soul.news.utils.image;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
-import com.example.parting_soul.news.utils.CommonInfo;
-import com.example.parting_soul.news.utils.LogUtils;
+import com.example.parting_soul.news.utils.support.CommonInfo;
+import com.example.parting_soul.news.utils.support.LogUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

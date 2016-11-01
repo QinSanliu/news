@@ -1,4 +1,4 @@
-package com.example.parting_soul.news.fragment;
+package com.example.parting_soul.news.fragment.support;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,8 +9,8 @@ import android.view.ViewGroup;
 
 import com.example.parting_soul.news.bean.News;
 import com.example.parting_soul.news.customview.LoadingPager;
-import com.example.parting_soul.news.utils.CommonInfo;
-import com.example.parting_soul.news.utils.LogUtils;
+import com.example.parting_soul.news.utils.support.CommonInfo;
+import com.example.parting_soul.news.utils.support.LogUtils;
 
 import java.util.List;
 

@@ -18,12 +18,12 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.example.parting_soul.news.Interface.callback.CollectionNewsCallBack;
-import com.example.parting_soul.news.NewsApplication;
+import com.example.parting_soul.news.utils.support.NewsApplication;
 import com.example.parting_soul.news.R;
 import com.example.parting_soul.news.bean.News;
-import com.example.parting_soul.news.utils.CollectionCheckStateManager;
-import com.example.parting_soul.news.utils.CommonInfo;
-import com.example.parting_soul.news.utils.LogUtils;
+import com.example.parting_soul.news.utils.support.CollectionCheckStateManager;
+import com.example.parting_soul.news.utils.support.CommonInfo;
+import com.example.parting_soul.news.utils.support.LogUtils;
 import com.example.parting_soul.news.utils.cache.database.CollectionNewsThread;
 import com.example.parting_soul.news.utils.style.LanguageChangeManager;
 import com.example.parting_soul.news.utils.style.ThemeChangeManager;
@@ -31,7 +31,7 @@ import com.example.parting_soul.news.utils.style.ThemeChangeManager;
 import java.util.List;
 
 import static com.example.parting_soul.news.R.id.webView;
-import static com.example.parting_soul.news.utils.CollectionCheckStateManager.FROM_COLLECTIONACTIVITY;
+import static com.example.parting_soul.news.utils.support.CollectionCheckStateManager.FROM_COLLECTIONACTIVITY;
 
 /**
  * Created by parting_soul on 2016/10/17.

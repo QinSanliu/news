@@ -1,6 +1,6 @@
 package com.example.parting_soul.news.bean;
 
-import com.example.parting_soul.news.NewsApplication;
+import com.example.parting_soul.news.utils.support.NewsApplication;
 import com.example.parting_soul.news.R;
 
 import java.util.HashMap;

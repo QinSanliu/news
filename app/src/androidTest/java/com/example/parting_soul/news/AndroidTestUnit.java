@@ -5,8 +5,8 @@ import android.util.Log;
 
 import com.example.parting_soul.news.bean.News;
 import com.example.parting_soul.news.bean.NewsKinds;
-import com.example.parting_soul.news.utils.CommonInfo;
-import com.example.parting_soul.news.utils.LogUtils;
+import com.example.parting_soul.news.utils.support.CommonInfo;
+import com.example.parting_soul.news.utils.support.LogUtils;
 import com.example.parting_soul.news.utils.image.MD5Utils;
 import com.example.parting_soul.news.utils.cache.DiskLruCacheHelper;
 import com.example.parting_soul.news.utils.cache.database.DBManager;
