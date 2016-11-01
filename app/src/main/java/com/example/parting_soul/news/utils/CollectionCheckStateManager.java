@@ -8,7 +8,25 @@ import com.example.parting_soul.news.Interface.callback.CollectionCheckStateNoti
  */
 
 public class CollectionCheckStateManager {
-    private CollectionCheckStateNotifiyCallBack mCallBack;
+    /**
+     * 来自NewsFragment
+     */
+    public static final int FROM_NEWSFRAGMENT = 0x1111;
+
+    /**
+     * 来自CollectionActivity
+     */
+    public static final int FROM_COLLECTIONACTIVITY = 0x1112;
+
+    /**
+     * 通知NewsFragment更新
+     */
+    private CollectionCheckStateNotifiyCallBack mNotifyNewsFragmentCallBack;
+
+    /**
+     * 通知CollectionActivity更新
+     */
+    private CollectionCheckStateNotifiyCallBack mNotifyCollectionActivityCallBack;
 
     private static CollectionCheckStateManager manager;
 
@@ -19,11 +37,19 @@ public class CollectionCheckStateManager {
         return manager;
     }
 
-    public CollectionCheckStateNotifiyCallBack getmCallBack() {
-        return mCallBack;
+    public CollectionCheckStateNotifiyCallBack getNotifyNewsFragmentCallBack() {
+        return mNotifyNewsFragmentCallBack;
     }
 
-    public void setmCallBack(CollectionCheckStateNotifiyCallBack mCallBack) {
-        this.mCallBack = mCallBack;
+    public void setNotifyNewsFragmentCallBack(CollectionCheckStateNotifiyCallBack mNotifyNewsFragmentCallBack) {
+        this.mNotifyNewsFragmentCallBack = mNotifyNewsFragmentCallBack;
+    }
+
+    public CollectionCheckStateNotifiyCallBack getNotifyCollectionActivityCallBack() {
+        return mNotifyCollectionActivityCallBack;
+    }
+
+    public void setNotifyCollectionActivityCallBack(CollectionCheckStateNotifiyCallBack mNotifyCollectionActivityCallBack) {
+        this.mNotifyCollectionActivityCallBack = mNotifyCollectionActivityCallBack;
     }
 }

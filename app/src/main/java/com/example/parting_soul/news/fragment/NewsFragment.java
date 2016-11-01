@@ -167,7 +167,7 @@ public class NewsFragment extends BaseFragment<News> implements AdapterView.OnIt
         super.onVisible();
         //当前fragment可见时设置回调接口
         mCollectionCheckStateManager = CollectionCheckStateManager.newInstance();
-        mCollectionCheckStateManager.setmCallBack(this);
+        mCollectionCheckStateManager.setNotifyNewsFragmentCallBack(this);
     }
 
     @Override
@@ -331,7 +331,7 @@ public class NewsFragment extends BaseFragment<News> implements AdapterView.OnIt
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         mCurrentSelectedNews = mLists.get(position);
         NewsMessageActivity.startActivity(getActivity(), mCurrentSelectedNews.getUrl(),
-                mCurrentSelectedNews.getTitle(), mCurrentSelectedNews.is_collected(), NewsMessageActivity.FROM_NEWSFRAGMENT);
+                mCurrentSelectedNews.getTitle(), mCurrentSelectedNews.is_collected(), CollectionCheckStateManager.FROM_NEWSFRAGMENT);
     }
 
     @Override

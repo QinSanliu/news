@@ -120,21 +120,28 @@ public class DBManager {
         database.close();
     }
 
+    /**
+     * 添加新闻缓存到数据库，存在就忽略插入
+     *
+     * @param news
+     * @param newsType
+     */
     public void addNewsCacheToDataBase(List<News> news, String newsType) {
         getConnected();
         long re = -1;
         if (news != null && newsType != null) {
             for (News n : news) {
-                ContentValues values = new ContentValues();
-                values.put(NEWS_TABLE_TITLE, n.getTitle());
-                values.put(NEWS_TABLE_PICPATH, n.getPicPath());
-                values.put(NEWS_TABLE_AUTHOR_NAME, n.getAuthor_name());
-                values.put(NEWS_TABLE_URL, n.getUrl());
-                values.put(NEWS_TABLE_DATE, n.getDate());
-                values.put(NEWS_TABLE_NEWS_TYPE, newsType);
-                re = database.insert(NEWS_TABLE_NAME, null, values);
+                StringBuilder sql = new StringBuilder();
+                sql.append("insert or replace into ").append(NEWS_TABLE_NAME).append(" ( ")
+                        .append(NEWS_TABLE_TITLE + "," + NEWS_TABLE_PICPATH + "," + NEWS_TABLE_AUTHOR_NAME
+                                + "," + NEWS_TABLE_URL + "," + NEWS_TABLE_DATE + "," + NEWS_TABLE_NEWS_TYPE + "," + NEWS_TABLE_IS_COLLECTION)
+                        .append(" ) values( ").append("'").append(n.getTitle() + "','" + n.getPicPath() + "','" + n.getAuthor_name()
+                        + "','" + n.getUrl() + "','" + n.getDate() + "','" + newsType).append("',(").append("select ")
+                        .append(NEWS_TABLE_IS_COLLECTION).append(" from ").append(NEWS_TABLE_NAME).append(" where title = '" + n.getTitle() + "') )");
+                database.execSQL(sql.toString());
+                LogUtils.d(CommonInfo.TAG, "--->" + sql.toString());
             }
-            LogUtils.d(CommonInfo.TAG, "----->" + news.size() + " " + re);
+
         }
     }
 
@@ -170,12 +177,14 @@ public class DBManager {
         getConnected();
         Cursor cursor = database.query(NEWS_TABLE_NAME, null, NEWS_TABLE_NEWS_TYPE + " = ? ",
                 new String[]{newsType}, null, null, null, null);
+        //   Cursor cursor = database.rawQuery("select rowid,* from newsinfo where news_type = ? ", new String[]{newsType});
         List<News> lists = null;
         boolean isHaveCache = false;
         if (cursor != null) {
             lists = new ArrayList<News>();
             while (cursor.moveToNext()) {
                 News news = new News();
+                //               int rowid = cursor.getInt(cursor.getColumnIndex("rowid"));
                 news.setTitle(cursor.getString(cursor.getColumnIndex(NEWS_TABLE_TITLE)));
                 news.setAuthor_name(cursor.getString(cursor.getColumnIndex(NEWS_TABLE_AUTHOR_NAME)));
                 news.setUrl(cursor.getString(cursor.getColumnIndex(NEWS_TABLE_URL)));
@@ -183,6 +192,7 @@ public class DBManager {
                 news.setPicPath(cursor.getString(cursor.getColumnIndex(NEWS_TABLE_PICPATH)));
                 news.setIs_collected(cursor.getInt(cursor.getColumnIndex(NEWS_TABLE_IS_COLLECTION)) == 1);
                 lists.add(news);
+                //             LogUtils.d(CommonInfo.TAG, "-->read" + rowid + " " + news.getTitle() + " " + news.is_collected());
                 isHaveCache = true;
             }
         }
