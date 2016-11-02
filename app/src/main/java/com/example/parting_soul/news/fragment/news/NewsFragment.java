@@ -13,13 +13,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.parting_soul.news.R;
+import com.example.parting_soul.news.activity.MainActivity;
 import com.example.parting_soul.news.adapter.NewsDetailFragmentAdapter;
 import com.example.parting_soul.news.bean.NewsKinds;
 import com.example.parting_soul.news.bean.Settings;
 import com.example.parting_soul.news.customview.HorizontalNavigation;
+import com.example.parting_soul.news.utils.style.ThemeChangeManager;
 import com.example.parting_soul.news.utils.support.CommonInfo;
 import com.example.parting_soul.news.utils.support.WindowSizeTool;
-import com.example.parting_soul.news.utils.style.ThemeChangeManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,7 @@ import java.util.List;
 
 public class NewsFragment extends Fragment implements ViewPager.OnPageChangeListener {
     public static final String NAME = "newsfragment";
+
     /**
      * 新闻的类型，显示在导航条中
      */
@@ -75,6 +77,11 @@ public class NewsFragment extends Fragment implements ViewPager.OnPageChangeList
      */
     private HorizontalNavigation mHorizontalNavigation;
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        ((MainActivity) getActivity()).setTitleName(R.string.news);
+    }
 
     @Nullable
     @Override

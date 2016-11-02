@@ -26,7 +26,6 @@
         <activity android:name=".activity.SettingsPreferenceActivity" />
         <activity android:name=".activity.AboutActivity" />
         <activity android:name=".activity.ApplicationBriefActivity" />
-        <activity android:name=".activity.CollectionActivity" />
     </application>
 
 </manifest>

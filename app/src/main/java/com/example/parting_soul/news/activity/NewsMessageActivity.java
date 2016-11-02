@@ -31,7 +31,8 @@ import com.example.parting_soul.news.utils.style.ThemeChangeManager;
 import java.util.List;
 
 import static com.example.parting_soul.news.R.id.webView;
-import static com.example.parting_soul.news.utils.support.CollectionCheckStateManager.FROM_COLLECTIONACTIVITY;
+import static com.example.parting_soul.news.utils.support.CollectionCheckStateManager.FROM_COLLECTIONFRAGMENT;
+import static com.example.parting_soul.news.utils.support.CollectionCheckStateManager.FROM_NEWSFRAGMENT;
 
 /**
  * Created by parting_soul on 2016/10/17.
@@ -119,11 +120,12 @@ public class NewsMessageActivity extends AppCompatActivity implements View.OnCli
             if ((Boolean) (msg.obj)) {
                 Toast.makeText(NewsApplication.getContext(), is_collected, Toast.LENGTH_SHORT).show();
                 //若是从CollectionActivity则通知其更新
-                if (from_where_activity == FROM_COLLECTIONACTIVITY) {
+                if (from_where_activity == FROM_COLLECTIONFRAGMENT) {
                     mCalllBackManager.getNotifyCollectionActivityCallBack().collectedStateChange(mIsCollected.isChecked());
+                } else if (from_where_activity == FROM_NEWSFRAGMENT) {
+                    //通知newsfragment将该新闻变为当前收藏的状态
+                    mCalllBackManager.getNotifyVisibleNewsFragmentCallBack().collectedStateChange(mIsCollected.isChecked());
                 }
-                //通知newsfragment将该新闻变为当前收藏的状态
-                mCalllBackManager.getNotifyNewsFragmentCallBack().collectedStateChange(mIsCollected.isChecked());
             } else {
                 mIsCollected.setChecked(!mIsCollected.isChecked());
             }

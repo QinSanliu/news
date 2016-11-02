@@ -25,6 +25,7 @@ import com.example.parting_soul.news.bean.MenuItemApi;
 import com.example.parting_soul.news.bean.MenuItemInfo;
 import com.example.parting_soul.news.bean.Settings;
 import com.example.parting_soul.news.customview.CircleImageView;
+import com.example.parting_soul.news.fragment.collection.CollectionFragment;
 import com.example.parting_soul.news.fragment.funny.FunnyFragment;
 import com.example.parting_soul.news.fragment.news.NewsFragment;
 import com.example.parting_soul.news.fragment.weichat.WeiChatFragment;
@@ -34,7 +35,6 @@ import com.example.parting_soul.news.utils.support.CommonInfo;
 import com.example.parting_soul.news.utils.support.LogUtils;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
-
     /**
      * 左上方打开侧滑抽屉的图片
      */
@@ -228,7 +228,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
                 break;
             case R.string.collection:
-                CollectionActivity.startActivity(this);
+                if (mFragmentManager.findFragmentByTag(CollectionFragment.NAME) == null) {
+                    mCurrentFragment = new CollectionFragment();
+                    setCurrentFragment(mCurrentFragment);
+                }
                 break;
             case R.string.night:
                 ThemeChangeManager.setNightMode(this);
@@ -239,6 +242,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 break;
         }
         mDrawerLayout.closeDrawer(GravityCompat.START);
+    }
+
+    public void setTitleName(int resId) {
+        mTitle.setText(resId);
     }
 
     /**
@@ -260,6 +267,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         } else if (fragment instanceof FunnyFragment) {
             mFragmentManager.beginTransaction().replace(R.id.main_fragment, (FunnyFragment) fragment, FunnyFragment.NAME).commit();
             LogUtils.d(CommonInfo.TAG, "--->" + FunnyFragment.NAME);
+        } else if (fragment instanceof CollectionFragment) {
+            mFragmentManager.beginTransaction().replace(R.id.main_fragment, (CollectionFragment) fragment, CollectionFragment.NAME).commit();
         }
     }
 

@@ -16,12 +16,12 @@ public class CollectionCheckStateManager {
     /**
      * 来自CollectionActivity
      */
-    public static final int FROM_COLLECTIONACTIVITY = 0x1112;
+    public static final int FROM_COLLECTIONFRAGMENT = 0x1112;
 
     /**
-     * 通知NewsFragment更新
+     * 通知可见的NewsFragment更新
      */
-    private CollectionCheckStateNotifiyCallBack mNotifyNewsFragmentCallBack;
+    private CollectionCheckStateNotifiyCallBack mNotifyVisibleNewsFragmentCallBack;
 
     /**
      * 通知CollectionActivity更新
@@ -37,12 +37,12 @@ public class CollectionCheckStateManager {
         return manager;
     }
 
-    public CollectionCheckStateNotifiyCallBack getNotifyNewsFragmentCallBack() {
-        return mNotifyNewsFragmentCallBack;
+    public CollectionCheckStateNotifiyCallBack getNotifyVisibleNewsFragmentCallBack() {
+        return mNotifyVisibleNewsFragmentCallBack;
     }
 
-    public void setNotifyNewsFragmentCallBack(CollectionCheckStateNotifiyCallBack mNotifyNewsFragmentCallBack) {
-        this.mNotifyNewsFragmentCallBack = mNotifyNewsFragmentCallBack;
+    public void setNotifyVisibleNewsFragmentCallBack(CollectionCheckStateNotifiyCallBack mNotifyNewsFragmentCallBack) {
+        this.mNotifyVisibleNewsFragmentCallBack = mNotifyNewsFragmentCallBack;
     }
 
     public CollectionCheckStateNotifiyCallBack getNotifyCollectionActivityCallBack() {
@@ -52,4 +52,5 @@ public class CollectionCheckStateManager {
     public void setNotifyCollectionActivityCallBack(CollectionCheckStateNotifiyCallBack mNotifyCollectionActivityCallBack) {
         this.mNotifyCollectionActivityCallBack = mNotifyCollectionActivityCallBack;
     }
+
 }

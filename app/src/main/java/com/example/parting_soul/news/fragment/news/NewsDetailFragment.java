@@ -166,9 +166,6 @@ public class NewsDetailFragment extends BaseFragment<News> implements AdapterVie
     @Override
     protected void onVisible() {
         super.onVisible();
-        //当前fragment可见时设置回调接口
-        mCollectionCheckStateManager = CollectionCheckStateManager.newInstance();
-        mCollectionCheckStateManager.setNotifyNewsFragmentCallBack(this);
     }
 
     @Override
@@ -284,11 +281,44 @@ public class NewsDetailFragment extends BaseFragment<News> implements AdapterVie
         List<News> lists = null;
         //解析下载的数据
         lists = JsonParseTool.parseJsonWidthJSONObject(result);
-        //将数据写入数据库
-        manager.updataNewsCacheToDatabase(lists, mNewTypeParam);
 
-        lists = manager.readNewsCacheFromDatabase(mNewTypeParam);
+        List<News> collection = manager.readCollectionNews();
+        updataCollectionData(lists, collection);
+        addToDataBase(lists);
+//        lists = manager.readNewsCacheFromDatabase(mNewTypeParam);
         return lists;
+    }
+
+    /**
+     * 将数据加入数据库
+     *
+     * @param lists
+     */
+    public void addToDataBase(final List<News> lists) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                //将数据写入数据库
+                manager.updataNewsCacheToDatabase(lists, mNewTypeParam);
+            }
+        }).start();
+    }
+
+    /**
+     * 更新收藏的新闻
+     *
+     * @param lists
+     * @param collection
+     */
+    private void updataCollectionData(List<News> lists, List<News> collection) {
+        for (int i = 0; i < lists.size(); i++) {
+            for (int j = 0; j < collection.size(); j++) {
+                if (lists.get(i).getTitle().equals(collection.get(j).getTitle())) {
+                    lists.get(i).setIs_collected(collection.get(j).is_collected());
+                    break;
+                }
+            }
+        }
     }
 
     @Override
@@ -330,6 +360,9 @@ public class NewsDetailFragment extends BaseFragment<News> implements AdapterVie
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        //当前fragment可见时设置回调接口
+        mCollectionCheckStateManager = CollectionCheckStateManager.newInstance();
+        mCollectionCheckStateManager.setNotifyVisibleNewsFragmentCallBack(this);
         mCurrentSelectedNews = mLists.get(position);
         NewsMessageActivity.startActivity(getActivity(), mCurrentSelectedNews.getUrl(),
                 mCurrentSelectedNews.getTitle(), mCurrentSelectedNews.is_collected(), CollectionCheckStateManager.FROM_NEWSFRAGMENT);

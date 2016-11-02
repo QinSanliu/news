@@ -30,7 +30,7 @@
     </string-array>
 
 
-    <string name="title_name">NewsDemo</string>
+    <string name="title_name">@string/news</string>
 
     <!-- 左侧侧滑菜单项标题内容-->
     <string name="news">新闻</string>

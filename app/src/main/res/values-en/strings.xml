@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">News</string>
+    <string name="title_name">@string/news</string>
 
     <!-- 左侧侧滑菜单项标题内容-->
     <string name="news">News</string>
