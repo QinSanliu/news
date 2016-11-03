@@ -3,6 +3,8 @@ package com.example.parting_soul.news.utils.network;
 import android.text.TextUtils;
 
 import com.example.parting_soul.news.bean.News;
+import com.example.parting_soul.news.bean.WeiChat;
+import com.example.parting_soul.news.fragment.weichat.WeiChatFragment;
 import com.example.parting_soul.news.utils.support.CommonInfo;
 
 import org.json.JSONArray;
@@ -24,7 +26,7 @@ public class JsonParseTool {
      * @param jsonString json数据
      * @return List<News> 新闻类的数组
      */
-    public static List<News> parseJsonWidthJSONObject(String jsonString) {
+    public static List<News> parseNewsJsonWidthJSONObject(String jsonString) {
         if (jsonString == null) return null;
         List<News> lists = new ArrayList<News>();
         try {
@@ -112,5 +114,36 @@ public class JsonParseTool {
             return true;
         }
         return false;
+    }
+
+    public static List<WeiChat> parseWeiChatJsonWidthJSONObject(String jsonString) {
+        if (jsonString == null) return null;
+        List<WeiChat> lists = new ArrayList<WeiChat>();
+        try {
+            JSONObject root = new JSONObject(jsonString);
+            String state = root.getString(CommonInfo.WeiChatAPI.JSONKEY.REQUEST_JSON_REASON_KEY_NAME);
+            if (state.equals(CommonInfo.WeiChatAPI.JSONKEY.RESQUEST_JSON_REASON_SUCCESS_KEY_VALUE)) {
+                JSONObject result = root.getJSONObject(CommonInfo.WeiChatAPI.JSONKEY.RESPONSE_JSON_RESULT_KEY_NAME);
+                JSONArray array = result.getJSONArray(CommonInfo.WeiChatAPI.JSONKEY.REQUEST_JSON_DATA_LISTS);
+                int totalPage = result.getInt(CommonInfo.WeiChatAPI.JSONKEY.REQUEST_JSON_TOLALPAGE_KEY_NAME);
+                int ps = result.getInt(CommonInfo.WeiChatAPI.JSONKEY.REQUEST_JSON_ITEM_NUMS_KEY_NAME);
+                int pno = result.getInt(CommonInfo.WeiChatAPI.JSONKEY.REQUEST_JSON_PAGE_NO_KEY_NAME);
+                WeiChatFragment.REQUEST_ITEM_NUMS = ps;
+                WeiChatFragment.REQUEST_MAX_PAGE_NUMS = totalPage;
+                for (int i = 0; i < array.length(); i++) {
+                    WeiChat weiChat = new WeiChat();
+                    JSONObject jsonObject = array.getJSONObject(i);
+                    weiChat.setTitle(jsonObject.getString(CommonInfo.WeiChatAPI.JSONKEY.REQUEST_JSON_TITLE_KEY_NAME));
+                    weiChat.setPicPath(jsonObject.getString(CommonInfo.WeiChatAPI.JSONKEY.REQUEST_JSON_IMG_KEY_NAME));
+                    weiChat.setId(jsonObject.getString(CommonInfo.WeiChatAPI.JSONKEY.REQUEST_JSON_ID_KEY_NAME));
+                    weiChat.setUrl(jsonObject.getString(CommonInfo.WeiChatAPI.JSONKEY.REQUEST_JSON_URL_KEY_NAME));
+                    weiChat.setSource(jsonObject.getString(CommonInfo.WeiChatAPI.JSONKEY.REQUEST_JSON_SOURCE_KEY_NAME));
+                    lists.add(weiChat);
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return lists;
     }
 }

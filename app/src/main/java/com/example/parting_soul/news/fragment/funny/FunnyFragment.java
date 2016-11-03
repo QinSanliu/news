@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.parting_soul.news.R;
+import com.example.parting_soul.news.activity.MainActivity;
 
 /**
  * Created by parting_soul on 2016/11/1.
@@ -15,6 +16,13 @@ import com.example.parting_soul.news.R;
 
 public class FunnyFragment extends Fragment {
     public static final String NAME = "funnyFragment";
+
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        ((MainActivity) getActivity()).setTitleName(R.string.funny);
+    }
 
     @Nullable
     @Override

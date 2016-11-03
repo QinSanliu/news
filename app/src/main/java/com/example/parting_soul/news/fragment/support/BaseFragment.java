@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.parting_soul.news.bean.News;
 import com.example.parting_soul.news.customview.LoadingPager;
 import com.example.parting_soul.news.utils.support.CommonInfo;
 import com.example.parting_soul.news.utils.support.LogUtils;
@@ -15,8 +14,7 @@ import com.example.parting_soul.news.utils.support.LogUtils;
 import java.util.List;
 
 /**
- * Created by parting_soul on 2016/10/6.
- * 抽象类 使得fragment无法预加载下一页的数据
+ * Created by parting_soul on 2016/11/3.
  */
 
 public abstract class BaseFragment<T> extends Fragment {
@@ -26,27 +24,9 @@ public abstract class BaseFragment<T> extends Fragment {
     protected boolean mIsPrepared;
 
     /**
-     * 当前页面是否对用户可见
-     */
-    protected boolean mIsVisibleToUser;
-
-    /**
      * 加载页面
      */
     protected LoadingPager mLoadingPage;
-
-
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser) {
-            mIsVisibleToUser = true;
-            onVisible();
-        } else {
-            mIsVisibleToUser = false;
-            onInVisible();
-        }
-    }
 
     @Nullable
     @Override
@@ -68,25 +48,11 @@ public abstract class BaseFragment<T> extends Fragment {
                 BaseFragment.this.updataUI();
             }
         };
-        LogUtils.d(CommonInfo.TAG, "-->onCreateView");
+//        LogUtils.d(CommonInfo.TAG, "--->111onCreateView" + mLoadingPage + " " + mIsPrepared + " " + mIsVisibleToUser);
         //已经布置好UI，可以开始显示页面并下载数据
         mIsPrepared = true;
         show();
         return mLoadingPage;
-    }
-
-    /**
-     * 当前页面可见时进行的操作
-     */
-    protected void onVisible() {
-        show();
-    }
-
-    /**
-     * 当前页面不可见时操作
-     */
-    protected void onInVisible() {
-
     }
 
     /**
@@ -101,6 +67,12 @@ public abstract class BaseFragment<T> extends Fragment {
      */
     public abstract void updataUI();
 
+    /**
+     * 拼接http url的地址参数
+     *
+     * @return String 返回拼接后的参数
+     */
+    protected abstract String initRequestUrlParam();
 
     /**
      * 从网络或从数据库加载数据，工作在子线程，不需另外开辟线程
@@ -108,14 +80,12 @@ public abstract class BaseFragment<T> extends Fragment {
     public abstract LoadingPager.LoadState loadData();
 
     /**
-     * 当布局被销毁时UI准备状态标志位置为false
+     * 解析下载的内容，并把数据缓存入数据库
+     *
+     * @param result 带解析的网络数据
+     * @return List<News>
      */
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        mIsPrepared = false;
-        mLoadingPage.initCurrentState();
-    }
+    public abstract List<T> parseJsonData(String result);
 
     /**
      * 判断下载数据结果的状态
@@ -123,7 +93,7 @@ public abstract class BaseFragment<T> extends Fragment {
      * @param lists 下载的结果
      * @return LoadingPager.LoadState 返回下载结果的状态
      */
-    public LoadingPager.LoadState getCheckResult(List<News> lists) {
+    public LoadingPager.LoadState getCheckResult(List<T> lists) {
         if (lists == null) {
             //下载失败
             return LoadingPager.LoadState.erro;
@@ -136,13 +106,26 @@ public abstract class BaseFragment<T> extends Fragment {
         }
     }
 
+
+    /**
+     * 当布局被销毁时UI准备状态标志位置为false
+     */
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mIsPrepared = false;
+        mLoadingPage.initCurrentState();
+    }
+
     /**
      * 显示页面加载<br>
      * 在界面可见并且UI已经布置好时加载页面，获取数据
      */
     public void show() {
-        if (mLoadingPage != null && mIsPrepared && mIsVisibleToUser) {
+        if (mLoadingPage != null && mIsPrepared) {
             mLoadingPage.show();
+            LogUtils.d(CommonInfo.TAG, "--->111" + "basefragment show");
         }
     }
+
 }

@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.example.parting_soul.news.R;
 import com.example.parting_soul.news.activity.MainActivity;
-import com.example.parting_soul.news.adapter.NewsDetailFragmentAdapter;
+import com.example.parting_soul.news.adapter.NewsPageFragmentAdapter;
 import com.example.parting_soul.news.bean.NewsKinds;
 import com.example.parting_soul.news.bean.Settings;
 import com.example.parting_soul.news.customview.HorizontalNavigation;
@@ -70,7 +70,7 @@ public class NewsFragment extends Fragment implements ViewPager.OnPageChangeList
     /**
      * 用于连接viewpager和fragment的适配器
      */
-    private NewsDetailFragmentAdapter mNewsPagerAdapter;
+    private NewsPageFragmentAdapter mNewsPagerAdapter;
 
     /**
      * 用作水平滚动导航条
@@ -122,7 +122,7 @@ public class NewsFragment extends Fragment implements ViewPager.OnPageChangeList
             fragment.setArguments(bundle);
             mNewsFragmentLists.add(fragment);
         }
-        mNewsPagerAdapter = new NewsDetailFragmentAdapter(getActivity().getSupportFragmentManager(), mNewsFragmentLists);
+        mNewsPagerAdapter = new NewsPageFragmentAdapter(getActivity().getSupportFragmentManager(), mNewsFragmentLists);
         mNewsViewPager.setAdapter(mNewsPagerAdapter);
     }
 

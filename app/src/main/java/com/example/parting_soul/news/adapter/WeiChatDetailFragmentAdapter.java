@@ -10,7 +10,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.parting_soul.news.R;
-import com.example.parting_soul.news.bean.News;
+import com.example.parting_soul.news.bean.WeiChat;
 import com.example.parting_soul.news.utils.image.ImageLoader;
 import com.example.parting_soul.news.utils.style.FontChangeManager;
 import com.example.parting_soul.news.utils.support.CommonInfo;
@@ -19,11 +19,10 @@ import com.example.parting_soul.news.utils.support.LogUtils;
 import java.util.List;
 
 /**
- * Created by parting_oul on 2016/10/4.
- * 新闻内容适配器
+ * Created by parting_soul on 2016/11/3.
  */
 
-public class NewsInfoAdapter extends BaseFragmentAdapter<News> {
+public class WeiChatDetailFragmentAdapter extends BaseFragmentAdapter<WeiChat> {
 
     /**
      * 上下文对象
@@ -36,29 +35,20 @@ public class NewsInfoAdapter extends BaseFragmentAdapter<News> {
     private ImageLoader mImageLoader;
 
 
-
-    /**
-     * 新闻数据项
-     */
     private ListView mListView;
-
 
     private static int textStyleId;
 
-    public NewsInfoAdapter(Context context, List<News> lists, ListView listView) {
+    public WeiChatDetailFragmentAdapter(Context context, List<WeiChat> list, ListView listView) {
         mContext = context;
-        mLists = lists;
+        mLists = list;
         mListView = listView;
-        mImageLoader = ImageLoader.newInstance(context);
         getPicUrl();
-        //为listview添加滚动监听
-        listView.setOnScrollListener(this);
+        mImageLoader = ImageLoader.newInstance(context);
+        mListView.setOnScrollListener(this);
         textStyleId = FontChangeManager.changeFontSize();
     }
 
-    /**
-     * 得到所有图片的URL地址
-     */
     @Override
     public void getPicUrl() {
         IMAGE_URLS = new String[mLists.size()];
@@ -67,55 +57,42 @@ public class NewsInfoAdapter extends BaseFragmentAdapter<News> {
         }
     }
 
-
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        WeiChatHolder holder = null;
         View view = null;
-        NewsHolder holder = null;
         if (convertView == null) {
-            //没有可重用的布局，就加载一个布局
-            view = LayoutInflater.from(mContext).inflate(R.layout.news_detail__listview_item, null);
-            //找到布局中所有的UI控件并且绑定在Holder中
-            holder = new NewsHolder();
-            holder.title = (TextView) view.findViewById(R.id.news_title);
-            holder.pic = (ImageView) view.findViewById(R.id.news_pic);
-            holder.authorName = (TextView) view.findViewById(R.id.news_author_name);
-            holder.date = (TextView) view.findViewById(R.id.news_date);
-            //给新加载的布局绑定Holder，以便布局重用
+            view = LayoutInflater.from(mContext).inflate(R.layout.weichat_fragment_item, null);
+            holder = new WeiChatHolder();
+            holder.pic = (ImageView) view.findViewById(R.id.weichat_pic);
+            holder.title = (TextView) view.findViewById(R.id.weichat_title);
+            holder.source = (TextView) view.findViewById(R.id.weichat_source);
             view.setTag(holder);
         } else {
-            //有可重用的布局
             view = convertView;
-            //得到绑定的Holder
-            holder = (NewsHolder) view.getTag();
+            holder = (WeiChatHolder) convertView.getTag();
         }
-        //为UI控件设置值
         holder.title.setText(mLists.get(position).getTitle());
         holder.title.setTextAppearance(mContext, textStyleId);
-        holder.authorName.setText(mLists.get(position).getAuthor_name());
-        holder.date.setText(mLists.get(position).getDate());
-//        holder.pic.setImageResource(R.mipmap.imageview_default_bc);
+        holder.source.setText(mLists.get(position).getSource());
 
         String url = mLists.get(position).getPicPath();
-        LogUtils.d(CommonInfo.TAG, "---->" + url + " ++ " + holder.pic);
         holder.pic.setTag(url);
         mImageLoader.loadImage(url, holder.pic);
-//        LogUtils.d(TAG, "getView: " + mLists.get(position).getTitle() + " " + position + " " + mLists.get(position).getPicPath());
         return view;
     }
 
-    class NewsHolder {
+    class WeiChatHolder {
         ImageView pic;
-        TextView title, date, authorName;
+        TextView title;
+        TextView source;
     }
-
-
 
     @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {
         //如果停止滑动就加载当前可见项的图片
         if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
-            mImageLoader.loadImage(mStart, mEnd, mListView,this);
+            mImageLoader.loadImage(mStart, mEnd, mListView, this);
         } else {
             mImageLoader.cancelAllAsyncTask();
         }
@@ -125,9 +102,10 @@ public class NewsInfoAdapter extends BaseFragmentAdapter<News> {
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
         mStart = firstVisibleItem;
         mEnd = firstVisibleItem + visibleItemCount;
-        LogUtils.i(CommonInfo.TAG, "NewsInfoAdapter-->onScroll-->onScroll start = " + mStart + " end = " + mEnd);
+        LogUtils.i(CommonInfo.TAG, "WeiChatDetailFragmentAdapter-->onScroll-->onScroll start = " + mStart + " end = " + mEnd);
         if (isFirstIn && visibleItemCount > 0 && mCanLoagImage) {
-            mImageLoader.loadImage(mStart, mEnd, mListView,this);
+            mImageLoader.loadImage(mStart, mEnd, mListView, this);
+            LogUtils.i(CommonInfo.TAG, "WeiChatDetailFragmentAdapter-->onScroll-->onScroll " + isFirstIn);
             isFirstIn = false;
         }
     }

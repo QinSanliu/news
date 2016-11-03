@@ -9,7 +9,9 @@ import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.example.parting_soul.news.R;
+import com.example.parting_soul.news.adapter.BaseFragmentAdapter;
 import com.example.parting_soul.news.adapter.NewsInfoAdapter;
+import com.example.parting_soul.news.adapter.WeiChatDetailFragmentAdapter;
 import com.example.parting_soul.news.bean.Settings;
 import com.example.parting_soul.news.utils.support.CommonInfo;
 import com.example.parting_soul.news.utils.network.HttpUtils;
@@ -123,11 +125,16 @@ public class ImageLoader {
      * @param end      可见新闻项的结束位置
      * @param listView 对应的ListView
      */
-    public void loadImage(int start, int end, ListView listView) {
+    public void loadImage(int start, int end, ListView listView, BaseFragmentAdapter adapter) {
         LogUtils.d(CommonInfo.TAG, "ImageLoader-->loadImage--->start = " + start + " end = " + end);
         for (int i = start; i < end; i++) {
             //找到对应的图片url地址
-            String url = ((NewsInfoAdapter) listView.getAdapter()).IMAGE_URLS[i];
+            String url = null;
+            if (adapter instanceof NewsInfoAdapter) {
+                url = ((NewsInfoAdapter) listView.getAdapter()).IMAGE_URLS[i];
+            } else if (adapter instanceof WeiChatDetailFragmentAdapter) {
+                url = ((WeiChatDetailFragmentAdapter) listView.getAdapter()).IMAGE_URLS[i];
+            }
             //根据url从一级缓存中找是否有该图片
             Bitmap bitmap = getBitmapFromCache(url);
             //根据图片控件Ta属性上绑定的url从listview中找到图片控件

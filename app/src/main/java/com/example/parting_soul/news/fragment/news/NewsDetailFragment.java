@@ -15,7 +15,7 @@ import com.example.parting_soul.news.activity.NewsMessageActivity;
 import com.example.parting_soul.news.adapter.NewsInfoAdapter;
 import com.example.parting_soul.news.bean.News;
 import com.example.parting_soul.news.bean.Settings;
-import com.example.parting_soul.news.fragment.support.BaseFragment;
+import com.example.parting_soul.news.fragment.support.BaseMulFragment;
 import com.example.parting_soul.news.utils.support.CollectionCheckStateManager;
 import com.example.parting_soul.news.utils.support.CommonInfo;
 import com.example.parting_soul.news.utils.support.LogUtils;
@@ -38,7 +38,7 @@ import static com.example.parting_soul.news.utils.support.CommonInfo.TAG;
  * 新闻碎片类
  */
 
-public class NewsDetailFragment extends BaseFragment<News> implements AdapterView.OnItemClickListener
+public class NewsDetailFragment extends BaseMulFragment<News> implements AdapterView.OnItemClickListener
         , PullToRefreshView.OnRefreshListener, CollectionCheckStateNotifiyCallBack {
     /**
      * 第三方下拉刷新类
@@ -206,7 +206,8 @@ public class NewsDetailFragment extends BaseFragment<News> implements AdapterVie
      *
      * @return String 返回拼接后的参数
      */
-    private String initRequestUrlParam() {
+    @Override
+    protected String initRequestUrlParam() {
         StringBuilder params = new StringBuilder();
         params.append(CommonInfo.NewsAPI.Params.REQUEST_URL_TYPR_NAME).append("=").append(mNewTypeParam)
                 .append("&").append(CommonInfo.NewsAPI.Params.REQUEST_URL_KEY_NAME).append("=")
@@ -277,10 +278,11 @@ public class NewsDetailFragment extends BaseFragment<News> implements AdapterVie
      * @param result 带解析的网络数据
      * @return List<News>
      */
+    @Override
     public List<News> parseJsonData(String result) {
         List<News> lists = null;
         //解析下载的数据
-        lists = JsonParseTool.parseJsonWidthJSONObject(result);
+        lists = JsonParseTool.parseNewsJsonWidthJSONObject(result);
 
         List<News> collection = manager.readCollectionNews();
         updataCollectionData(lists, collection);

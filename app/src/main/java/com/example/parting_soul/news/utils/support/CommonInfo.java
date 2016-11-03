@@ -79,6 +79,114 @@ public class CommonInfo {
         public static final int REQUEST_IMAGE_HEIGHT = 100;
     }
 
+    /**
+     * 微信精选接口有关的信息
+     */
+    public class WeiChatAPI {
+
+        /**
+         * 接口api的有关请求参数，地址等
+         */
+        public class Params {
+            /**
+             * 微信精选接口地址
+             */
+            public static final String REQUEST_URL = "http://v.juhe.cn/weixin/query";
+
+            /**
+             * 请求页码
+             */
+            public static final String REQUEST_PAGE_NO_NAME = "pno";
+
+            /**
+             * 请求条数
+             */
+            public static final String REQUEST_NUMS = "ps";
+
+            /**
+             * 返回数据格式
+             */
+            public static final String REQUEST_DATATYPE = "dtype";
+
+            /**
+             * 默认格式为json
+             */
+            public static final String REQUEST_TYPE = "json";
+
+            /**
+             * key
+             */
+            public static final String REQUEST_KEY_NAME = "key";
+
+            /**
+             * 参数值
+             */
+            public static final String REQUEST_KEY_VALUE = "a70d645e3a38d3446ed8d6c67ea1a10c";
+
+        }
+
+        public class JSONKEY {
+            /**
+             * json数据返回结果的键
+             */
+            public static final String RESPONSE_JSON_RESULT_KEY_NAME = "result";
+
+            /**
+             * 数据集合key
+             */
+            public static final String REQUEST_JSON_DATA_LISTS = "list";
+
+            /**
+             * 结果返回成功
+             */
+            public static final String RESQUEST_JSON_REASON_SUCCESS_KEY_VALUE = "success";
+
+            /**
+             * 结果返回状态键
+             */
+            public static final String REQUEST_JSON_REASON_KEY_NAME = "reason";
+
+            /**
+             * 图片键
+             */
+            public static final String REQUEST_JSON_IMG_KEY_NAME = "firstImg";
+
+            /**
+             * id
+             */
+            public static final String REQUEST_JSON_ID_KEY_NAME = "id";
+
+            /**
+             * 来源
+             */
+            public static final String REQUEST_JSON_SOURCE_KEY_NAME = "source";
+
+            /**
+             * 标题
+             */
+            public static final String REQUEST_JSON_TITLE_KEY_NAME = "title";
+
+            /**
+             * url
+             */
+            public static final String REQUEST_JSON_URL_KEY_NAME = "url";
+
+            /**
+             * 总共的页面数
+             */
+            public static final String REQUEST_JSON_TOLALPAGE_KEY_NAME = "totalPage";
+
+            /**
+             * 每次请求数目
+             */
+            public static final String REQUEST_JSON_ITEM_NUMS_KEY_NAME = "ps";
+
+            /**
+             * 当前页
+             */
+            public static final String REQUEST_JSON_PAGE_NO_KEY_NAME = "pno";
+        }
+    }
 
     /**
      * 新闻api接口有关的信息

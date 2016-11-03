@@ -210,24 +210,28 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         MenuItemInfo info = (MenuItemInfo) mMenuAdpater.getItem(position);
         switch (info.getNameId()) {
             case R.string.news:
+      //          switchContent(mCurrentFragment, new NewsFragment());
                 if (mFragmentManager.findFragmentByTag(NewsFragment.NAME) == null) {
                     mCurrentFragment = new NewsFragment();
                     setCurrentFragment(mCurrentFragment);
                 }
                 break;
             case R.string.weichat:
+ //               switchContent(mCurrentFragment, new WeiChatFragment());
                 if (mFragmentManager.findFragmentByTag(WeiChatFragment.NAME) == null) {
                     mCurrentFragment = new WeiChatFragment();
                     setCurrentFragment(mCurrentFragment);
                 }
                 break;
             case R.string.funny:
+ //               switchContent(mCurrentFragment, new FunnyFragment());
                 if (mFragmentManager.findFragmentByTag(FunnyFragment.NAME) == null) {
                     mCurrentFragment = new FunnyFragment();
                     setCurrentFragment(mCurrentFragment);
                 }
                 break;
             case R.string.collection:
+ //               switchContent(mCurrentFragment, new CollectionFragment());
                 if (mFragmentManager.findFragmentByTag(CollectionFragment.NAME) == null) {
                     mCurrentFragment = new CollectionFragment();
                     setCurrentFragment(mCurrentFragment);
@@ -255,6 +259,20 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         Intent mIntent = new Intent(context, MainActivity.class);
         mIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         context.startActivity(mIntent);
+    }
+
+    public void switchContent(Fragment from, Fragment to) {
+        if (mCurrentFragment != to) {
+            mCurrentFragment = to;
+            FragmentTransaction transaction = mFragmentManager.beginTransaction().setCustomAnimations(
+                    android.R.anim.fade_in, android.R.anim.fade_out);
+            if (!to.isAdded()) {    // 先判断是否被add过
+                transaction.hide(from).add(R.id.main_fragment, to).commit(); // 隐藏当前的fragment，add下一个到Activity中
+                LogUtils.d(CommonInfo.TAG, "--->1");
+            } else {
+                transaction.hide(from).show(to).commit(); // 隐藏当前的fragment，显示下一个
+            }
+        }
     }
 
     public void setCurrentFragment(Fragment fragment) {
