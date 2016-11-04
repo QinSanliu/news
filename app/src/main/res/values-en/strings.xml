@@ -79,4 +79,5 @@
     <string name="is_collected">The news is collected.</string>
     <string name="cancel_collected">The news is not collected.</string>
 
+    <string name="loading">loading...</string>
 </resources>

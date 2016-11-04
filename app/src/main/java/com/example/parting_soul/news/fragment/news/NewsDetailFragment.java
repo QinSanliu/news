@@ -313,11 +313,13 @@ public class NewsDetailFragment extends BaseMulFragment<News> implements Adapter
      * @param collection
      */
     private void updataCollectionData(List<News> lists, List<News> collection) {
-        for (int i = 0; i < lists.size(); i++) {
-            for (int j = 0; j < collection.size(); j++) {
-                if (lists.get(i).getTitle().equals(collection.get(j).getTitle())) {
-                    lists.get(i).setIs_collected(collection.get(j).is_collected());
-                    break;
+        if (lists != null && collection != null) {
+            for (int i = 0; i < lists.size(); i++) {
+                for (int j = 0; j < collection.size(); j++) {
+                    if (lists.get(i).getTitle().equals(collection.get(j).getTitle())) {
+                        lists.get(i).setIs_collected(collection.get(j).is_collected());
+                        break;
+                    }
                 }
             }
         }

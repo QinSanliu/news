@@ -124,7 +124,9 @@ public class WeiChatFragment extends BaseFragment<WeiChat> implements PullToRefr
 
     @Override
     public void onRefresh() {
-        mPullToRefreshView.setRefreshing(false);
+        mRequestPage = 1;
+        mParams = initRequestUrlParam();
+        new LoadDataAsync(true).execute();
     }
 
     @Override
@@ -135,11 +137,19 @@ public class WeiChatFragment extends BaseFragment<WeiChat> implements PullToRefr
     private void loadMore() {
         ++mRequestPage;
         mParams = initRequestUrlParam();
-        new LoadDataAsync().execute();
+        new LoadDataAsync(false).execute();
     }
 
 
     class LoadDataAsync extends AsyncTask<Void, Void, List<WeiChat>> {
+        /**
+         * 异步任务来自下拉刷新
+         */
+        private boolean mIsFromPullDownRefresh;
+
+        public LoadDataAsync(boolean fromPullDownRefresh) {
+            mIsFromPullDownRefresh = fromPullDownRefresh;
+        }
 
         @Override
         protected List<WeiChat> doInBackground(Void... params) {
@@ -150,14 +160,23 @@ public class WeiChatFragment extends BaseFragment<WeiChat> implements PullToRefr
 
         @Override
         protected void onPostExecute(List<WeiChat> result) {
-            if (result == null || result.size() == 0) {
+            if (result != null && result.size() == 0) {
+                if (mIsFromPullDownRefresh) {
+                    mLists.clear();
+                    mLists.addAll(result);
+                    mPullToRefreshView.setRefreshing(false);
+                } else {
+                    mLists.addAll(result);
 
-            } else {
-                mLists.addAll(result);
+                }
                 mWeiChatDetailFragmentAdapter.getPicUrl();
-                mListView.setLoadCompleted();
-                mWeiChatDetailFragmentAdapter.notifyDataSetChanged();
+            } else {
+                if (mIsFromPullDownRefresh) {
+                    mPullToRefreshView.setRefreshing(false);
+                }
             }
+            mListView.setLoadCompleted();
+            mWeiChatDetailFragmentAdapter.notifyDataSetChanged();
         }
     }
 }

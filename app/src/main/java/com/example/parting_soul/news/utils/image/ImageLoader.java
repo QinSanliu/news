@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.LruCache;
 import android.widget.HeaderViewListAdapter;
 import android.widget.ImageView;
@@ -245,6 +246,7 @@ public class ImageLoader {
         protected Bitmap doInBackground(String... params) {
             DiskLruCache.Snapshot snapshot = null;
             String imageUrl = params[0];
+            if (TextUtils.isEmpty(imageUrl)) return null;
             //将url进行MD5加密
             String key = MD5Utils.hashKeyForDisk(imageUrl);
             InputStream in = null;

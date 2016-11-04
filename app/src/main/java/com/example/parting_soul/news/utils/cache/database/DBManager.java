@@ -12,56 +12,21 @@ import com.example.parting_soul.news.utils.support.LogUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.parting_soul.news.utils.cache.database.NewsTable.NEWS_TABLE_AUTHOR_NAME;
+import static com.example.parting_soul.news.utils.cache.database.NewsTable.NEWS_TABLE_DATE;
+import static com.example.parting_soul.news.utils.cache.database.NewsTable.NEWS_TABLE_IS_COLLECTION;
+import static com.example.parting_soul.news.utils.cache.database.NewsTable.NEWS_TABLE_NAME;
+import static com.example.parting_soul.news.utils.cache.database.NewsTable.NEWS_TABLE_PICPATH;
+import static com.example.parting_soul.news.utils.cache.database.NewsTable.NEWS_TABLE_TITLE;
+import static com.example.parting_soul.news.utils.cache.database.NewsTable.NEWS_TABLE_URL;
+
 /**
  * Created by parting_soul on 2016/10/9.
  * 数据库管理类
  */
 
 public class DBManager {
-    /**
-     * 表名
-     */
-    public static final String NEWS_TABLE_NAME = "newsinfo";
 
-    /**
-     * 主键_id
-     */
-    public static final String NEWS_TABLE_ID = "_id";
-
-    /**
-     * 新闻标题
-     */
-    public static final String NEWS_TABLE_TITLE = "title";
-
-    /**
-     * 图片路径
-     */
-    public static final String NEWS_TABLE_PICPATH = "pic_path";
-
-    /**
-     * 新闻url
-     */
-    public static final String NEWS_TABLE_URL = "url";
-
-    /**
-     * 新闻发布日期
-     */
-    public static final String NEWS_TABLE_DATE = "date";
-
-    /**
-     * 作者名字
-     */
-    public static final String NEWS_TABLE_AUTHOR_NAME = "author_name";
-
-    /**
-     * 新闻类型
-     */
-    public static final String NEWS_TABLE_NEWS_TYPE = "news_type";
-
-    /**
-     * 是否被收藏
-     */
-    public static final String NEWS_TABLE_IS_COLLECTION = "news_is_collected";
 
     /**
      * 数据库帮助类
@@ -109,6 +74,7 @@ public class DBManager {
         database = helper.getReadableDatabase();
         if (isFirst) {
             databaseSize = mContext.getDatabasePath(SQLiteDatabaseHelper.DATABASE_NAME).length();
+            LogUtils.d(CommonInfo.TAG, "--->123 " + databaseSize);
             isFirst = false;
         }
     }
@@ -132,12 +98,12 @@ public class DBManager {
         if (news != null && newsType != null) {
             for (News n : news) {
                 StringBuilder sql = new StringBuilder();
-                sql.append("insert or replace into ").append(NEWS_TABLE_NAME).append(" ( ")
-                        .append(NEWS_TABLE_TITLE + "," + NEWS_TABLE_PICPATH + "," + NEWS_TABLE_AUTHOR_NAME
-                                + "," + NEWS_TABLE_URL + "," + NEWS_TABLE_DATE + "," + NEWS_TABLE_NEWS_TYPE + "," + NEWS_TABLE_IS_COLLECTION)
+                sql.append("insert or replace into ").append(NewsTable.NEWS_TABLE_NAME).append(" ( ")
+                        .append(NewsTable.NEWS_TABLE_TITLE + "," + NewsTable.NEWS_TABLE_PICPATH + "," + NewsTable.NEWS_TABLE_AUTHOR_NAME
+                                + "," + NewsTable.NEWS_TABLE_URL + "," + NewsTable.NEWS_TABLE_DATE + "," + NewsTable.NEWS_TABLE_NEWS_TYPE + "," + NewsTable.NEWS_TABLE_IS_COLLECTION)
                         .append(" ) values( ").append("'").append(n.getTitle() + "','" + n.getPicPath() + "','" + n.getAuthor_name()
                         + "','" + n.getUrl() + "','" + n.getDate() + "','" + newsType).append("',(").append("select ")
-                        .append(NEWS_TABLE_IS_COLLECTION).append(" from ").append(NEWS_TABLE_NAME).append(" where title = '" + n.getTitle() + "') )");
+                        .append(NewsTable.NEWS_TABLE_IS_COLLECTION).append(" from ").append(NewsTable.NEWS_TABLE_NAME).append(" where title = '" + n.getTitle() + "') )");
                 database.execSQL(sql.toString());
                 LogUtils.d(CommonInfo.TAG, "--->" + sql.toString());
             }
@@ -152,8 +118,8 @@ public class DBManager {
      */
     public void deleteNewsCacheFromDataBase(String newsType) {
         getConnected();
-        database.delete(NEWS_TABLE_NAME, NEWS_TABLE_NEWS_TYPE + " = ? and " + NEWS_TABLE_IS_COLLECTION + " = ? "
-                , new String[]{newsType, "0"});
+        database.delete(NewsTable.NEWS_TABLE_NAME, NewsTable.NEWS_TABLE_NEWS_TYPE + " = ? and (" + NewsTable.NEWS_TABLE_IS_COLLECTION + " = ? or  "
+                + NEWS_TABLE_IS_COLLECTION + " is null )", new String[]{newsType, "0"});
     }
 
     /**
@@ -161,7 +127,9 @@ public class DBManager {
      */
     public boolean deleteAllCacheFromDataBase() {
         getConnected();
-        int result = database.delete(NEWS_TABLE_NAME, NEWS_TABLE_IS_COLLECTION + " = ? ", new String[]{"0"});
+        int result = database.delete(NewsTable.NEWS_TABLE_NAME, NewsTable.NEWS_TABLE_IS_COLLECTION + " != ? or  "
+                + NEWS_TABLE_IS_COLLECTION + " is null ", new String[]{"0"});
+        LogUtils.d(CommonInfo.TAG, "--->123 result " + result);
         if (result != -1) return true;
         return false;
     }
@@ -175,7 +143,7 @@ public class DBManager {
      */
     public List<News> readNewsCacheFromDatabase(String newsType) {
         getConnected();
-        Cursor cursor = database.query(NEWS_TABLE_NAME, null, NEWS_TABLE_NEWS_TYPE + " = ? ",
+        Cursor cursor = database.query(NewsTable.NEWS_TABLE_NAME, null, NewsTable.NEWS_TABLE_NEWS_TYPE + " = ? ",
                 new String[]{newsType}, null, null, null, null);
         //   Cursor cursor = database.rawQuery("select rowid,* from newsinfo where news_type = ? ", new String[]{newsType});
         List<News> lists = null;
@@ -185,12 +153,12 @@ public class DBManager {
             while (cursor.moveToNext()) {
                 News news = new News();
                 //               int rowid = cursor.getInt(cursor.getColumnIndex("rowid"));
-                news.setTitle(cursor.getString(cursor.getColumnIndex(NEWS_TABLE_TITLE)));
-                news.setAuthor_name(cursor.getString(cursor.getColumnIndex(NEWS_TABLE_AUTHOR_NAME)));
-                news.setUrl(cursor.getString(cursor.getColumnIndex(NEWS_TABLE_URL)));
-                news.setDate(cursor.getString(cursor.getColumnIndex(NEWS_TABLE_DATE)));
-                news.setPicPath(cursor.getString(cursor.getColumnIndex(NEWS_TABLE_PICPATH)));
-                news.setIs_collected(cursor.getInt(cursor.getColumnIndex(NEWS_TABLE_IS_COLLECTION)) == 1);
+                news.setTitle(cursor.getString(cursor.getColumnIndex(NewsTable.NEWS_TABLE_TITLE)));
+                news.setAuthor_name(cursor.getString(cursor.getColumnIndex(NewsTable.NEWS_TABLE_AUTHOR_NAME)));
+                news.setUrl(cursor.getString(cursor.getColumnIndex(NewsTable.NEWS_TABLE_URL)));
+                news.setDate(cursor.getString(cursor.getColumnIndex(NewsTable.NEWS_TABLE_DATE)));
+                news.setPicPath(cursor.getString(cursor.getColumnIndex(NewsTable.NEWS_TABLE_PICPATH)));
+                news.setIs_collected(cursor.getInt(cursor.getColumnIndex(NewsTable.NEWS_TABLE_IS_COLLECTION)) == 1);
                 lists.add(news);
                 //             LogUtils.d(CommonInfo.TAG, "-->read" + rowid + " " + news.getTitle() + " " + news.is_collected());
                 isHaveCache = true;

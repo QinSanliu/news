@@ -1,6 +1,8 @@
 package com.example.parting_soul.news.utils.cache;
 
 import com.example.parting_soul.news.Interface.callback.ClearCacheCallBack;
+import com.example.parting_soul.news.utils.support.CommonInfo;
+import com.example.parting_soul.news.utils.support.LogUtils;
 import com.example.parting_soul.news.utils.support.NewsApplication;
 import com.example.parting_soul.news.utils.image.ImageLoader;
 import com.example.parting_soul.news.utils.cache.database.DBManager;
@@ -33,6 +35,7 @@ public class CacheManager {
         ImageLoader loader = ImageLoader.newInstance(NewsApplication.getContext());
         long picSize = loader.getImageCacheSize();
         long dataSize = getDataBaseCacheSize();
+        LogUtils.d(CommonInfo.TAG, "--->123 " + dataSize + "  " + picSize + " " + DATABASE_INIT_SIZE);
         return transformToString(picSize + dataSize - DATABASE_INIT_SIZE);
     }
 

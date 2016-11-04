@@ -58,11 +58,13 @@ public class LoadMoreItemListView extends ListView implements AbsListView.OnScro
 
 
     public LoadMoreItemListView(Context context) {
-        this(context, null);
+        super(context);
+        init(context);
     }
 
     public LoadMoreItemListView(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
+        super(context, attrs);
+        init(context);
     }
 
     public LoadMoreItemListView(Context context, AttributeSet attrs, int defStyleAttr) {

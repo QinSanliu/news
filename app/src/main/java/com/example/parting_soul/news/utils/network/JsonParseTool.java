@@ -12,7 +12,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by parting_soul on 2016/10/5.
@@ -138,6 +140,10 @@ public class JsonParseTool {
                     weiChat.setId(jsonObject.getString(CommonInfo.WeiChatAPI.JSONKEY.REQUEST_JSON_ID_KEY_NAME));
                     weiChat.setUrl(jsonObject.getString(CommonInfo.WeiChatAPI.JSONKEY.REQUEST_JSON_URL_KEY_NAME));
                     weiChat.setSource(jsonObject.getString(CommonInfo.WeiChatAPI.JSONKEY.REQUEST_JSON_SOURCE_KEY_NAME));
+                    if (weiChat.getPicPath().equals("")) {
+                        //图片url作为寻找imageview的标志不能重复
+                        weiChat.setPicPath(new Date().toString() + new Random(100000));
+                    }
                     lists.add(weiChat);
                 }
             }
