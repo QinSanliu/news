@@ -1,6 +1,5 @@
 package com.example.parting_soul.news.adapter;
 
-import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 
 import java.util.List;
@@ -9,7 +8,7 @@ import java.util.List;
  * Created by parting_soul on 2016/11/3.
  */
 
-public abstract class BaseFragmentAdapter<T> extends BaseAdapter implements AbsListView.OnScrollListener {
+public abstract class BaseFragmentAdapter<T> extends BaseAdapter {
 
     /**
      * 数据源

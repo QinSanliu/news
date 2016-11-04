@@ -1,15 +1,16 @@
 package com.example.parting_soul.news.fragment.weichat;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
-import android.widget.ListView;
 
 import com.example.parting_soul.news.R;
 import com.example.parting_soul.news.activity.MainActivity;
 import com.example.parting_soul.news.adapter.WeiChatDetailFragmentAdapter;
 import com.example.parting_soul.news.bean.WeiChat;
+import com.example.parting_soul.news.customview.LoadMoreItemListView;
 import com.example.parting_soul.news.customview.LoadingPager;
 import com.example.parting_soul.news.fragment.support.BaseFragment;
 import com.example.parting_soul.news.utils.cache.database.DBManager;
@@ -22,11 +23,14 @@ import com.yalantis.phoenix.PullToRefreshView;
 
 import java.util.List;
 
+import static com.example.parting_soul.news.utils.network.HttpUtils.HttpPostMethod;
+
 /**
  * Created by parting_soul on 2016/11/1.
  */
 
-public class WeiChatFragment extends BaseFragment<WeiChat> {
+public class WeiChatFragment extends BaseFragment<WeiChat> implements PullToRefreshView.OnRefreshListener
+        , LoadMoreItemListView.LoadMoreItemListener {
     public static final String NAME = "weichatfragment";
 
     /**
@@ -38,19 +42,19 @@ public class WeiChatFragment extends BaseFragment<WeiChat> {
 
     private String mParams;
 
-    private int mCurrentPage;
+    private int mCurrentPage = 1;
 
-    private int mRequestPage;
+    private int mRequestPage = 1;
 
-    private ListView mListView;
+    private LoadMoreItemListView mListView;
 
     private PullToRefreshView mPullToRefreshView;
 
     private WeiChatDetailFragmentAdapter mWeiChatDetailFragmentAdapter;
 
-    public static int REQUEST_ITEM_NUMS = 100;
+    public static int REQUEST_ITEM_NUMS = 30;
 
-    public static int REQUEST_MAX_PAGE_NUMS = 5;
+    public static int REQUEST_MAX_PAGE_NUMS = 17;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -75,7 +79,9 @@ public class WeiChatFragment extends BaseFragment<WeiChat> {
     @Override
     public View createSuccessPage() {
         View view = View.inflate(getActivity(), R.layout.weichat_fragment_layout, null);
-        mListView = (ListView) view.findViewById(R.id.list_view);
+        mListView = (LoadMoreItemListView) view.findViewById(R.id.list_view);
+        mPullToRefreshView = (PullToRefreshView) view.findViewById(R.id.pull_to_refresh);
+        mPullToRefreshView.setOnRefreshListener(this);
         LogUtils.d(CommonInfo.TAG, "--->111" + "createSuccess()");
         return view;
     }
@@ -88,9 +94,10 @@ public class WeiChatFragment extends BaseFragment<WeiChat> {
         mWeiChatDetailFragmentAdapter.setIsCanLoadImage(true);
         //为listview设置适配器
         mListView.setAdapter(mWeiChatDetailFragmentAdapter);
+        mListView.setOnLoadMoreListener(this);
         mWeiChatDetailFragmentAdapter.notifyDataSetChanged();
 
-        LogUtils.d(CommonInfo.TAG, "-->lists 1" + mLists.size());
+        LogUtils.d(CommonInfo.TAG, "-->lists 1 " + mLists.size());
     }
 
     @Override
@@ -101,7 +108,7 @@ public class WeiChatFragment extends BaseFragment<WeiChat> {
             //           lists = manager.readNewsCacheFromDatabase(mNewTypeParam);
             LogUtils.d(CommonInfo.TAG, "network unavailable ");
         } else {
-            String result = HttpUtils.HttpPostMethod(CommonInfo.WeiChatAPI.Params.REQUEST_URL,
+            String result = HttpPostMethod(CommonInfo.WeiChatAPI.Params.REQUEST_URL,
                     mParams, CommonInfo.ENCODE_TYPE);
             Log.d(CommonInfo.TAG, "-->" + result);
             lists = parseJsonData(result);
@@ -115,4 +122,42 @@ public class WeiChatFragment extends BaseFragment<WeiChat> {
         return JsonParseTool.parseWeiChatJsonWidthJSONObject(result);
     }
 
+    @Override
+    public void onRefresh() {
+        mPullToRefreshView.setRefreshing(false);
+    }
+
+    @Override
+    public void onLoadMore() {
+        loadMore();
+    }
+
+    private void loadMore() {
+        ++mRequestPage;
+        mParams = initRequestUrlParam();
+        new LoadDataAsync().execute();
+    }
+
+
+    class LoadDataAsync extends AsyncTask<Void, Void, List<WeiChat>> {
+
+        @Override
+        protected List<WeiChat> doInBackground(Void... params) {
+            String result = HttpUtils.HttpPostMethod(CommonInfo.WeiChatAPI.Params.REQUEST_URL,
+                    mParams, CommonInfo.ENCODE_TYPE);
+            return parseJsonData(result);
+        }
+
+        @Override
+        protected void onPostExecute(List<WeiChat> result) {
+            if (result == null || result.size() == 0) {
+
+            } else {
+                mLists.addAll(result);
+                mWeiChatDetailFragmentAdapter.getPicUrl();
+                mListView.setLoadCompleted();
+                mWeiChatDetailFragmentAdapter.notifyDataSetChanged();
+            }
+        }
+    }
 }

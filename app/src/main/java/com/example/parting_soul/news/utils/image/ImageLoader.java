@@ -5,19 +5,19 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.util.LruCache;
+import android.widget.HeaderViewListAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.example.parting_soul.news.R;
 import com.example.parting_soul.news.adapter.BaseFragmentAdapter;
-import com.example.parting_soul.news.adapter.NewsInfoAdapter;
 import com.example.parting_soul.news.adapter.WeiChatDetailFragmentAdapter;
 import com.example.parting_soul.news.bean.Settings;
-import com.example.parting_soul.news.utils.support.CommonInfo;
-import com.example.parting_soul.news.utils.network.HttpUtils;
-import com.example.parting_soul.news.utils.support.LogUtils;
-import com.example.parting_soul.news.utils.network.NetworkInfo;
 import com.example.parting_soul.news.utils.cache.DiskLruCacheHelper;
+import com.example.parting_soul.news.utils.network.HttpUtils;
+import com.example.parting_soul.news.utils.network.NetworkInfo;
+import com.example.parting_soul.news.utils.support.CommonInfo;
+import com.example.parting_soul.news.utils.support.LogUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -130,10 +130,14 @@ public class ImageLoader {
         for (int i = start; i < end; i++) {
             //找到对应的图片url地址
             String url = null;
-            if (adapter instanceof NewsInfoAdapter) {
-                url = ((NewsInfoAdapter) listView.getAdapter()).IMAGE_URLS[i];
-            } else if (adapter instanceof WeiChatDetailFragmentAdapter) {
-                url = ((WeiChatDetailFragmentAdapter) listView.getAdapter()).IMAGE_URLS[i];
+            if (adapter instanceof WeiChatDetailFragmentAdapter) {
+                if (listView.getAdapter() instanceof HeaderViewListAdapter) {
+                    HeaderViewListAdapter adapter1 = (HeaderViewListAdapter) listView.getAdapter();
+                    url = ((BaseFragmentAdapter) adapter1.getWrappedAdapter()).IMAGE_URLS[i];
+                    LogUtils.d(CommonInfo.TAG, "WeiChat i" + i + "url");
+                }
+            } else {
+                url = adapter.IMAGE_URLS[i];
             }
             //根据url从一级缓存中找是否有该图片
             Bitmap bitmap = getBitmapFromCache(url);

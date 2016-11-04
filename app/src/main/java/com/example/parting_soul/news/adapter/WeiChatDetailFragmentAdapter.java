@@ -4,13 +4,12 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.parting_soul.news.R;
 import com.example.parting_soul.news.bean.WeiChat;
+import com.example.parting_soul.news.customview.LoadMoreItemListView;
 import com.example.parting_soul.news.utils.image.ImageLoader;
 import com.example.parting_soul.news.utils.style.FontChangeManager;
 import com.example.parting_soul.news.utils.support.CommonInfo;
@@ -22,7 +21,7 @@ import java.util.List;
  * Created by parting_soul on 2016/11/3.
  */
 
-public class WeiChatDetailFragmentAdapter extends BaseFragmentAdapter<WeiChat> {
+public class WeiChatDetailFragmentAdapter extends BaseFragmentAdapter<WeiChat> implements LoadMoreItemListView.LoadImageListener {
 
     /**
      * 上下文对象
@@ -35,17 +34,17 @@ public class WeiChatDetailFragmentAdapter extends BaseFragmentAdapter<WeiChat> {
     private ImageLoader mImageLoader;
 
 
-    private ListView mListView;
+    private LoadMoreItemListView mListView;
 
     private static int textStyleId;
 
-    public WeiChatDetailFragmentAdapter(Context context, List<WeiChat> list, ListView listView) {
+    public WeiChatDetailFragmentAdapter(Context context, List<WeiChat> list, LoadMoreItemListView listView) {
         mContext = context;
         mLists = list;
         mListView = listView;
         getPicUrl();
         mImageLoader = ImageLoader.newInstance(context);
-        mListView.setOnScrollListener(this);
+        listView.setOnLoadImageListener(this);
         textStyleId = FontChangeManager.changeFontSize();
     }
 
@@ -89,17 +88,13 @@ public class WeiChatDetailFragmentAdapter extends BaseFragmentAdapter<WeiChat> {
     }
 
     @Override
-    public void onScrollStateChanged(AbsListView view, int scrollState) {
-        //如果停止滑动就加载当前可见项的图片
-        if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
-            mImageLoader.loadImage(mStart, mEnd, mListView, this);
-        } else {
-            mImageLoader.cancelAllAsyncTask();
-        }
+    public void onLoadImage() {
+        LogUtils.d(CommonInfo.TAG, "WeiChat aa " + mStart + " " + mEnd);
+        mImageLoader.loadImage(mStart, mEnd, mListView, this);
     }
 
     @Override
-    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+    public void onLoadImage(int firstVisibleItem, int visibleItemCount) {
         mStart = firstVisibleItem;
         mEnd = firstVisibleItem + visibleItemCount;
         LogUtils.i(CommonInfo.TAG, "WeiChatDetailFragmentAdapter-->onScroll-->onScroll start = " + mStart + " end = " + mEnd);
@@ -109,5 +104,33 @@ public class WeiChatDetailFragmentAdapter extends BaseFragmentAdapter<WeiChat> {
             isFirstIn = false;
         }
     }
+
+    @Override
+    public void onDisLoadImage() {
+        mImageLoader.cancelAllAsyncTask();
+    }
+
+
+//    @Override
+//    public void onScrollStateChanged(AbsListView view, int scrollState) {
+//        //如果停止滑动就加载当前可见项的图片
+//        if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
+//            mImageLoader.loadImage(mStart, mEnd, mListView, this);
+//        } else {
+//            mImageLoader.cancelAllAsyncTask();
+//        }
+//    }
+//
+//    @Override
+//    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+//        mStart = firstVisibleItem;
+//        mEnd = firstVisibleItem + visibleItemCount;
+//        LogUtils.i(CommonInfo.TAG, "WeiChatDetailFragmentAdapter-->onScroll-->onScroll start = " + mStart + " end = " + mEnd);
+//        if (isFirstIn && visibleItemCount > 0 && mCanLoagImage) {
+//            mImageLoader.loadImage(mStart, mEnd, mListView, this);
+//            LogUtils.i(CommonInfo.TAG, "WeiChatDetailFragmentAdapter-->onScroll-->onScroll " + isFirstIn);
+//            isFirstIn = false;
+//        }
+//    }
 
 }

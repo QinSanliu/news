@@ -23,7 +23,7 @@ import java.util.List;
  * 新闻内容适配器
  */
 
-public class NewsInfoAdapter extends BaseFragmentAdapter<News> {
+public class NewsInfoAdapter extends BaseFragmentAdapter<News> implements AbsListView.OnScrollListener {
 
     /**
      * 上下文对象
@@ -34,7 +34,6 @@ public class NewsInfoAdapter extends BaseFragmentAdapter<News> {
      * 图片加载类
      */
     private ImageLoader mImageLoader;
-
 
 
     /**
@@ -110,12 +109,11 @@ public class NewsInfoAdapter extends BaseFragmentAdapter<News> {
     }
 
 
-
     @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {
         //如果停止滑动就加载当前可见项的图片
         if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
-            mImageLoader.loadImage(mStart, mEnd, mListView,this);
+            mImageLoader.loadImage(mStart, mEnd, mListView, this);
         } else {
             mImageLoader.cancelAllAsyncTask();
         }
@@ -127,7 +125,7 @@ public class NewsInfoAdapter extends BaseFragmentAdapter<News> {
         mEnd = firstVisibleItem + visibleItemCount;
         LogUtils.i(CommonInfo.TAG, "NewsInfoAdapter-->onScroll-->onScroll start = " + mStart + " end = " + mEnd);
         if (isFirstIn && visibleItemCount > 0 && mCanLoagImage) {
-            mImageLoader.loadImage(mStart, mEnd, mListView,this);
+            mImageLoader.loadImage(mStart, mEnd, mListView, this);
             isFirstIn = false;
         }
     }
