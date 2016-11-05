@@ -5,6 +5,7 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AbsListView;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -55,6 +56,8 @@ public class LoadMoreItemListView extends ListView implements AbsListView.OnScro
      * 进度条
      */
     private ProgressBar mProgressBar;
+
+    private FrameLayout frameLayout;
 
 
     public LoadMoreItemListView(Context context) {
@@ -115,14 +118,17 @@ public class LoadMoreItemListView extends ListView implements AbsListView.OnScro
                 mLoadImageListener.onLoadImage();
             }
             LogUtils.d(CommonInfo.TAG, "WeiChat LoadImageListener" + totalItemNum + " " + view.getLastVisiblePosition());
-            if (!isLoading && lastVisibleIndex == totalItemNum - 1) {
+            if (!isLoading && lastVisibleIndex == totalItemNum - 1 && scrollState == OnScrollListener.SCROLL_STATE_IDLE) {
                 //拉倒最后面时显示进度条，并加载数据
                 isLoading = true;
                 setLoadingState();
+//                mFootView.setVisibility(View.VISIBLE);
+
                 if (mLoadMoreListener != null) {
                     LogUtils.d(CommonInfo.TAG, "weichat pos" + this.getFirstVisiblePosition() + " " + this.getChildAt(0).getTop());
                     mLoadMoreListener.onLoadMore();
                 }
+                //               mFootView.setVisibility(View.GONE);
             }
         } else {
             //滑动时通知取消图片的加载

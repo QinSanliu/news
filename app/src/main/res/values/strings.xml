@@ -35,7 +35,7 @@
     <!-- 左侧侧滑菜单项标题内容-->
     <string name="news">新闻</string>
     <string name="weichat">精选</string>
-    <string name="funny">搞笑</string>
+    <string name="funny">段子</string>
     <string name="collection">收藏</string>
     <string name="night">夜间</string>
     <string name="about">关于</string>
@@ -101,6 +101,8 @@
     <string name="tip_content">确定要清除所有缓存吗?</string>
     <string name="certain">确定</string>
     <string name="cancel">取消</string>
+
+    <string name="press_again">再按一次退出</string>
 
     <string name="clearing">正在清除</string>
     <string name="clear_success">清除成功!</string>

@@ -5,9 +5,11 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 
 import com.example.parting_soul.news.R;
 import com.example.parting_soul.news.activity.MainActivity;
+import com.example.parting_soul.news.activity.MessageActivity;
 import com.example.parting_soul.news.adapter.WeiChatDetailFragmentAdapter;
 import com.example.parting_soul.news.bean.WeiChat;
 import com.example.parting_soul.news.customview.LoadMoreItemListView;
@@ -16,7 +18,7 @@ import com.example.parting_soul.news.fragment.support.BaseFragment;
 import com.example.parting_soul.news.utils.cache.database.DBManager;
 import com.example.parting_soul.news.utils.network.HttpUtils;
 import com.example.parting_soul.news.utils.network.JsonParseTool;
-import com.example.parting_soul.news.utils.network.NetworkInfo;
+import com.example.parting_soul.news.utils.support.CollectionCheckStateManager;
 import com.example.parting_soul.news.utils.support.CommonInfo;
 import com.example.parting_soul.news.utils.support.LogUtils;
 import com.yalantis.phoenix.PullToRefreshView;
@@ -30,13 +32,8 @@ import static com.example.parting_soul.news.utils.network.HttpUtils.HttpPostMeth
  */
 
 public class WeiChatFragment extends BaseFragment<WeiChat> implements PullToRefreshView.OnRefreshListener
-        , LoadMoreItemListView.LoadMoreItemListener {
+        , LoadMoreItemListView.LoadMoreItemListener, AdapterView.OnItemClickListener {
     public static final String NAME = "weichatfragment";
-
-    /**
-     * 数据库管理类
-     */
-    private DBManager manager;
 
     private List<WeiChat> mLists;
 
@@ -56,11 +53,16 @@ public class WeiChatFragment extends BaseFragment<WeiChat> implements PullToRefr
 
     public static int REQUEST_MAX_PAGE_NUMS = 17;
 
+    public WeiChat mCurrentSelectedWeiChat;
+
+    public DBManager mDBManager;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ((MainActivity) getActivity()).setTitleName(R.string.weichat);
         mParams = initRequestUrlParam();
+        mDBManager = DBManager.getDBManager(getActivity());
         LogUtils.d(CommonInfo.TAG, "--->111" + "onCreate() " + mParams);
     }
 
@@ -82,6 +84,7 @@ public class WeiChatFragment extends BaseFragment<WeiChat> implements PullToRefr
         mListView = (LoadMoreItemListView) view.findViewById(R.id.list_view);
         mPullToRefreshView = (PullToRefreshView) view.findViewById(R.id.pull_to_refresh);
         mPullToRefreshView.setOnRefreshListener(this);
+        mListView.setOnItemClickListener(this);
         LogUtils.d(CommonInfo.TAG, "--->111" + "createSuccess()");
         return view;
     }
@@ -103,15 +106,13 @@ public class WeiChatFragment extends BaseFragment<WeiChat> implements PullToRefr
     @Override
     public LoadingPager.LoadState loadData() {
         LogUtils.d(CommonInfo.TAG, "--->111" + "loadData()");
-        List<WeiChat> lists = null;
-        if (!NetworkInfo.isNetworkAvailable()) {
-            //           lists = manager.readNewsCacheFromDatabase(mNewTypeParam);
-            LogUtils.d(CommonInfo.TAG, "network unavailable ");
-        } else {
+        List<WeiChat> lists = mDBManager.readWeiChatCacheFromDatabase(mRequestPage);
+        if (lists == null) {
             String result = HttpPostMethod(CommonInfo.WeiChatAPI.Params.REQUEST_URL,
                     mParams, CommonInfo.ENCODE_TYPE);
-            Log.d(CommonInfo.TAG, "-->" + result);
+            Log.d(CommonInfo.TAG, "-->is from web " + lists + " " + result);
             lists = parseJsonData(result);
+            addToDataBase(lists);
         }
         mLists = lists;
         return getCheckResult(mLists);
@@ -137,7 +138,18 @@ public class WeiChatFragment extends BaseFragment<WeiChat> implements PullToRefr
     private void loadMore() {
         ++mRequestPage;
         mParams = initRequestUrlParam();
+        LogUtils.d(CommonInfo.TAG, "weichat aa mparam" + mParams);
         new LoadDataAsync(false).execute();
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        //当前fragment可见时设置回调接口
+//        mCollectionCheckStateManager = CollectionCheckStateManager.newInstance();
+//        mCollectionCheckStateManager.setNotifyVisibleNewsFragmentCallBack(this);
+        mCurrentSelectedWeiChat = mLists.get(position);
+        MessageActivity.startActivity(getActivity(), mCurrentSelectedWeiChat.getUrl(),
+                mCurrentSelectedWeiChat.getTitle(), mCurrentSelectedWeiChat.is_collected(), CollectionCheckStateManager.FROM_WEICHATFRAGMENT);
     }
 
 
@@ -153,14 +165,20 @@ public class WeiChatFragment extends BaseFragment<WeiChat> implements PullToRefr
 
         @Override
         protected List<WeiChat> doInBackground(Void... params) {
-            String result = HttpUtils.HttpPostMethod(CommonInfo.WeiChatAPI.Params.REQUEST_URL,
-                    mParams, CommonInfo.ENCODE_TYPE);
-            return parseJsonData(result);
+            List<WeiChat> lists = mDBManager.readWeiChatCacheFromDatabase(mRequestPage);
+            if (lists == null) {
+                String result = HttpUtils.HttpPostMethod(CommonInfo.WeiChatAPI.Params.REQUEST_URL,
+                        mParams, CommonInfo.ENCODE_TYPE);
+                lists = parseJsonData(result);
+                addToDataBase(lists);
+            }
+            return lists;
         }
 
         @Override
         protected void onPostExecute(List<WeiChat> result) {
-            if (result != null && result.size() == 0) {
+            if (result != null && result.size() != 0) {
+                LogUtils.d(CommonInfo.TAG, "weichat aa result size " + result.size());
                 if (mIsFromPullDownRefresh) {
                     mLists.clear();
                     mLists.addAll(result);
@@ -171,12 +189,28 @@ public class WeiChatFragment extends BaseFragment<WeiChat> implements PullToRefr
                 }
                 mWeiChatDetailFragmentAdapter.getPicUrl();
             } else {
+                LogUtils.d(CommonInfo.TAG, "weichat aa result null ");
                 if (mIsFromPullDownRefresh) {
                     mPullToRefreshView.setRefreshing(false);
                 }
             }
-            mListView.setLoadCompleted();
             mWeiChatDetailFragmentAdapter.notifyDataSetChanged();
+            mListView.setLoadCompleted();
         }
+    }
+
+    /**
+     * 将数据加入数据库
+     *
+     * @param lists
+     */
+    public void addToDataBase(final List<WeiChat> lists) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                //将数据写入数据库
+                mDBManager.addWeiChatCaCheToDataBase(lists);
+            }
+        }).start();
     }
 }

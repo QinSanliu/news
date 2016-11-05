@@ -19,6 +19,11 @@ public class CollectionCheckStateManager {
     public static final int FROM_COLLECTIONFRAGMENT = 0x1112;
 
     /**
+     * 来自WeiChatFragment
+     */
+    public static final int FROM_WEICHATFRAGMENT = 0x1122;
+
+    /**
      * 通知可见的NewsFragment更新
      */
     private CollectionCheckStateNotifiyCallBack mNotifyVisibleNewsFragmentCallBack;

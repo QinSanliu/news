@@ -6,7 +6,7 @@
     <!-- 左侧侧滑菜单项标题内容-->
     <string name="news">News</string>
     <string name="weichat">Featured</string>
-    <string name="funny">Happy</string>
+    <string name="funny">Joke</string>
     <string name="collection">Collection</string>
     <string name="night">Nighmode</string>
     <string name="about">About</string>
@@ -80,4 +80,6 @@
     <string name="cancel_collected">The news is not collected.</string>
 
     <string name="loading">loading...</string>
+
+    <string name="press_again">Press again to exit</string>
 </resources>

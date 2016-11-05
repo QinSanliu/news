@@ -62,7 +62,7 @@ public class CommonInfo {
         /**
          * 图片缓存的占SD空间的最大内存
          */
-        public static final long IMAGE_CACHE_SIZE = 30 * 1024 * 1024;
+        public static final long IMAGE_CACHE_SIZE = 50 * 1024 * 1024;
     }
 
     /**
@@ -304,6 +304,77 @@ public class CommonInfo {
              */
             public static final int RESPONSE_JSON_SERVER_ERROR = 200000;
 
+        }
+    }
+
+    public class JokeApI {
+        public class Param {
+            /**
+             * 接口地址
+             */
+            public static final String JOKR_REQUEST_URL = "http://japi.juhe.cn/joke/content/text.from";
+
+            /**
+             * 请求页号
+             */
+            public static final String JOKE_REQUEST_PAGE = "page";
+
+            /**
+             * 页的大小
+             */
+            public static final String JOKE_REQUEST_PAGE_SIZE = "pagesize";
+
+            /**
+             * key
+             */
+            public static final String JOKE_REQUEST_KEY = "key";
+
+            /**
+             * key - value
+             */
+            public static final String JOKE_REQUEST_KEY_VALUE = "dbc89165f9017122db52cd6c22eb8fcf";
+        }
+
+        public class JsonKey {
+            /**
+             * 返回状态
+             */
+            public static final String JOKE_REQUEST_JSON_REASON = "reason";
+
+            /**
+             * 返回成功
+             */
+            public static final String JOKE_REQUEST_JSON_REASON_SUCCESS = "Success";
+
+            /**
+             * 返回结果
+             */
+            public static final String JOKE_REQUEST_JSON_RESULT = "result";
+
+            /**
+             * 数据
+             */
+            public static final String JOKE_REQUEST_JSON_DATA = "data";
+
+            /**
+             * 内容
+             */
+            public static final String JOKE_REQUEST_JSON_CONTENT = "content";
+
+            /**
+             * hashid
+             */
+            public static final String JOKE_REQUEST_JSON_HASHID = "hashId";
+
+            /**
+             * 时间戳
+             */
+            public static final String JOKE_REQUEST_JSON_UNIXTIME = "unixtime";
+
+            /**
+             * 更新时间
+             */
+            public static final String JOKE_REQUEST_JSON_UPDATA_TIME = "updatetime";
         }
     }
 

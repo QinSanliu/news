@@ -11,7 +11,7 @@ import android.widget.ListView;
 
 import com.example.parting_soul.news.Interface.callback.CollectionCheckStateNotifiyCallBack;
 import com.example.parting_soul.news.R;
-import com.example.parting_soul.news.activity.NewsMessageActivity;
+import com.example.parting_soul.news.activity.MessageActivity;
 import com.example.parting_soul.news.adapter.NewsInfoAdapter;
 import com.example.parting_soul.news.bean.News;
 import com.example.parting_soul.news.bean.Settings;
@@ -368,7 +368,7 @@ public class NewsDetailFragment extends BaseMulFragment<News> implements Adapter
         mCollectionCheckStateManager = CollectionCheckStateManager.newInstance();
         mCollectionCheckStateManager.setNotifyVisibleNewsFragmentCallBack(this);
         mCurrentSelectedNews = mLists.get(position);
-        NewsMessageActivity.startActivity(getActivity(), mCurrentSelectedNews.getUrl(),
+        MessageActivity.startActivity(getActivity(), mCurrentSelectedNews.getUrl(),
                 mCurrentSelectedNews.getTitle(), mCurrentSelectedNews.is_collected(), CollectionCheckStateManager.FROM_NEWSFRAGMENT);
     }
 

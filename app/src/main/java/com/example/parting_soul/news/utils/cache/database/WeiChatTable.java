@@ -28,7 +28,7 @@ public class WeiChatTable {
     /**
      * 来源
      */
-    public static final String WEICHAT_TABLE_PIC_SOURCE = "source";
+    public static final String WEICHAT_TABLE__SOURCE = "source";
 
     /**
      * 网页url
@@ -41,13 +41,23 @@ public class WeiChatTable {
     public static final String WEICHAT_IS_COLLECTED = "is_collected";
 
     /**
+     * 当前页
+     */
+    public static final String WEICHAT_PAGE = "page";
+
+
+    public static final String DELETE_WEICHAT_DATA = "delete from " + WEICHAT_TABLE_NAME + " where " + WEICHAT_IS_COLLECTED
+            + " = ? or " + WEICHAT_IS_COLLECTED + " is null";
+
+    /**
      * 建表语句
      */
     public static final String CREATE_WEICHAT_TABLE = "create table " + WEICHAT_TABLE_NAME + "("
             + WEICHAT_TABLE_ID + " text primary key ,"
             + WEICHAT_TABLE_TITLE + " text ,"
             + WEICHAT_TABLE_PIC_PATH + " text,"
-            + WEICHAT_TABLE_PIC_SOURCE + " text,"
+            + WEICHAT_TABLE__SOURCE + " text,"
             + WEICHAT_TABLE_URL + " text,"
-            + WEICHAT_IS_COLLECTED + " integer default 0 " + ")";
+            + WEICHAT_IS_COLLECTED + " integer default 0,"
+            + WEICHAT_PAGE + " integer " + ")";
 }

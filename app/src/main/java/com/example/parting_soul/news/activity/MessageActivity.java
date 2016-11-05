@@ -9,37 +9,42 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.parting_soul.news.Interface.callback.CollectionNewsCallBack;
-import com.example.parting_soul.news.utils.support.NewsApplication;
 import com.example.parting_soul.news.R;
 import com.example.parting_soul.news.bean.News;
-import com.example.parting_soul.news.utils.support.CollectionCheckStateManager;
-import com.example.parting_soul.news.utils.support.CommonInfo;
-import com.example.parting_soul.news.utils.support.LogUtils;
 import com.example.parting_soul.news.utils.cache.database.CollectionNewsThread;
 import com.example.parting_soul.news.utils.style.LanguageChangeManager;
 import com.example.parting_soul.news.utils.style.ThemeChangeManager;
+import com.example.parting_soul.news.utils.support.CollectionCheckStateManager;
+import com.example.parting_soul.news.utils.support.CommonInfo;
+import com.example.parting_soul.news.utils.support.LogUtils;
+import com.example.parting_soul.news.utils.support.NewsApplication;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+
 
 import static com.example.parting_soul.news.R.id.webView;
 import static com.example.parting_soul.news.utils.support.CollectionCheckStateManager.FROM_COLLECTIONFRAGMENT;
 import static com.example.parting_soul.news.utils.support.CollectionCheckStateManager.FROM_NEWSFRAGMENT;
+import static com.example.parting_soul.news.utils.support.CollectionCheckStateManager.FROM_WEICHATFRAGMENT;
 
 /**
  * Created by parting_soul on 2016/10/17.
  * 显示新闻内容的Activity
  */
 
-public class NewsMessageActivity extends AppCompatActivity implements View.OnClickListener
+public class MessageActivity extends AppCompatActivity implements View.OnClickListener
         , CompoundButton.OnCheckedChangeListener {
     /**
      * url的Key
@@ -96,6 +101,8 @@ public class NewsMessageActivity extends AppCompatActivity implements View.OnCli
      */
     private boolean is_Collected;
 
+    private TextView mTitleView;
+
     /**
      * 收藏回调接口管理类
      */
@@ -139,10 +146,12 @@ public class NewsMessageActivity extends AppCompatActivity implements View.OnCli
         ThemeChangeManager.changeThemeMode(this);
         LanguageChangeManager.changeLanguage();
         setContentView(R.layout.layout_news_msg);
+        mTitleView = (TextView) findViewById(R.id.title_name);
+        changeTitle();
         mBackView = (ImageButton) findViewById(R.id.back_forward);
         mBackView.setOnClickListener(this);
         mIsCollected = (CheckBox) findViewById(R.id.is_collectedBox);
-        mWebView = (WebView) findViewById(webView);
+        mWebView = (WebView) findViewById(R.id.webView);
         mIsCollected.setOnCheckedChangeListener(this);
 
         Intent result = getIntent();
@@ -152,6 +161,10 @@ public class NewsMessageActivity extends AppCompatActivity implements View.OnCli
             is_Collected = result.getBooleanExtra(IS_COLLECTED, false);
             mIsCollected.setChecked(is_Collected);
             LogUtils.d(CommonInfo.TAG, "--->" + mTitle);
+
+            mWebView.getSettings().setPluginState(WebSettings.PluginState.ON);
+            mWebView.setWebChromeClient(new WebChromeClient());
+
             mWebView.getSettings().setJavaScriptEnabled(true);
             mWebView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
             mWebView.getSettings().setDomStorageEnabled(true);
@@ -167,6 +180,51 @@ public class NewsMessageActivity extends AppCompatActivity implements View.OnCli
         }
     }
 
+    private void changeTitle() {
+        switch (from_where_activity) {
+            case FROM_NEWSFRAGMENT:
+                mTitleView.setText(R.string.news);
+                break;
+            case FROM_WEICHATFRAGMENT:
+                mTitleView.setText(R.string.weichat);
+                break;
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        try {
+            mWebView.getClass().getMethod("onResume").invoke(mWebView, (Object[]) null);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        try {
+            mWebView.getClass().getMethod("onPause").invoke(mWebView, (Object[]) null);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //为了使WebView退出时音频或视频关闭
+        mWebView.destroy();
+    }
 
     /**
      * 其他activity启动该Activity的接口
@@ -179,7 +237,7 @@ public class NewsMessageActivity extends AppCompatActivity implements View.OnCli
         intent.putExtra(URL_KEY, url);
         intent.putExtra(TITLE_KEY, title);
         intent.putExtra(IS_COLLECTED, isCollected);
-        intent.setClass(context, NewsMessageActivity.class);
+        intent.setClass(context, MessageActivity.class);
         from_where_activity = fromWhere;
         context.startActivity(intent);
     }

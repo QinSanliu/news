@@ -26,7 +26,7 @@ import com.example.parting_soul.news.bean.MenuItemInfo;
 import com.example.parting_soul.news.bean.Settings;
 import com.example.parting_soul.news.customview.CircleImageView;
 import com.example.parting_soul.news.fragment.collection.CollectionFragment;
-import com.example.parting_soul.news.fragment.funny.FunnyFragment;
+import com.example.parting_soul.news.fragment.joke.JokeFragment;
 import com.example.parting_soul.news.fragment.news.NewsFragment;
 import com.example.parting_soul.news.fragment.weichat.WeiChatFragment;
 import com.example.parting_soul.news.utils.style.LanguageChangeManager;
@@ -194,12 +194,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public void onBackPressed() {
-        if (mDrawerLayout.isDrawerOpen(mLeft_draw_menu_layout)) {
+        if (mCurrentFragment instanceof CollectionFragment && !mDrawerLayout.isDrawerOpen(mLeft_draw_menu_layout)) {
+            mDrawerLayout.openDrawer(GravityCompat.START);
+            return;
+        } else if (mDrawerLayout.isDrawerOpen(mLeft_draw_menu_layout)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
             return;
         } else if (Settings.is_back_by_twice && (System.currentTimeMillis() - mExitTime) > Settings.EXIT_TIME) {
             mExitTime = System.currentTimeMillis();
-            Toast.makeText(this, "再按一次退出", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.press_again, Toast.LENGTH_SHORT).show();
             return;
         }
         super.onBackPressed();
@@ -210,28 +213,28 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         MenuItemInfo info = (MenuItemInfo) mMenuAdpater.getItem(position);
         switch (info.getNameId()) {
             case R.string.news:
-      //          switchContent(mCurrentFragment, new NewsFragment());
+                //          switchContent(mCurrentFragment, new NewsFragment());
                 if (mFragmentManager.findFragmentByTag(NewsFragment.NAME) == null) {
                     mCurrentFragment = new NewsFragment();
                     setCurrentFragment(mCurrentFragment);
                 }
                 break;
             case R.string.weichat:
- //               switchContent(mCurrentFragment, new WeiChatFragment());
+                //               switchContent(mCurrentFragment, new WeiChatFragment());
                 if (mFragmentManager.findFragmentByTag(WeiChatFragment.NAME) == null) {
                     mCurrentFragment = new WeiChatFragment();
                     setCurrentFragment(mCurrentFragment);
                 }
                 break;
             case R.string.funny:
- //               switchContent(mCurrentFragment, new FunnyFragment());
-                if (mFragmentManager.findFragmentByTag(FunnyFragment.NAME) == null) {
-                    mCurrentFragment = new FunnyFragment();
+                //               switchContent(mCurrentFragment, new FunnyFragment());
+                if (mFragmentManager.findFragmentByTag(JokeFragment.NAME) == null) {
+                    mCurrentFragment = new JokeFragment();
                     setCurrentFragment(mCurrentFragment);
                 }
                 break;
             case R.string.collection:
- //               switchContent(mCurrentFragment, new CollectionFragment());
+                //               switchContent(mCurrentFragment, new CollectionFragment());
                 if (mFragmentManager.findFragmentByTag(CollectionFragment.NAME) == null) {
                     mCurrentFragment = new CollectionFragment();
                     setCurrentFragment(mCurrentFragment);
@@ -282,9 +285,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         } else if (fragment instanceof WeiChatFragment) {
             mFragmentManager.beginTransaction().replace(R.id.main_fragment, (WeiChatFragment) fragment, WeiChatFragment.NAME).commit();
             LogUtils.d(CommonInfo.TAG, "--->" + WeiChatFragment.NAME);
-        } else if (fragment instanceof FunnyFragment) {
-            mFragmentManager.beginTransaction().replace(R.id.main_fragment, (FunnyFragment) fragment, FunnyFragment.NAME).commit();
-            LogUtils.d(CommonInfo.TAG, "--->" + FunnyFragment.NAME);
+        } else if (fragment instanceof JokeFragment) {
+            mFragmentManager.beginTransaction().replace(R.id.main_fragment, (JokeFragment) fragment, JokeFragment.NAME).commit();
+            LogUtils.d(CommonInfo.TAG, "--->" + JokeFragment.NAME);
         } else if (fragment instanceof CollectionFragment) {
             mFragmentManager.beginTransaction().replace(R.id.main_fragment, (CollectionFragment) fragment, CollectionFragment.NAME).commit();
         }

@@ -16,7 +16,7 @@ import com.example.parting_soul.news.Interface.callback.CollectionCheckStateNoti
 import com.example.parting_soul.news.Interface.callback.CollectionNewsCallBack;
 import com.example.parting_soul.news.R;
 import com.example.parting_soul.news.activity.MainActivity;
-import com.example.parting_soul.news.activity.NewsMessageActivity;
+import com.example.parting_soul.news.activity.MessageActivity;
 import com.example.parting_soul.news.adapter.NewsInfoAdapter;
 import com.example.parting_soul.news.bean.News;
 import com.example.parting_soul.news.utils.cache.database.CollectionNewsThread;
@@ -98,7 +98,7 @@ public class CollectionFragment extends Fragment implements AdapterView.OnItemCl
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         mCurrentSelectedNews = (News) mNewsInfoAdapter.getItem(position);
         currentPos = mNewsList.indexOf(mCurrentSelectedNews);
-        NewsMessageActivity.startActivity(getActivity(), mCurrentSelectedNews.getUrl(),
+        MessageActivity.startActivity(getActivity(), mCurrentSelectedNews.getUrl(),
                 mCurrentSelectedNews.getTitle(), mCurrentSelectedNews.is_collected(),
                 CollectionCheckStateManager.FROM_COLLECTIONFRAGMENT);
     }

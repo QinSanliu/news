@@ -2,10 +2,12 @@ package com.example.parting_soul.news.utils.network;
 
 import android.text.TextUtils;
 
+import com.example.parting_soul.news.bean.Joke;
 import com.example.parting_soul.news.bean.News;
 import com.example.parting_soul.news.bean.WeiChat;
 import com.example.parting_soul.news.fragment.weichat.WeiChatFragment;
 import com.example.parting_soul.news.utils.support.CommonInfo;
+import com.example.parting_soul.news.utils.support.LogUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -140,6 +142,8 @@ public class JsonParseTool {
                     weiChat.setId(jsonObject.getString(CommonInfo.WeiChatAPI.JSONKEY.REQUEST_JSON_ID_KEY_NAME));
                     weiChat.setUrl(jsonObject.getString(CommonInfo.WeiChatAPI.JSONKEY.REQUEST_JSON_URL_KEY_NAME));
                     weiChat.setSource(jsonObject.getString(CommonInfo.WeiChatAPI.JSONKEY.REQUEST_JSON_SOURCE_KEY_NAME));
+                    LogUtils.d(CommonInfo.TAG, "-->source " + weiChat.getSource());
+                    weiChat.setPage(pno);
                     if (weiChat.getPicPath().equals("")) {
                         //图片url作为寻找imageview的标志不能重复
                         weiChat.setPicPath(new Date().toString() + new Random(100000));
@@ -152,4 +156,32 @@ public class JsonParseTool {
         }
         return lists;
     }
+
+    public static List<Joke> parseJokeJsonWidthJSONObject(String jsonString) {
+        if (jsonString == null) return null;
+        List<Joke> lists = new ArrayList<Joke>();
+        try {
+            JSONObject root = new JSONObject(jsonString);
+            String success = root.getString(CommonInfo.JokeApI.JsonKey.JOKE_REQUEST_JSON_REASON);
+            if (CommonInfo.JokeApI.JsonKey.JOKE_REQUEST_JSON_REASON_SUCCESS.equals(success)) {
+                JSONObject result = root.getJSONObject(CommonInfo.JokeApI.JsonKey.JOKE_REQUEST_JSON_RESULT);
+                JSONArray data = result.getJSONArray(CommonInfo.JokeApI.JsonKey.JOKE_REQUEST_JSON_DATA);
+                for (int i = 0; i < data.length(); i++) {
+                    JSONObject jsonObject = data.getJSONObject(i);
+                    Joke joke = new Joke();
+                    joke.setIs_collected(false);
+                    joke.setContent(jsonObject.getString(CommonInfo.JokeApI.JsonKey.JOKE_REQUEST_JSON_CONTENT));
+                    joke.setDate(jsonObject.getString(CommonInfo.JokeApI.JsonKey.JOKE_REQUEST_JSON_UPDATA_TIME));
+                    joke.setHashId(jsonObject.getString(CommonInfo.JokeApI.JsonKey.JOKE_REQUEST_JSON_HASHID));
+                    lists.add(joke);
+                }
+            } else {
+                lists = null;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return lists;
+    }
+
 }

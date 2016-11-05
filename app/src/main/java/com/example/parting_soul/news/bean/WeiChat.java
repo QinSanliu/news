@@ -17,6 +17,10 @@ public class WeiChat {
 
     private String source;
 
+    private boolean is_collected;
+
+    private int page;
+
     public String getTitle() {
         return title;
     }
@@ -55,5 +59,21 @@ public class WeiChat {
 
     public void setSource(String source) {
         this.source = source;
+    }
+
+    public boolean is_collected() {
+        return is_collected;
+    }
+
+    public void setIs_collected(boolean is_collected) {
+        this.is_collected = is_collected;
+    }
+
+    public int getPage() {
+        return page;
+    }
+
+    public void setPage(int page) {
+        this.page = page;
     }
 }

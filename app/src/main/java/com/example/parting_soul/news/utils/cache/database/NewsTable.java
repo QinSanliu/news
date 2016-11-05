@@ -51,6 +51,12 @@ public class NewsTable {
     public static final String NEWS_TABLE_IS_COLLECTION = "news_is_collected";
 
     /**
+     * 删除表中的数据
+     */
+    public static final String DELETE_NEWS_TABLE_CACHE = "delete from " + NEWS_TABLE_NAME + " where " + NEWS_TABLE_IS_COLLECTION
+            + " = ? or " + NEWS_TABLE_IS_COLLECTION + " is null ";
+
+    /**
      * 建表语句
      */
     public static final String CREATE_NEWS_TABLE = "create table " + NewsTable.NEWS_TABLE_NAME + "("
