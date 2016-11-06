@@ -13,4 +13,5 @@
     <attr name="news_item_textSize" format="dimension"></attr>
     <attr name="menu_item_textSize" format="dimension"></attr>
     <attr name="setting_item_textSize" format="dimension"></attr>
+    <attr name="title_size" format="dimension|float|integer|reference"></attr>
 </resources>

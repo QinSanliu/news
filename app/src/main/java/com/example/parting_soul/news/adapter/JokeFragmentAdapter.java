@@ -26,7 +26,7 @@ public class JokeFragmentAdapter extends BaseFragmentAdapter<Joke> {
     public JokeFragmentAdapter(Context context, List<Joke> data) {
         mContext = context;
         this.mLists = data;
-        textStyleId = FontChangeManager.changeFontSize();
+        textStyleId = FontChangeManager.changeJokeFontSize();
     }
 
     @Override

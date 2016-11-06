@@ -36,8 +36,7 @@
             android:layout_centerVertical="true"
             android:paddingLeft="65dp"
             android:text="@string/title_name"
-            android:textColor="@color/title_font_bc_wite"
-            android:textSize="25sp" />
+            style="@style/title_textview" />
     </RelativeLayout>
 
 </RelativeLayout>

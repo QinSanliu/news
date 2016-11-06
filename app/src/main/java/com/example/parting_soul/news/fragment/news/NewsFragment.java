@@ -18,6 +18,7 @@ import com.example.parting_soul.news.adapter.NewsPageFragmentAdapter;
 import com.example.parting_soul.news.bean.NewsKinds;
 import com.example.parting_soul.news.bean.Settings;
 import com.example.parting_soul.news.customview.HorizontalNavigation;
+import com.example.parting_soul.news.utils.style.FontChangeManager;
 import com.example.parting_soul.news.utils.style.ThemeChangeManager;
 import com.example.parting_soul.news.utils.support.CommonInfo;
 import com.example.parting_soul.news.utils.support.WindowSizeTool;
@@ -77,6 +78,8 @@ public class NewsFragment extends Fragment implements ViewPager.OnPageChangeList
      */
     private HorizontalNavigation mHorizontalNavigation;
 
+    private int textSizeStyle;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,6 +90,7 @@ public class NewsFragment extends Fragment implements ViewPager.OnPageChangeList
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.layout_news_fragment, container, false);
+        textSizeStyle = FontChangeManager.changeItemTitleFontSize();
         findById(view);
         initHorizontalNavigationItem();
         initViewPager();
@@ -140,14 +144,16 @@ public class NewsFragment extends Fragment implements ViewPager.OnPageChangeList
 
             //为TextView设置内容,位置,背景,字体等属性
             TextView textView = new TextView(getActivity());
+            textView.setClickable(true);
             textView.setText(NEWS_TYPES[i]);
             textView.setGravity(Gravity.CENTER);
             if (Settings.is_night_mode) {
                 textView.setBackgroundResource(R.drawable.navigation_item_state_bc_night);
-                textView.setTextAppearance(getActivity(), R.style.navigation_item_front_state_style_night);
+                textView.setTextAppearance(getActivity(),R.style.navigation_item_front_state_style_night);
             } else {
                 textView.setBackgroundResource(ThemeChangeManager.getNavigationResoureStateBK());
-                textView.setTextAppearance(getActivity(), R.style.navigation_item_front_state_style);
+                textView.setTextAppearance(getActivity(),R.style.navigation_item_front_state_style);
+                //             textView.setTextSize();
             }
 
             textView.setLayoutParams(params);

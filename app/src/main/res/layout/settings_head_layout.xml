@@ -31,13 +31,12 @@
 
         <TextView
             android:id="@+id/title_name"
+            style="@style/title_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="15dp"
             android:layout_toRightOf="@id/back_forward"
-            android:text="@string/left_menu_bottom_settings"
-            android:textColor="@color/title_font_bc_wite"
-            android:textSize="25sp" />
+            android:text="@string/left_menu_bottom_settings" />
     </RelativeLayout>
 </RelativeLayout>

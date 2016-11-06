@@ -4,6 +4,7 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
         <item name="windowNoTitle">true</item>
+        <item name="title_size">15sp</item>
     </style>
 
     <style name="DayTheme_red" parent="AppTheme">
@@ -73,28 +74,46 @@
 
     <!-- 导航字体的大小和颜色-->
     <style name="navigation_item_front_state_style">
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">14sp</item>
         <item name="android:textColor">@color/navigation_item_font_state_color_day</item>
     </style>
 
     <style name="navigation_item_front_state_style_night">
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">14sp</item>
         <item name="android:textColor">@color/navigation_item_font_state_color_night</item>
     </style>
 
     <style name="news_item_font_style_small">
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize">16sp</item>
     </style>
 
     <style name="news_item_font_style_normal">
-        <item name="android:textSize">23sp</item>
+        <item name="android:textSize">19sp</item>
     </style>
 
     <style name="news_item_font_style_large">
-        <item name="android:textSize">25sp</item>
+        <item name="android:textSize">21sp</item>
+    </style>
+
+
+    <style name="joke_item_font_style_small">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="joke_item_font_style_normal">
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="joke_item_font_style_large">
+        <item name="android:textSize">18sp</item>
     </style>
 
     <style name="CustomCollectCheckBox" parent="@android:style/Widget.CompoundButton.CheckBox">
         <item name="android:button">@drawable/collection_state</item>
+    </style>
+
+    <style name="title_textview" parent="@android:style/Widget.TextView">
+        <item name="android:textColor">@color/title_font_bc_wite</item>
+        <item name="android:textSize">23sp</item>
     </style>
 </resources>

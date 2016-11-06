@@ -52,7 +52,7 @@ public class NewsInfoAdapter extends BaseFragmentAdapter<News> implements AbsLis
         getPicUrl();
         //为listview添加滚动监听
         listView.setOnScrollListener(this);
-        textStyleId = FontChangeManager.changeFontSize();
+        textStyleId = FontChangeManager.changeItemTitleFontSize();
     }
 
     /**
