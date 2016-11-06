@@ -38,8 +38,8 @@
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="12dp"
-                android:textSize="12sp"
-                android:gravity="center" />
+                android:gravity="center"
+                android:textSize="12sp" />
 
             <CheckBox
                 android:id="@+id/is_collectedBox"
@@ -50,6 +50,14 @@
                 android:layout_centerVertical="true"
                 android:layout_marginRight="20dp" />
         </RelativeLayout>
+
+        <include
+            android:id="@+id/load_more"
+            layout="@layout/loading_next_page"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/bottom_layout"
+            android:visibility="gone" />
     </RelativeLayout>
 
 </LinearLayout>

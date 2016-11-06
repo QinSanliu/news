@@ -9,12 +9,19 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.example.parting_soul.news.customview.LoadMoreItemListView
+        <!--  <com.example.parting_soul.news.customview.LoadMoreItemListView
+              android:id="@+id/list_view"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="?attr/theme_backgroundColor"
+              android:minHeight="60dp"
+              android:dividerHeight="15dp"/> -->
+        <ListView
             android:id="@+id/list_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="?attr/theme_backgroundColor"
-            android:minHeight="60dp"
-            android:dividerHeight="15dp"/>
+            android:dividerHeight="15dp"
+            android:minHeight="60dp" />
     </com.yalantis.phoenix.PullToRefreshView>
 </LinearLayout>

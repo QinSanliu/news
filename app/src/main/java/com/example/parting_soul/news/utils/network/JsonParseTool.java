@@ -157,7 +157,7 @@ public class JsonParseTool {
         return lists;
     }
 
-    public static List<Joke> parseJokeJsonWidthJSONObject(String jsonString) {
+    public static List<Joke> parseJokeJsonWidthJSONObject(String jsonString, int page) {
         if (jsonString == null) return null;
         List<Joke> lists = new ArrayList<Joke>();
         try {
@@ -173,6 +173,7 @@ public class JsonParseTool {
                     joke.setContent(jsonObject.getString(CommonInfo.JokeApI.JsonKey.JOKE_REQUEST_JSON_CONTENT));
                     joke.setDate(jsonObject.getString(CommonInfo.JokeApI.JsonKey.JOKE_REQUEST_JSON_UPDATA_TIME));
                     joke.setHashId(jsonObject.getString(CommonInfo.JokeApI.JsonKey.JOKE_REQUEST_JSON_HASHID));
+                    joke.setPage(page);
                     lists.add(joke);
                 }
             } else {

@@ -5,7 +5,6 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AbsListView;
-import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -56,9 +55,6 @@ public class LoadMoreItemListView extends ListView implements AbsListView.OnScro
      * 进度条
      */
     private ProgressBar mProgressBar;
-
-    private FrameLayout frameLayout;
-
 
     public LoadMoreItemListView(Context context) {
         super(context);

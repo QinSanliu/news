@@ -39,6 +39,7 @@ public class SQLiteDatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(NewsTable.CREATE_NEWS_TABLE);
         db.execSQL(WeiChatTable.CREATE_WEICHAT_TABLE);
+        db.execSQL(JokeTable.CREATE_JOKE_TABLE);
     }
 
     /**

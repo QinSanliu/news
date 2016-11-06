@@ -13,6 +13,8 @@ public class Joke {
 
     private String hashId;
 
+    private int page;
+
     public String getContent() {
         return content;
     }
@@ -43,5 +45,13 @@ public class Joke {
 
     public void setHashId(String hashId) {
         this.hashId = hashId;
+    }
+
+    public int getPage() {
+        return page;
+    }
+
+    public void setPage(int page) {
+        this.page = page;
     }
 }

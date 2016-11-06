@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.example.parting_soul.news.bean.Joke;
 import com.example.parting_soul.news.bean.News;
 import com.example.parting_soul.news.bean.WeiChat;
 import com.example.parting_soul.news.utils.support.CommonInfo;
@@ -142,6 +143,8 @@ public class DBManager {
             LogUtils.d(CommonInfo.TAG, "database delte news --" + NewsTable.DELETE_NEWS_TABLE_CACHE);
             database.execSQL(WeiChatTable.DELETE_WEICHAT_DATA, new String[]{"0"});
             LogUtils.d(CommonInfo.TAG, "database delte weichat -- " + WeiChatTable.DELETE_WEICHAT_DATA);
+            database.execSQL(JokeTable.DELETE_ALL_JOKE_CACHE, new String[]{"0"});
+
             //设置事务标志为成功，当结束事务时就会提交事务
             database.setTransactionSuccessful();
             isSuccess = true;
@@ -371,5 +374,62 @@ public class DBManager {
             result = database.update(WeiChatTable.WEICHAT_TABLE_NAME, values, WeiChatTable.WEICHAT_TABLE_ID + " = ? ", new String[]{id});
         }
         return result == -1 ? false : true;
+    }
+
+
+    /**
+     * 段子添加缓存
+     *
+     * @param jokes
+     */
+    public void addJokeCaCheToDataBase(List<Joke> jokes) {
+        getConnected();
+        long re = -1;
+        if (jokes != null) {
+            for (Joke n : jokes) {
+                StringBuilder sql = new StringBuilder();
+                sql.append("insert or replace into ").append(JokeTable.JOKE_TABLE_NAME).append(" ( ").append(JokeTable.JOKE_TABLE_ID + ",")
+                        .append(JokeTable.JOKE_TABLE_CONTENT + "," + JokeTable.JOKE_TABLE_UPDATA_TIME + "," + JokeTable.JOKE_TABLE_PAGE
+                                + "," + JokeTable.JOKE_TABLE_IS_COLLECTED).append(" ) values( '").append(n.getHashId()).append("',").append("'")
+                        .append(n.getContent() + "','" + n.getDate() + "'," + n.getPage() + ",").append("(").append("select ")
+                        .append(JokeTable.JOKE_TABLE_IS_COLLECTED).append(" from ").append(JokeTable.JOKE_TABLE_NAME).append(" where ").append(JokeTable.JOKE_TABLE_ID).append(" = '" + n.getHashId() + "') )");
+                database.execSQL(sql.toString());
+                LogUtils.d(CommonInfo.TAG, "--->" + sql.toString());
+            }
+
+        }
+    }
+
+    /**
+     * 读取段子的缓存
+     *
+     * @param page
+     * @return List<Joke>
+     */
+    public List<Joke> readJokeCacheFromDataBase(int page) {
+        getConnected();
+        Cursor cursor = database.query(JokeTable.JOKE_TABLE_NAME, null, JokeTable.JOKE_TABLE_PAGE + " = ? ",
+                new String[]{page + ""}, null, null, null, null);
+        //   Cursor cursor = database.rawQuery("select rowid,* from newsinfo where news_type = ? ", new String[]{newsType});
+        List<Joke> lists = null;
+        boolean isHaveCache = false;
+        if (cursor != null) {
+            lists = new ArrayList<Joke>();
+            while (cursor.moveToNext()) {
+                Joke joke = new Joke();
+                //               int rowid = cursor.getInt(cursor.getColumnIndex("rowid"));
+                joke.setHashId(cursor.getString(cursor.getColumnIndex(JokeTable.JOKE_TABLE_ID)));
+                joke.setContent(cursor.getString(cursor.getColumnIndex(JokeTable.JOKE_TABLE_CONTENT)));
+                joke.setDate(cursor.getString(cursor.getColumnIndex(JokeTable.JOKE_TABLE_UPDATA_TIME)));
+                joke.setIs_collected(cursor.getInt(cursor.getColumnIndex(JokeTable.JOKE_TABLE_IS_COLLECTED)) == 1);
+                joke.setPage(cursor.getInt(cursor.getColumnIndex(JokeTable.JOKE_TABLE_PAGE)));
+                lists.add(joke);
+                //             LogUtils.d(CommonInfo.TAG, "-->read" + rowid + " " + weiChat.getTitle() + " " + weiChat.is_collected());
+                isHaveCache = true;
+            }
+        }
+        if (!isHaveCache) lists = null;
+        LogUtils.d(CommonInfo.TAG, "-->" + lists);
+        return lists;
     }
 }
