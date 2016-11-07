@@ -1,10 +1,8 @@
 package com.example.parting_soul.news.fragment.collection;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,17 +10,13 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 
-import com.example.parting_soul.news.Interface.callback.CollectionCallBack;
-import com.example.parting_soul.news.Interface.callback.CollectionCheckStateNotifiyCallBack;
 import com.example.parting_soul.news.R;
 import com.example.parting_soul.news.activity.MessageActivity;
 import com.example.parting_soul.news.adapter.NewsInfoAdapter;
 import com.example.parting_soul.news.bean.News;
+import com.example.parting_soul.news.fragment.support.CollectionBaseFragment;
 import com.example.parting_soul.news.utils.cache.CollectionNewsThread;
-import com.example.parting_soul.news.utils.network.AbstractDownLoadHandler;
 import com.example.parting_soul.news.utils.support.CollectionCheckStateManager;
-import com.example.parting_soul.news.utils.support.CommonInfo;
-import com.example.parting_soul.news.utils.support.LogUtils;
 
 import java.util.List;
 
@@ -30,53 +24,26 @@ import java.util.List;
  * Created by parting_soul on 2016/11/2.
  */
 
-public class NewsCollectionFragment extends Fragment implements AdapterView.OnItemClickListener
-        , CollectionCallBack<News>, CollectionCheckStateNotifiyCallBack {
+public class NewsCollectionFragment extends CollectionBaseFragment<News> {
     public static final String NAME = "NewsCollectionFragment";
 
     private ListView mListView;
 
     private NewsInfoAdapter mNewsInfoAdapter;
 
-    private CollectionCheckStateManager mCollectionCheckStateManager;
-
-    private List<News> mNewsList;
-
-    private News mCurrentSelectedNews;
-
-    int currentPos;
-
-    private ImageView mEmpty;
-
-
-    private Handler mHandler = new AbstractDownLoadHandler() {
-        @Override
-        public void handleMessage(Message msg) {
-            updateUI(msg);
-        }
-
-        @Override
-        protected void showError() {
-
-        }
-
-        @Override
-        protected void updateUI(Message msg) {
-            mNewsList = (List<News>) msg.obj;
-            if (mNewsList == null || mNewsList.size() == 0) {
-                setEmptyView();
-            } else {
-                mNewsInfoAdapter = new NewsInfoAdapter(getActivity(), mNewsList, mListView);
-                mListView.setAdapter(mNewsInfoAdapter);
-                mNewsInfoAdapter.setIsCanLoadImage(true);
-                mNewsInfoAdapter.notifyDataSetChanged();
-            }
-        }
-    };
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void updateUI(Message msg) {
+        mLists = (List<News>) msg.obj;
+        if (mLists == null || mLists.size() == 0) {
+            setEmptyView();
+        } else {
+            mNewsInfoAdapter = new NewsInfoAdapter(getActivity(), mLists, mListView);
+            mListView.setAdapter(mNewsInfoAdapter);
+            mNewsInfoAdapter.setIsCanLoadImage(true);
+            mNewsInfoAdapter.notifyDataSetChanged();
+            setEmptyView();
+        }
     }
 
     @Nullable
@@ -86,55 +53,22 @@ public class NewsCollectionFragment extends Fragment implements AdapterView.OnIt
         mListView = (ListView) view.findViewById(R.id.news_lists);
         mEmpty = (ImageView) view.findViewById(R.id.empty);
         mListView.setOnItemClickListener(this);
-        mCollectionCheckStateManager = CollectionCheckStateManager.newInstance();
-        mCollectionCheckStateManager.setNotifyCollectionActivityCallBack(this);
         new CollectionNewsThread().getCollectionNews(this);
         return view;
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        mCurrentSelectedNews = (News) mNewsInfoAdapter.getItem(position);
-        currentPos = mNewsList.indexOf(mCurrentSelectedNews);
-        MessageActivity.startActivity(getActivity(), mCurrentSelectedNews.getUrl(),
-                mCurrentSelectedNews.getTitle(), mCurrentSelectedNews.is_collected(),
-                CollectionCheckStateManager.FROM_COLLECTIONFRAGMENT);
+        mCollectionCheckStateManager.setNotifyVisibleNewsFragmentCallBack(this);
+        mCurrentSelectedItem = (News) mNewsInfoAdapter.getItem(position);
+        currentPos = mLists.indexOf(mCurrentSelectedItem);
+        MessageActivity.startActivity(getActivity(), mCurrentSelectedItem.getUrl(),
+                mCurrentSelectedItem.getTitle(), mCurrentSelectedItem.is_collected(),
+                CollectionCheckStateManager.FROM_NEWSFRAGMENT);
     }
 
     @Override
-    public void getResult(List<News> newsList) {
-        Message msg = Message.obtain();
-        msg.obj = newsList;
-        mHandler.sendMessage(msg);
-    }
-
-    @Override
-    public void isSuccess(boolean isSuccess) {
-
-    }
-
-    @Override
-    public void collectedStateChange(boolean isChange) {
-        if (!isChange) {
-            mNewsList.remove(mCurrentSelectedNews);
-            setEmptyView();
-            LogUtils.d(CommonInfo.TAG, "--->" + mNewsList.size());
-        } else {
-            if (!mNewsList.contains(mCurrentSelectedNews)) {
-                mNewsList.add(currentPos, mCurrentSelectedNews);
-            }
-        }
+    public void updateFragmentAdapter() {
         mNewsInfoAdapter.notifyDataSetChanged();
-    }
-
-    /**
-     * 没有数据时加载空界面
-     */
-    public void setEmptyView() {
-        if (mNewsList.size() == 0) {
-            mEmpty.setVisibility(View.VISIBLE);
-        } else {
-            mEmpty.setVisibility(View.GONE);
-        }
     }
 }

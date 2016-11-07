@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 
+import com.example.parting_soul.news.Interface.callback.CollectionCheckStateNotifiyCallBack;
 import com.example.parting_soul.news.R;
 import com.example.parting_soul.news.activity.MainActivity;
 import com.example.parting_soul.news.activity.MessageActivity;
@@ -32,7 +33,7 @@ import static com.example.parting_soul.news.utils.network.HttpUtils.HttpPostMeth
  */
 
 public class WeiChatFragment extends BaseFragment<WeiChat> implements PullToRefreshView.OnRefreshListener
-        , LoadMoreItemListView.LoadMoreItemListener, AdapterView.OnItemClickListener {
+        , LoadMoreItemListView.LoadMoreItemListener, AdapterView.OnItemClickListener, CollectionCheckStateNotifiyCallBack {
     public static final String NAME = "weichatfragment";
 
     private List<WeiChat> mLists;
@@ -57,12 +58,15 @@ public class WeiChatFragment extends BaseFragment<WeiChat> implements PullToRefr
 
     public DBManager mDBManager;
 
+    private CollectionCheckStateManager mCollectionCheckStateManager;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ((MainActivity) getActivity()).setTitleName(R.string.weichat);
         mParams = initRequestUrlParam();
         mDBManager = DBManager.getDBManager(getActivity());
+        mCollectionCheckStateManager = CollectionCheckStateManager.newInstance();
         LogUtils.d(CommonInfo.TAG, "--->111" + "onCreate() " + mParams);
     }
 
@@ -145,11 +149,16 @@ public class WeiChatFragment extends BaseFragment<WeiChat> implements PullToRefr
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         //当前fragment可见时设置回调接口
-//        mCollectionCheckStateManager = CollectionCheckStateManager.newInstance();
-//        mCollectionCheckStateManager.setNotifyVisibleNewsFragmentCallBack(this);
+        mCollectionCheckStateManager.setNotifyVisibleNewsFragmentCallBack(this);
         mCurrentSelectedWeiChat = mLists.get(position);
         MessageActivity.startActivity(getActivity(), mCurrentSelectedWeiChat.getUrl(),
                 mCurrentSelectedWeiChat.getTitle(), mCurrentSelectedWeiChat.is_collected(), CollectionCheckStateManager.FROM_WEICHATFRAGMENT);
+    }
+
+    @Override
+    public void collectedStateChange(boolean isChange) {
+        mCurrentSelectedWeiChat.setIs_collected(isChange);
+        mWeiChatDetailFragmentAdapter.notifyDataSetChanged();
     }
 
 

@@ -36,6 +36,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 
+import static com.example.parting_soul.news.R.string.is_collected;
 import static com.example.parting_soul.news.utils.support.CollectionCheckStateManager.FROM_COLLECTIONFRAGMENT;
 import static com.example.parting_soul.news.utils.support.CollectionCheckStateManager.FROM_NEWSFRAGMENT;
 import static com.example.parting_soul.news.utils.support.CollectionCheckStateManager.FROM_WEICHATFRAGMENT;
@@ -116,7 +117,7 @@ public class MessageActivity extends AppCompatActivity implements View.OnClickLi
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case COLLECTION_FINISH:
-                    judgeResult(msg, R.string.is_collected);
+                    judgeResult(msg, is_collected);
                     break;
                 case DIS_COLLECTION_FINISH:
                     judgeResult(msg, R.string.cancel_collected);

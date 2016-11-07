@@ -1,7 +1,9 @@
 package com.example.parting_soul.news.fragment.support;
 
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.View;
 import android.widget.AdapterView;
@@ -23,17 +25,17 @@ import java.util.List;
 public abstract class CollectionBaseFragment<T> extends Fragment implements AdapterView.OnItemClickListener,
         CollectionCallBack<T>, CollectionCheckStateNotifiyCallBack {
 
-    private CollectionCheckStateManager mCollectionCheckStateManager;
+    protected CollectionCheckStateManager mCollectionCheckStateManager;
 
-    private List<T> mLists;
+    protected List<T> mLists;
 
-    private T mCurrentSelectedItem;
+    protected T mCurrentSelectedItem;
 
-    int currentPos;
+    protected int currentPos;
 
-    private ImageView mEmpty;
+    protected ImageView mEmpty;
 
-    private Handler mHandler = new AbstractDownLoadHandler() {
+    protected Handler mHandler = new AbstractDownLoadHandler() {
         @Override
         public void handleMessage(Message msg) {
             updateUI(msg);
@@ -50,6 +52,13 @@ public abstract class CollectionBaseFragment<T> extends Fragment implements Adap
         }
     };
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mCollectionCheckStateManager = CollectionCheckStateManager.newInstance();
+    }
+
+
     /**
      * 方法在handleMessage内执行，更新UI
      *
@@ -57,15 +66,11 @@ public abstract class CollectionBaseFragment<T> extends Fragment implements Adap
      */
     public abstract void updateUI(Message msg);
 
-
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-    }
-
     @Override
     public void getResult(List<T> lists) {
-
+        Message msg = Message.obtain();
+        msg.obj = lists;
+        mHandler.sendMessage(msg);
     }
 
 
@@ -78,18 +83,18 @@ public abstract class CollectionBaseFragment<T> extends Fragment implements Adap
      * 没有数据时加载空界面
      */
     public void setEmptyView() {
-        if (mLists.size() == 0) {
+        if (mLists.size() == 0 || mLists == null) {
             mEmpty.setVisibility(View.VISIBLE);
         } else {
             mEmpty.setVisibility(View.GONE);
         }
     }
 
+
     @Override
     public void collectedStateChange(boolean isChange) {
         if (!isChange) {
             mLists.remove(mCurrentSelectedItem);
-            setEmptyView();
             LogUtils.d(CommonInfo.TAG, "--->" + mLists.size());
         } else {
             if (!mLists.contains(mCurrentSelectedItem)) {
@@ -97,6 +102,7 @@ public abstract class CollectionBaseFragment<T> extends Fragment implements Adap
             }
         }
         updateFragmentAdapter();
+        setEmptyView();
     }
 
     /**

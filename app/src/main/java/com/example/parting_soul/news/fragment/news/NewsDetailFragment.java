@@ -194,6 +194,7 @@ public class NewsDetailFragment extends BaseMulFragment<News> implements Adapter
         manager = DBManager.getDBManager(getActivity());
         //得到图片加载类
         mImageLoader = ImageLoader.newInstance(getActivity());
+        mCollectionCheckStateManager = CollectionCheckStateManager.newInstance();
         if (mImageLoader.diskLruCacheIsClosed()) {
             mImageLoader.openDiskLruCache();
         }
@@ -365,7 +366,6 @@ public class NewsDetailFragment extends BaseMulFragment<News> implements Adapter
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         //当前fragment可见时设置回调接口
-        mCollectionCheckStateManager = CollectionCheckStateManager.newInstance();
         mCollectionCheckStateManager.setNotifyVisibleNewsFragmentCallBack(this);
         mCurrentSelectedNews = mLists.get(position);
         MessageActivity.startActivity(getActivity(), mCurrentSelectedNews.getUrl(),
