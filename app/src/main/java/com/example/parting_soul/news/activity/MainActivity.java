@@ -234,7 +234,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
                 break;
             case R.string.collection:
-                //               switchContent(mCurrentFragment, new CollectionFragment());
+                //               switchContent(mCurrentFragment, new NewsCollectionFragment());
                 if (mFragmentManager.findFragmentByTag(CollectionFragment.NAME) == null) {
                     mCurrentFragment = new CollectionFragment();
                     setCurrentFragment(mCurrentFragment);
@@ -290,6 +290,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             LogUtils.d(CommonInfo.TAG, "--->" + JokeFragment.NAME);
         } else if (fragment instanceof CollectionFragment) {
             mFragmentManager.beginTransaction().replace(R.id.main_fragment, (CollectionFragment) fragment, CollectionFragment.NAME).commit();
+            LogUtils.d(CommonInfo.TAG, "--->" + CollectionFragment.NAME);
         }
     }
 

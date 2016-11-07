@@ -1,8 +1,9 @@
-package com.example.parting_soul.news.utils.cache.database;
+package com.example.parting_soul.news.utils.cache;
 
 import android.content.Context;
 
-import com.example.parting_soul.news.Interface.callback.CollectionNewsCallBack;
+import com.example.parting_soul.news.Interface.callback.CollectionCallBack;
+import com.example.parting_soul.news.utils.cache.database.DBManager;
 import com.example.parting_soul.news.utils.support.NewsApplication;
 import com.example.parting_soul.news.bean.News;
 import com.example.parting_soul.news.utils.support.CommonInfo;
@@ -23,7 +24,7 @@ public class CollectionNewsThread {
         mContext = NewsApplication.getContext();
     }
 
-    public void getCollectionNews(final CollectionNewsCallBack callBack) {
+    public void getCollectionNews(final CollectionCallBack<News> callBack) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -33,7 +34,7 @@ public class CollectionNewsThread {
         }).start();
     }
 
-    public void setCollectionNews(final CollectionNewsCallBack callBack, final String title) {
+    public void setCollectionNews(final CollectionCallBack<News> callBack, final String title) {
         LogUtils.d(CommonInfo.TAG, "asdff--->" + "setCollectionNews");
         new Thread(new Runnable() {
             @Override
@@ -45,7 +46,7 @@ public class CollectionNewsThread {
         }).start();
     }
 
-    public void cancelCollectionNews(final CollectionNewsCallBack callBack, final String title) {
+    public void cancelCollectionNews(final CollectionCallBack<News> callBack, final String title) {
         new Thread(new Runnable() {
             @Override
             public void run() {

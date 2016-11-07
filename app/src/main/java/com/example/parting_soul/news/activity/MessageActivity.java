@@ -19,10 +19,12 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.parting_soul.news.Interface.callback.CollectionNewsCallBack;
+import com.example.parting_soul.news.Interface.callback.CollectionCallBack;
 import com.example.parting_soul.news.R;
 import com.example.parting_soul.news.bean.News;
-import com.example.parting_soul.news.utils.cache.database.CollectionNewsThread;
+import com.example.parting_soul.news.bean.WeiChat;
+import com.example.parting_soul.news.utils.cache.CollectionNewsThread;
+import com.example.parting_soul.news.utils.cache.CollectionWeiChatThread;
 import com.example.parting_soul.news.utils.style.LanguageChangeManager;
 import com.example.parting_soul.news.utils.style.ThemeChangeManager;
 import com.example.parting_soul.news.utils.support.CollectionCheckStateManager;
@@ -34,7 +36,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 
-import static com.example.parting_soul.news.R.id.webView;
 import static com.example.parting_soul.news.utils.support.CollectionCheckStateManager.FROM_COLLECTIONFRAGMENT;
 import static com.example.parting_soul.news.utils.support.CollectionCheckStateManager.FROM_NEWSFRAGMENT;
 import static com.example.parting_soul.news.utils.support.CollectionCheckStateManager.FROM_WEICHATFRAGMENT;
@@ -131,6 +132,8 @@ public class MessageActivity extends AppCompatActivity implements View.OnClickLi
                     mCalllBackManager.getNotifyCollectionActivityCallBack().collectedStateChange(mIsCollected.isChecked());
                 } else if (from_where_activity == FROM_NEWSFRAGMENT) {
                     //通知newsfragment将该新闻变为当前收藏的状态
+                    mCalllBackManager.getNotifyVisibleNewsFragmentCallBack().collectedStateChange(mIsCollected.isChecked());
+                } else if (from_where_activity == FROM_WEICHATFRAGMENT) {
                     mCalllBackManager.getNotifyVisibleNewsFragmentCallBack().collectedStateChange(mIsCollected.isChecked());
                 }
             } else {
@@ -278,37 +281,95 @@ public class MessageActivity extends AppCompatActivity implements View.OnClickLi
         if (isChecked) {
             if (!is_Collected) {
                 LogUtils.d(CommonInfo.TAG, "asdff" + isChecked);
-                new CollectionNewsThread().setCollectionNews(new CollectionNewsCallBack() {
-                    @Override
-                    public void getResult(List<News> newsList) {
-
-                    }
-
-                    @Override
-                    public void isSuccess(boolean isSuccess) {
-                        Message msg = Message.obtain();
-                        msg.obj = isSuccess;
-                        msg.what = COLLECTION_FINISH;
-                        mHandler.sendMessage(msg);
-                    }
-                }, mTitle);
+                judgeFromWhereFragment(isChecked);
             }
         } else {
-            new CollectionNewsThread().cancelCollectionNews(new CollectionNewsCallBack() {
-                @Override
-                public void getResult(List<News> newsList) {
-
-                }
-
-                @Override
-                public void isSuccess(boolean isSuccess) {
-                    Message msg = Message.obtain();
-                    msg.obj = isSuccess;
-                    msg.what = DIS_COLLECTION_FINISH;
-                    mHandler.sendMessage(msg);
-                }
-            }, mTitle);
+            judgeFromWhereFragment(isChecked);
             is_Collected = false;
         }
+    }
+
+    public void judgeFromWhereFragment(boolean isCollected) {
+        if (from_where_activity == FROM_WEICHATFRAGMENT) {
+            if (isCollected) {
+                addWeiChatCollection();
+            } else {
+                cancelWeiChatCollection();
+            }
+        } else if (from_where_activity == FROM_NEWSFRAGMENT) {
+            if (isCollected) {
+                addNewsColllection();
+            } else {
+                cancelNewsCollection();
+            }
+        }
+    }
+
+    public void addNewsColllection() {
+        new CollectionNewsThread().setCollectionNews(new CollectionCallBack<News>() {
+            @Override
+            public void getResult(List<News> newsList) {
+
+            }
+
+            @Override
+            public void isSuccess(boolean isSuccess) {
+                Message msg = Message.obtain();
+                msg.obj = isSuccess;
+                msg.what = COLLECTION_FINISH;
+                mHandler.sendMessage(msg);
+            }
+        }, mTitle);
+    }
+
+    public void cancelNewsCollection() {
+        new CollectionNewsThread().cancelCollectionNews(new CollectionCallBack<News>() {
+            @Override
+            public void getResult(List<News> newsList) {
+
+            }
+
+            @Override
+            public void isSuccess(boolean isSuccess) {
+                Message msg = Message.obtain();
+                msg.obj = isSuccess;
+                msg.what = DIS_COLLECTION_FINISH;
+                mHandler.sendMessage(msg);
+            }
+        }, mTitle);
+    }
+
+    public void addWeiChatCollection() {
+        new CollectionWeiChatThread().setCollectionWeiChat(new CollectionCallBack<WeiChat>() {
+            @Override
+            public void getResult(List<WeiChat> newsList) {
+
+            }
+
+            @Override
+            public void isSuccess(boolean isSuccess) {
+                Message msg = Message.obtain();
+                msg.obj = isSuccess;
+                msg.what = COLLECTION_FINISH;
+                mHandler.sendMessage(msg);
+            }
+        }, mTitle);
+    }
+
+    public void cancelWeiChatCollection() {
+        new CollectionWeiChatThread().cancelCollectionWeiChat(new CollectionCallBack<WeiChat>() {
+            @Override
+            public void getResult(List<WeiChat> newsList) {
+
+            }
+
+            @Override
+            public void isSuccess(boolean isSuccess) {
+                Message msg = Message.obtain();
+                msg.obj = isSuccess;
+                msg.what = DIS_COLLECTION_FINISH;
+                mHandler.sendMessage(msg);
+            }
+        }, mTitle);
     }
 }

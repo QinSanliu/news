@@ -44,7 +44,7 @@ public class WeiChatDetailFragmentAdapter extends BaseFragmentAdapter<WeiChat> i
         mListView = listView;
         getPicUrl();
         mImageLoader = ImageLoader.newInstance(context);
-        listView.setOnLoadImageListener(this);
+        mListView.setOnLoadImageListener(this);
         textStyleId = FontChangeManager.changeItemTitleFontSize();
     }
 

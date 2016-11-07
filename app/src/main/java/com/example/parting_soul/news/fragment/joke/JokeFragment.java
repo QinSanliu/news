@@ -4,9 +4,13 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.parting_soul.news.R;
 import com.example.parting_soul.news.activity.MainActivity;
@@ -32,7 +36,7 @@ import java.util.Set;
  */
 
 public class JokeFragment extends BaseFragment<Joke> implements PullToRefreshView.OnRefreshListener,
-        AbsListView.OnScrollListener {
+        AbsListView.OnScrollListener, AdapterView.OnItemClickListener {
     public static final String NAME = "JokeFragment";
 
     private JokeFragmentAdapter mJokeFragmentAdapter;
@@ -72,7 +76,9 @@ public class JokeFragment extends BaseFragment<Joke> implements PullToRefreshVie
         View view = View.inflate(getActivity(), R.layout.funny_fragment_layout, null);
         mListView = (ListView) view.findViewById(R.id.list_view);
         //      mListView.setOnLoadMoreListener(this);
+        mListView.setOnItemClickListener(this);
         mListView.setOnScrollListener(this);
+        mListView.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
         mPullToRefreshView = (PullToRefreshView) view.findViewById(R.id.pull_to_refresh);
         mPullToRefreshView.setOnRefreshListener(this);
         return view;
@@ -108,7 +114,7 @@ public class JokeFragment extends BaseFragment<Joke> implements PullToRefreshVie
             String json = HttpUtils.HttpPostMethod(CommonInfo.JokeApI.Param.JOKR_REQUEST_URL,
                     initRequestUrlParam(), CommonInfo.ENCODE_TYPE);
             lists = parseJsonData(json);
-            addToDataBase(lists);
+            addToDataBase(lists, false);
         }
         mLists = lists;
         return getCheckResult(mLists);
@@ -123,6 +129,7 @@ public class JokeFragment extends BaseFragment<Joke> implements PullToRefreshVie
     @Override
     public void onRefresh() {
         mRequestPage = 1;
+        mParams = initRequestUrlParam();
         LoadDataAsync asyn = new LoadDataAsync(true);
         asyn.execute();
         mSets.add(asyn);
@@ -144,12 +151,16 @@ public class JokeFragment extends BaseFragment<Joke> implements PullToRefreshVie
      *
      * @param lists
      */
-    public void addToDataBase(final List<Joke> lists) {
+    public void addToDataBase(final List<Joke> lists, final boolean isPulltoRefresh) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 //将数据写入数据库
-                mDBManager.addJokeCaCheToDataBase(lists);
+                if (!isPulltoRefresh) {
+                    mDBManager.addJokeCaCheToDataBase(lists);
+                } else {
+                    mDBManager.updateJokeCacheFromDataBase(lists);
+                }
             }
         }).start();
     }
@@ -169,6 +180,15 @@ public class JokeFragment extends BaseFragment<Joke> implements PullToRefreshVie
         mTotalItemNums = totalItemCount;
     }
 
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Toast.makeText(getActivity(), "on click ", Toast.LENGTH_SHORT).show();
+        CheckBox checkBox = (CheckBox) view.findViewById(R.id.is_collectedBox);
+        if (checkBox.isChecked()) {
+            Toast.makeText(getActivity(), "on click ", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     class LoadDataAsync extends AsyncTask<Void, Void, List<Joke>> {
         /**
          * 异步任务来自下拉刷新
@@ -186,9 +206,10 @@ public class JokeFragment extends BaseFragment<Joke> implements PullToRefreshVie
                 String result = HttpUtils.HttpPostMethod(CommonInfo.JokeApI.Param.JOKR_REQUEST_URL,
                         mParams, CommonInfo.ENCODE_TYPE);
                 lists = parseJsonData(result);
-                addToDataBase(lists);
+                addToDataBase(lists, mIsFromPullDownRefresh);
             }
             if (!NetworkInfo.isNetworkAvailable() || lists == null) {
+                LogUtils.d(CommonInfo.TAG, "from database");
                 lists = mDBManager.readJokeCacheFromDataBase(mRequestPage);
             }
             return lists;

@@ -82,6 +82,7 @@ public class LoadMoreItemListView extends ListView implements AbsListView.OnScro
         loadText = (TextView) mFootView.findViewById(R.id.loading_more);
         mProgressBar = (ProgressBar) mFootView.findViewById(R.id.loading);
         addFooterView(mFootView);
+        setLoadingFinishState();
         this.setOnScrollListener(this);
         LogUtils.d(CommonInfo.TAG, "-->init");
     }
@@ -114,8 +115,9 @@ public class LoadMoreItemListView extends ListView implements AbsListView.OnScro
                 mLoadImageListener.onLoadImage();
             }
             LogUtils.d(CommonInfo.TAG, "WeiChat LoadImageListener" + totalItemNum + " " + view.getLastVisiblePosition());
-            if (!isLoading && lastVisibleIndex == totalItemNum - 1 && scrollState == OnScrollListener.SCROLL_STATE_IDLE) {
+            if (!isLoading && lastVisibleIndex == totalItemNum - 1 && scrollState == OnScrollListener.SCROLL_STATE_IDLE && mLoadMoreListener != null) {
                 //拉倒最后面时显示进度条，并加载数据
+                LogUtils.d(CommonInfo.TAG, "--> on loading");
                 isLoading = true;
                 setLoadingState();
 //                mFootView.setVisibility(View.VISIBLE);

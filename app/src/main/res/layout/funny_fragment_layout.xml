@@ -22,6 +22,7 @@
             android:layout_height="match_parent"
             android:background="?attr/theme_backgroundColor"
             android:dividerHeight="15dp"
+            android:descendantFocusability="beforeDescendants"
             android:minHeight="60dp" />
     </com.yalantis.phoenix.PullToRefreshView>
 </LinearLayout>

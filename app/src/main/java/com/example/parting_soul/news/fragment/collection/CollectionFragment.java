@@ -1,79 +1,35 @@
 package com.example.parting_soul.news.fragment.collection;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ImageView;
-import android.widget.ListView;
 
-import com.example.parting_soul.news.Interface.callback.CollectionCheckStateNotifiyCallBack;
-import com.example.parting_soul.news.Interface.callback.CollectionNewsCallBack;
 import com.example.parting_soul.news.R;
 import com.example.parting_soul.news.activity.MainActivity;
-import com.example.parting_soul.news.activity.MessageActivity;
-import com.example.parting_soul.news.adapter.NewsInfoAdapter;
-import com.example.parting_soul.news.bean.News;
-import com.example.parting_soul.news.utils.cache.database.CollectionNewsThread;
-import com.example.parting_soul.news.utils.network.AbstractDownLoadHandler;
-import com.example.parting_soul.news.utils.support.CollectionCheckStateManager;
-import com.example.parting_soul.news.utils.support.CommonInfo;
-import com.example.parting_soul.news.utils.support.LogUtils;
+import com.example.parting_soul.news.adapter.CollectionViewPagerAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by parting_soul on 2016/11/2.
+ * Created by parting_soul on 2016/11/7.
  */
 
-public class CollectionFragment extends Fragment implements AdapterView.OnItemClickListener
-        , CollectionNewsCallBack, CollectionCheckStateNotifiyCallBack {
+public class CollectionFragment extends Fragment {
     public static final String NAME = "CollectionFragment";
 
-    private ListView mListView;
+    private ViewPager mViewPager;
 
-    private NewsInfoAdapter mNewsInfoAdapter;
+    private TabLayout mTabLayout;
 
-    private CollectionCheckStateManager mCollectionCheckStateManager;
+    private CollectionViewPagerAdapter mViewPagerAdapter;
 
-    private List<News> mNewsList;
-
-    private News mCurrentSelectedNews;
-
-    int currentPos;
-
-    private ImageView mEmpty;
-
-
-    private Handler mHandler = new AbstractDownLoadHandler() {
-        @Override
-        public void handleMessage(Message msg) {
-            updateUI(msg);
-        }
-
-        @Override
-        protected void showError() {
-
-        }
-
-        @Override
-        protected void updateUI(Message msg) {
-            mNewsList = (List<News>) msg.obj;
-            if (mNewsList == null || mNewsList.size() == 0) {
-                setEmptyView();
-            } else {
-                mNewsInfoAdapter = new NewsInfoAdapter(getActivity(), mNewsList, mListView);
-                mListView.setAdapter(mNewsInfoAdapter);
-                mNewsInfoAdapter.setIsCanLoadImage(true);
-                mNewsInfoAdapter.notifyDataSetChanged();
-            }
-        }
-    };
+    public static int[] TITLES = {R.string.news, R.string.weichat, R.string.funny};
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -84,59 +40,35 @@ public class CollectionFragment extends Fragment implements AdapterView.OnItemCl
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.layout_collection, container, false);
-        mListView = (ListView) view.findViewById(R.id.news_lists);
-        mEmpty = (ImageView) view.findViewById(R.id.empty);
-        mListView.setOnItemClickListener(this);
-        mCollectionCheckStateManager = CollectionCheckStateManager.newInstance();
-        mCollectionCheckStateManager.setNotifyCollectionActivityCallBack(this);
-        new CollectionNewsThread().getCollectionNews(this);
+        View view = inflater.inflate(R.layout.layout_collection_fragment, container, false);
+        initViewPager(view);
         return view;
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        mCurrentSelectedNews = (News) mNewsInfoAdapter.getItem(position);
-        currentPos = mNewsList.indexOf(mCurrentSelectedNews);
-        MessageActivity.startActivity(getActivity(), mCurrentSelectedNews.getUrl(),
-                mCurrentSelectedNews.getTitle(), mCurrentSelectedNews.is_collected(),
-                CollectionCheckStateManager.FROM_COLLECTIONFRAGMENT);
+    private void initViewPager(View view) {
+        List<Fragment> lists = new ArrayList<Fragment>();
+        mViewPager = (ViewPager) view.findViewById(R.id.coll_viewpager);
+        mTabLayout = (TabLayout) view.findViewById(R.id.tab_layout);
+
+        NewsCollectionFragment newsCollectionFragment = new NewsCollectionFragment();
+        lists.add(newsCollectionFragment);
+
+        WeiChatCollectionFragment weiChatCollectionFragment = new WeiChatCollectionFragment();
+        lists.add(weiChatCollectionFragment);
+
+        JokeCollectionFragment jokeCollectionFragment = new JokeCollectionFragment();
+        lists.add(jokeCollectionFragment);
+
+        mTabLayout.setTabMode(TabLayout.MODE_FIXED);
+        //为TabLayout添加tab名称
+        mTabLayout.addTab(mTabLayout.newTab().setText(TITLES[0]));
+        mTabLayout.addTab(mTabLayout.newTab().setText(TITLES[1]));
+        mTabLayout.addTab(mTabLayout.newTab().setText(TITLES[2]));
+
+        mViewPagerAdapter = new CollectionViewPagerAdapter(getChildFragmentManager(), lists);
+        mViewPager.setAdapter(mViewPagerAdapter);
+
+        mTabLayout.setupWithViewPager(mViewPager);
     }
 
-    @Override
-    public void getResult(List<News> newsList) {
-        Message msg = Message.obtain();
-        msg.obj = newsList;
-        mHandler.sendMessage(msg);
-    }
-
-    @Override
-    public void isSuccess(boolean isSuccess) {
-
-    }
-
-    @Override
-    public void collectedStateChange(boolean isChange) {
-        if (!isChange) {
-            mNewsList.remove(mCurrentSelectedNews);
-            setEmptyView();
-            LogUtils.d(CommonInfo.TAG, "--->" + mNewsList.size());
-        } else {
-            if (!mNewsList.contains(mCurrentSelectedNews)) {
-                mNewsList.add(currentPos, mCurrentSelectedNews);
-            }
-        }
-        mNewsInfoAdapter.notifyDataSetChanged();
-    }
-
-    /**
-     * 没有数据时加载空界面
-     */
-    public void setEmptyView() {
-        if (mNewsList.size() == 0) {
-            mEmpty.setVisibility(View.VISIBLE);
-        } else {
-            mEmpty.setVisibility(View.GONE);
-        }
-    }
 }

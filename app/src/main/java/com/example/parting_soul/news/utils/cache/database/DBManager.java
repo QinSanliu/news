@@ -14,6 +14,7 @@ import com.example.parting_soul.news.utils.support.LogUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.parting_soul.news.utils.cache.database.JokeTable.JOKE_TABLE_IS_COLLECTED;
 import static com.example.parting_soul.news.utils.cache.database.NewsTable.NEWS_TABLE_AUTHOR_NAME;
 import static com.example.parting_soul.news.utils.cache.database.NewsTable.NEWS_TABLE_DATE;
 import static com.example.parting_soul.news.utils.cache.database.NewsTable.NEWS_TABLE_IS_COLLECTION;
@@ -24,6 +25,7 @@ import static com.example.parting_soul.news.utils.cache.database.NewsTable.NEWS_
 import static com.example.parting_soul.news.utils.cache.database.WeiChatTable.WEICHAT_IS_COLLECTED;
 import static com.example.parting_soul.news.utils.cache.database.WeiChatTable.WEICHAT_PAGE;
 import static com.example.parting_soul.news.utils.cache.database.WeiChatTable.WEICHAT_TABLE_ID;
+import static com.example.parting_soul.news.utils.cache.database.WeiChatTable.WEICHAT_TABLE_NAME;
 import static com.example.parting_soul.news.utils.cache.database.WeiChatTable.WEICHAT_TABLE_PIC_PATH;
 import static com.example.parting_soul.news.utils.cache.database.WeiChatTable.WEICHAT_TABLE_TITLE;
 import static com.example.parting_soul.news.utils.cache.database.WeiChatTable.WEICHAT_TABLE_URL;
@@ -360,18 +362,36 @@ public class DBManager {
     }
 
     /**
-     * 移除收藏精选项
+     * 添加收藏精选项
      *
-     * @param id
+     * @param title
      * @return boolean
      */
-    public boolean deleteWeiChatCollectionFromDataBase(String id) {
+    public boolean addWeiChatCollectionToDataBase(String title) {
         getConnected();
         int result = -1;
-        if (id != null) {
+        if (title != null) {
+            ContentValues values = new ContentValues();
+            values.put(WEICHAT_IS_COLLECTED, "1");
+            result = database.update(WEICHAT_TABLE_NAME, values, WEICHAT_TABLE_TITLE + " = ? ", new String[]{title});
+        }
+        LogUtils.d(CommonInfo.TAG, "asdff" + result);
+        return result == -1 ? false : true;
+    }
+
+    /**
+     * 移除收藏精选项
+     *
+     * @param title
+     * @return boolean
+     */
+    public boolean deleteWeiChatCollectionFromDataBase(String title) {
+        getConnected();
+        int result = -1;
+        if (title != null) {
             ContentValues values = new ContentValues();
             values.put(WeiChatTable.WEICHAT_IS_COLLECTED, "0");
-            result = database.update(WeiChatTable.WEICHAT_TABLE_NAME, values, WeiChatTable.WEICHAT_TABLE_ID + " = ? ", new String[]{id});
+            result = database.update(WeiChatTable.WEICHAT_TABLE_NAME, values, WeiChatTable.WEICHAT_TABLE_TITLE + " = ? ", new String[]{title});
         }
         return result == -1 ? false : true;
     }
@@ -390,9 +410,9 @@ public class DBManager {
                 StringBuilder sql = new StringBuilder();
                 sql.append("insert or replace into ").append(JokeTable.JOKE_TABLE_NAME).append(" ( ").append(JokeTable.JOKE_TABLE_ID + ",")
                         .append(JokeTable.JOKE_TABLE_CONTENT + "," + JokeTable.JOKE_TABLE_UPDATA_TIME + "," + JokeTable.JOKE_TABLE_PAGE
-                                + "," + JokeTable.JOKE_TABLE_IS_COLLECTED).append(" ) values( '").append(n.getHashId()).append("',").append("'")
+                                + "," + JOKE_TABLE_IS_COLLECTED).append(" ) values( '").append(n.getHashId()).append("',").append("'")
                         .append(n.getContent() + "','" + n.getDate() + "'," + n.getPage() + ",").append("(").append("select ")
-                        .append(JokeTable.JOKE_TABLE_IS_COLLECTED).append(" from ").append(JokeTable.JOKE_TABLE_NAME).append(" where ").append(JokeTable.JOKE_TABLE_ID).append(" = '" + n.getHashId() + "') )");
+                        .append(JOKE_TABLE_IS_COLLECTED).append(" from ").append(JokeTable.JOKE_TABLE_NAME).append(" where ").append(JokeTable.JOKE_TABLE_ID).append(" = '" + n.getHashId() + "') )");
                 database.execSQL(sql.toString());
                 LogUtils.d(CommonInfo.TAG, "--->" + sql.toString());
             }
@@ -409,7 +429,7 @@ public class DBManager {
     public List<Joke> readJokeCacheFromDataBase(int page) {
         getConnected();
         Cursor cursor = database.query(JokeTable.JOKE_TABLE_NAME, null, JokeTable.JOKE_TABLE_PAGE + " = ? ",
-                new String[]{page + ""}, null, null, null, null);
+                new String[]{page + ""}, null, null, JokeTable.JOKE_TABLE_PAGE + " asc  ", null);
         //   Cursor cursor = database.rawQuery("select rowid,* from newsinfo where news_type = ? ", new String[]{newsType});
         List<Joke> lists = null;
         boolean isHaveCache = false;
@@ -421,7 +441,7 @@ public class DBManager {
                 joke.setHashId(cursor.getString(cursor.getColumnIndex(JokeTable.JOKE_TABLE_ID)));
                 joke.setContent(cursor.getString(cursor.getColumnIndex(JokeTable.JOKE_TABLE_CONTENT)));
                 joke.setDate(cursor.getString(cursor.getColumnIndex(JokeTable.JOKE_TABLE_UPDATA_TIME)));
-                joke.setIs_collected(cursor.getInt(cursor.getColumnIndex(JokeTable.JOKE_TABLE_IS_COLLECTED)) == 1);
+                joke.setIs_collected(cursor.getInt(cursor.getColumnIndex(JOKE_TABLE_IS_COLLECTED)) == 1);
                 joke.setPage(cursor.getInt(cursor.getColumnIndex(JokeTable.JOKE_TABLE_PAGE)));
                 lists.add(joke);
                 //             LogUtils.d(CommonInfo.TAG, "-->read" + rowid + " " + weiChat.getTitle() + " " + weiChat.is_collected());
@@ -431,5 +451,24 @@ public class DBManager {
         if (!isHaveCache) lists = null;
         LogUtils.d(CommonInfo.TAG, "-->" + lists);
         return lists;
+    }
+
+    /**
+     * 删除所有段子缓存
+     */
+    public void deleteJokeCacheFromDatabase() {
+        getConnected();
+        database.delete(JokeTable.JOKE_TABLE_NAME, JOKE_TABLE_IS_COLLECTED + " = ? or  "
+                + JOKE_TABLE_IS_COLLECTED + " is null ", new String[]{"0"});
+    }
+
+    /**
+     * 更新段子缓存
+     *
+     * @param jokes
+     */
+    public void updateJokeCacheFromDataBase(List<Joke> jokes) {
+        deleteJokeCacheFromDatabase();
+        addJokeCaCheToDataBase(jokes);
     }
 }

@@ -11,7 +11,9 @@ import com.example.parting_soul.news.R;
 import com.example.parting_soul.news.bean.Joke;
 import com.example.parting_soul.news.utils.style.FontChangeManager;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by parting_soul on 2016/11/5.
@@ -23,10 +25,13 @@ public class JokeFragmentAdapter extends BaseFragmentAdapter<Joke> {
 
     private int textStyleId;
 
+    private Map<Integer, Joke> map;
+
     public JokeFragmentAdapter(Context context, List<Joke> data) {
         mContext = context;
         this.mLists = data;
         textStyleId = FontChangeManager.changeJokeFontSize();
+        map = new HashMap<Integer, Joke>();
     }
 
     @Override
@@ -35,7 +40,7 @@ public class JokeFragmentAdapter extends BaseFragmentAdapter<Joke> {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         View view = null;
         JokeHolder holder = null;
         if (convertView == null) {
@@ -52,6 +57,19 @@ public class JokeFragmentAdapter extends BaseFragmentAdapter<Joke> {
         holder.content.setText(mLists.get(position).getContent());
         holder.date.setText(mLists.get(position).getDate());
         holder.content.setTextAppearance(mContext, textStyleId);
+//        holder.collection.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                if (position >= map.size()) {
+//                    holder.collection.setChecked(mLists.get(position).is_collected());
+//                    map.put(position, mLists.get(position));
+//                } else {
+//                    for (int i = 0; i < map.size(); i++) {
+//                        map.get()
+//                    }
+//                }
+//            }
+//        });
         holder.collection.setChecked(mLists.get(position).is_collected());
         return view;
     }
