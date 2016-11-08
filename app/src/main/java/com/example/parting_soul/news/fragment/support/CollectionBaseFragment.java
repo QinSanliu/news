@@ -18,6 +18,7 @@ import com.example.parting_soul.news.utils.support.LogUtils;
 
 import java.util.List;
 
+
 /**
  * Created by parting_soul on 2016/11/7.
  */
@@ -34,6 +35,10 @@ public abstract class CollectionBaseFragment<T> extends Fragment implements Adap
     protected int currentPos;
 
     protected ImageView mEmpty;
+
+    public static int FROM_ACTIVITY = 0X1111;
+
+    public static int FROM_JOKE_FRAGMENT = 0X2222;
 
     protected Handler mHandler = new AbstractDownLoadHandler() {
         @Override
@@ -70,13 +75,17 @@ public abstract class CollectionBaseFragment<T> extends Fragment implements Adap
     public void getResult(List<T> lists) {
         Message msg = Message.obtain();
         msg.obj = lists;
+        msg.what = FROM_ACTIVITY;
         mHandler.sendMessage(msg);
     }
 
 
     @Override
     public void isSuccess(boolean isSuccess) {
-
+        Message msg = Message.obtain();
+        msg.what = FROM_JOKE_FRAGMENT;
+        msg.obj = isSuccess;
+        mHandler.sendMessage(msg);
     }
 
     /**

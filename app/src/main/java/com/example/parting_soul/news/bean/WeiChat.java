@@ -1,11 +1,13 @@
 package com.example.parting_soul.news.bean;
 
+import java.io.Serializable;
+
 /**
  * Created by parting_soul on 2016/11/3.
  * 微信精选
  */
 
-public class WeiChat {
+public class WeiChat implements Serializable {
 
     private String title;
 

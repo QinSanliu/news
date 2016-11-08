@@ -45,7 +45,7 @@ public class HttpUtils {
             isSuccess = true;
         } catch (Exception e) {
             isSuccess = false;
-            e.printStackTrace();
+ //           e.printStackTrace();
         } finally {
             if (conn != null) conn.disconnect();
             if (in != null) {

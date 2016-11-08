@@ -1,10 +1,12 @@
 package com.example.parting_soul.news.bean;
 
+import java.io.Serializable;
+
 /**
  * Created by parting_soul on 2016/11/5.
  */
 
-public class Joke {
+public class Joke implements Serializable{
     private String content;
 
     private boolean is_collected;

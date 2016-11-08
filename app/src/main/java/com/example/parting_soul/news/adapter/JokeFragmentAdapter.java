@@ -25,18 +25,35 @@ public class JokeFragmentAdapter extends BaseFragmentAdapter<Joke> {
 
     private int textStyleId;
 
-    private Map<Integer, Joke> map;
+    private Map<Integer, Boolean> map;
+
+    private JokeCollectionCallBack mJokeCollectionCallBack;
+
+    public JokeCollectionCallBack getJokeCollectionCallBack() {
+        return mJokeCollectionCallBack;
+    }
+
+    public void setJokeCollectionCallBack(JokeCollectionCallBack mJokeCollectionCallBack) {
+        this.mJokeCollectionCallBack = mJokeCollectionCallBack;
+    }
 
     public JokeFragmentAdapter(Context context, List<Joke> data) {
         mContext = context;
         this.mLists = data;
         textStyleId = FontChangeManager.changeJokeFontSize();
-        map = new HashMap<Integer, Joke>();
+        map = new HashMap<Integer, Boolean>();
+        init_is_collected();
     }
 
     @Override
     public void getPicUrl() {
 
+    }
+
+    public void init_is_collected() {
+        for (int i = 0; i < mLists.size(); i++) {
+            map.put(i, mLists.get(i).is_collected());
+        }
     }
 
     @Override
@@ -57,19 +74,20 @@ public class JokeFragmentAdapter extends BaseFragmentAdapter<Joke> {
         holder.content.setText(mLists.get(position).getContent());
         holder.date.setText(mLists.get(position).getDate());
         holder.content.setTextAppearance(mContext, textStyleId);
-//        holder.collection.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                if (position >= map.size()) {
-//                    holder.collection.setChecked(mLists.get(position).is_collected());
-//                    map.put(position, mLists.get(position));
-//                } else {
-//                    for (int i = 0; i < map.size(); i++) {
-//                        map.get()
-//                    }
-//                }
-//            }
-//        });
+
+        final JokeHolder finalHolder = holder;
+        holder.collection.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean isSelected = !mLists.get(position).is_collected();
+                map.put(position, isSelected);
+                mLists.get(position).setIs_collected(isSelected);
+ //               Toast.makeText(mContext, "click", Toast.LENGTH_SHORT).show();
+                if (mJokeCollectionCallBack != null) {
+                    mJokeCollectionCallBack.setJokeCollectedState(v,mLists.get(position).getHashId(), position, isSelected);
+                }
+            }
+        });
         holder.collection.setChecked(mLists.get(position).is_collected());
         return view;
     }
@@ -78,6 +96,10 @@ public class JokeFragmentAdapter extends BaseFragmentAdapter<Joke> {
         TextView content;
         TextView date;
         CheckBox collection;
+    }
+
+    public interface JokeCollectionCallBack {
+        public void setJokeCollectedState(View checkBox, String hashID, int pos, boolean isSelected);
     }
 
 }

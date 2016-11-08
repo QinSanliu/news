@@ -14,7 +14,12 @@ import com.example.parting_soul.news.utils.support.LogUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.parting_soul.news.utils.cache.database.JokeTable.JOKE_TABLE_CONTENT;
+import static com.example.parting_soul.news.utils.cache.database.JokeTable.JOKE_TABLE_ID;
 import static com.example.parting_soul.news.utils.cache.database.JokeTable.JOKE_TABLE_IS_COLLECTED;
+import static com.example.parting_soul.news.utils.cache.database.JokeTable.JOKE_TABLE_NAME;
+import static com.example.parting_soul.news.utils.cache.database.JokeTable.JOKE_TABLE_PAGE;
+import static com.example.parting_soul.news.utils.cache.database.JokeTable.JOKE_TABLE_UPDATA_TIME;
 import static com.example.parting_soul.news.utils.cache.database.NewsTable.NEWS_TABLE_AUTHOR_NAME;
 import static com.example.parting_soul.news.utils.cache.database.NewsTable.NEWS_TABLE_DATE;
 import static com.example.parting_soul.news.utils.cache.database.NewsTable.NEWS_TABLE_IS_COLLECTION;
@@ -297,9 +302,10 @@ public class DBManager {
      */
     public List<WeiChat> readWeiChatCacheFromDatabase(int page) {
         getConnected();
-        Cursor cursor = database.query(WeiChatTable.WEICHAT_TABLE_NAME, null, WEICHAT_PAGE + " = ? ",
-                new String[]{page + ""}, null, null, null, null);
+        Cursor cursor = database.query(WeiChatTable.WEICHAT_TABLE_NAME, null, WEICHAT_PAGE + " = ? and (" + WEICHAT_IS_COLLECTED + " = ? or " + WEICHAT_IS_COLLECTED + " is null )",
+                new String[]{page + "", "0"}, null, null, null, null);
         //   Cursor cursor = database.rawQuery("select rowid,* from newsinfo where news_type = ? ", new String[]{newsType});
+        //     LogUtils.d(CommonInfo.TAG, "-->read database" + " " + );
         List<WeiChat> lists = null;
         boolean isHaveCache = false;
         if (cursor != null) {
@@ -315,7 +321,7 @@ public class DBManager {
                 weiChat.setIs_collected(cursor.getInt(cursor.getColumnIndex(WEICHAT_IS_COLLECTED)) == 1);
                 weiChat.setPage(cursor.getInt(cursor.getColumnIndex(WEICHAT_PAGE)));
                 lists.add(weiChat);
-                //             LogUtils.d(CommonInfo.TAG, "-->read" + rowid + " " + weiChat.getTitle() + " " + weiChat.is_collected());
+                LogUtils.d(CommonInfo.TAG, "-->read" + " " + weiChat.getTitle() + " " + weiChat.is_collected());
                 isHaveCache = true;
             }
         }
@@ -470,5 +476,65 @@ public class DBManager {
     public void updateJokeCacheFromDataBase(List<Joke> jokes) {
         deleteJokeCacheFromDatabase();
         addJokeCaCheToDataBase(jokes);
+    }
+
+    /**
+     * 读取收藏的段子
+     *
+     * @return
+     */
+    public List<Joke> readCollectionJokes() {
+        getConnected();
+        Cursor cursor = database.query(JOKE_TABLE_NAME, null, JOKE_TABLE_IS_COLLECTED + " = ? ",
+                new String[]{"1"}, null, null, null, null);
+        List<Joke> lists = new ArrayList<Joke>();
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                Joke joke = new Joke();
+                joke.setContent(cursor.getString(cursor.getColumnIndex(JOKE_TABLE_CONTENT)));
+                joke.setHashId(cursor.getString(cursor.getColumnIndex(JOKE_TABLE_ID)));
+                joke.setDate(cursor.getString(cursor.getColumnIndex(JOKE_TABLE_UPDATA_TIME)));
+                joke.setIs_collected(cursor.getInt(cursor.getColumnIndex(JOKE_TABLE_IS_COLLECTED)) == 1);
+                joke.setPage(cursor.getInt(cursor.getColumnIndex(JOKE_TABLE_PAGE)));
+                lists.add(joke);
+            }
+        }
+        return lists;
+    }
+
+    /**
+     * 添加段子收藏
+     *
+     * @param hashID
+     * @return boolean
+     */
+    public boolean addJokeCollectionToDataBase(String hashID) {
+        getConnected();
+        int result = -1;
+        if (hashID != null) {
+            ContentValues values = new ContentValues();
+            values.put(JOKE_TABLE_IS_COLLECTED, "1");
+            result = database.update(JOKE_TABLE_NAME, values, JOKE_TABLE_ID + " = ? ", new String[]{hashID});
+        }
+        LogUtils.d(CommonInfo.TAG, "asdff" + result);
+        return result == -1 ? false : true;
+    }
+
+
+    /**
+     * 移除段子收藏项
+     *
+     * @param hashID
+     * @return boolean
+     */
+    public boolean deleteJokeCollectionFromDataBase(String hashID) {
+        getConnected();
+        int result = -1;
+        if (hashID != null) {
+            ContentValues values = new ContentValues();
+            values.put(JOKE_TABLE_IS_COLLECTED, "0");
+            result = database.update(JOKE_TABLE_NAME, values, JOKE_TABLE_ID + " = ? ", new String[]{hashID});
+        }
+        return result == -1 ? false : true;
     }
 }

@@ -12,17 +12,20 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.parting_soul.news.Interface.callback.CollectionCallBack;
 import com.example.parting_soul.news.R;
 import com.example.parting_soul.news.activity.MainActivity;
 import com.example.parting_soul.news.adapter.JokeFragmentAdapter;
 import com.example.parting_soul.news.bean.Joke;
 import com.example.parting_soul.news.customview.LoadingPager;
 import com.example.parting_soul.news.fragment.support.BaseFragment;
+import com.example.parting_soul.news.utils.cache.database.CollectionJokeThread;
 import com.example.parting_soul.news.utils.cache.database.DBManager;
 import com.example.parting_soul.news.utils.network.HttpUtils;
 import com.example.parting_soul.news.utils.network.JsonParseTool;
 import com.example.parting_soul.news.utils.network.NetworkInfo;
 import com.example.parting_soul.news.utils.support.CommonInfo;
+import com.example.parting_soul.news.utils.support.ListSerializableUtils;
 import com.example.parting_soul.news.utils.support.LogUtils;
 import com.yalantis.phoenix.PullToRefreshView;
 
@@ -36,7 +39,8 @@ import java.util.Set;
  */
 
 public class JokeFragment extends BaseFragment<Joke> implements PullToRefreshView.OnRefreshListener,
-        AbsListView.OnScrollListener, AdapterView.OnItemClickListener {
+        AbsListView.OnScrollListener, AdapterView.OnItemClickListener, JokeFragmentAdapter.JokeCollectionCallBack
+        , CollectionCallBack<Joke> {
     public static final String NAME = "JokeFragment";
 
     private JokeFragmentAdapter mJokeFragmentAdapter;
@@ -63,12 +67,19 @@ public class JokeFragment extends BaseFragment<Joke> implements PullToRefreshVie
 
     private boolean isLoadingMore;
 
+    private CollectionJokeThread mCollectionJokeThread;
+
+    private CheckBox mCurrentCheckBox;
+
+    private boolean checkBoxState;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ((MainActivity) getActivity()).setTitleName(R.string.funny);
         mDBManager = DBManager.getDBManager(getActivity());
         mSets = new HashSet<LoadDataAsync>();
+        mCollectionJokeThread = new CollectionJokeThread();
     }
 
     @Override
@@ -87,6 +98,7 @@ public class JokeFragment extends BaseFragment<Joke> implements PullToRefreshVie
     @Override
     public void updataUI() {
         mJokeFragmentAdapter = new JokeFragmentAdapter(getActivity(), mLists);
+        mJokeFragmentAdapter.setJokeCollectionCallBack(this);
         mListView.setAdapter(mJokeFragmentAdapter);
         mJokeFragmentAdapter.notifyDataSetChanged();
         LogUtils.d(CommonInfo.TAG, "-->lists  " + NAME + " " + mLists.size());
@@ -114,6 +126,8 @@ public class JokeFragment extends BaseFragment<Joke> implements PullToRefreshVie
             String json = HttpUtils.HttpPostMethod(CommonInfo.JokeApI.Param.JOKR_REQUEST_URL,
                     initRequestUrlParam(), CommonInfo.ENCODE_TYPE);
             lists = parseJsonData(json);
+            List<Joke> collection = mDBManager.readJokeCacheFromDataBase(1);
+            updataCollectionData(lists, collection);
             addToDataBase(lists, false);
         }
         mLists = lists;
@@ -124,6 +138,25 @@ public class JokeFragment extends BaseFragment<Joke> implements PullToRefreshVie
     @Override
     public List<Joke> parseJsonData(String result) {
         return JsonParseTool.parseJokeJsonWidthJSONObject(result, mRequestPage);
+    }
+
+    /**
+     * 更新收藏的段子
+     *
+     * @param lists
+     * @param collection
+     */
+    private void updataCollectionData(List<Joke> lists, List<Joke> collection) {
+        if (lists != null && collection != null) {
+            for (int i = 0; i < lists.size(); i++) {
+                for (int j = 0; j < collection.size(); j++) {
+                    if (lists.get(i).getHashId().equals(collection.get(j).getHashId())) {
+                        lists.get(i).setIs_collected(collection.get(j).is_collected());
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     @Override
@@ -152,14 +185,16 @@ public class JokeFragment extends BaseFragment<Joke> implements PullToRefreshVie
      * @param lists
      */
     public void addToDataBase(final List<Joke> lists, final boolean isPulltoRefresh) {
+        final List<Joke> data = ListSerializableUtils.copyList(lists);
+        LogUtils.d(CommonInfo.TAG, "---data>" + data.size());
         new Thread(new Runnable() {
             @Override
             public void run() {
                 //将数据写入数据库
                 if (!isPulltoRefresh) {
-                    mDBManager.addJokeCaCheToDataBase(lists);
+                    mDBManager.addJokeCaCheToDataBase(data);
                 } else {
-                    mDBManager.updateJokeCacheFromDataBase(lists);
+                    mDBManager.updateJokeCacheFromDataBase(data);
                 }
             }
         }).start();
@@ -189,6 +224,30 @@ public class JokeFragment extends BaseFragment<Joke> implements PullToRefreshVie
         }
     }
 
+
+    @Override
+    public void setJokeCollectedState(View v, String hashID, int position, boolean isSelected) {
+        mCurrentCheckBox = (CheckBox) v;
+        checkBoxState = isSelected;
+        if (isSelected) {
+            mCollectionJokeThread.setCollectionJoke(this, hashID);
+        } else {
+            mCollectionJokeThread.cancelCollectionJoke(this, hashID);
+        }
+    }
+
+    @Override
+    public void getResult(List<Joke> lists) {
+
+    }
+
+    @Override
+    public void isSuccess(boolean isSuccess) {
+        if (!isSuccess) {
+            mCurrentCheckBox.setChecked(!checkBoxState);
+        }
+    }
+
     class LoadDataAsync extends AsyncTask<Void, Void, List<Joke>> {
         /**
          * 异步任务来自下拉刷新
@@ -212,6 +271,8 @@ public class JokeFragment extends BaseFragment<Joke> implements PullToRefreshVie
                 LogUtils.d(CommonInfo.TAG, "from database");
                 lists = mDBManager.readJokeCacheFromDataBase(mRequestPage);
             }
+            List<Joke> data = mDBManager.readCollectionJokes();
+            updataCollectionData(lists, data);
             return lists;
         }
 
@@ -237,6 +298,7 @@ public class JokeFragment extends BaseFragment<Joke> implements PullToRefreshVie
                 mLoadMore.setVisibility(View.GONE);
                 isLoadingMore = false;
             }
+            mJokeFragmentAdapter.init_is_collected();
             mJokeFragmentAdapter.notifyDataSetChanged();
             if (mSets != null) {
                 mSets.remove(this);

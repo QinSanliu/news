@@ -72,6 +72,7 @@ public class WeiChatCollectionFragment extends CollectionBaseFragment<WeiChat> {
                 CollectionCheckStateManager.FROM_WEICHATFRAGMENT);
     }
 
+
     @Override
     public void updateFragmentAdapter() {
         mWeiChatDetailFragmentAdapter.notifyDataSetChanged();

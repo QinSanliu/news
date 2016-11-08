@@ -1,11 +1,13 @@
 package com.example.parting_soul.news.bean;
 
+import java.io.Serializable;
+
 /**
  * Created by parting_soul on 2016/10/3.
  * 新闻类
  */
 
-public class News {
+public class News implements Serializable {
     /**
      * 新闻的标题
      */

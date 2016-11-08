@@ -21,6 +21,7 @@ import com.example.parting_soul.news.utils.network.HttpUtils;
 import com.example.parting_soul.news.utils.network.JsonParseTool;
 import com.example.parting_soul.news.utils.support.CollectionCheckStateManager;
 import com.example.parting_soul.news.utils.support.CommonInfo;
+import com.example.parting_soul.news.utils.support.ListSerializableUtils;
 import com.example.parting_soul.news.utils.support.LogUtils;
 import com.yalantis.phoenix.PullToRefreshView;
 
@@ -179,6 +180,7 @@ public class WeiChatFragment extends BaseFragment<WeiChat> implements PullToRefr
                 String result = HttpUtils.HttpPostMethod(CommonInfo.WeiChatAPI.Params.REQUEST_URL,
                         mParams, CommonInfo.ENCODE_TYPE);
                 lists = parseJsonData(result);
+                LogUtils.d(CommonInfo.TAG, "weichat from web");
                 addToDataBase(lists);
             }
             return lists;
@@ -214,11 +216,12 @@ public class WeiChatFragment extends BaseFragment<WeiChat> implements PullToRefr
      * @param lists
      */
     public void addToDataBase(final List<WeiChat> lists) {
+        final List<WeiChat> data = ListSerializableUtils.copyList(lists);
         new Thread(new Runnable() {
             @Override
             public void run() {
                 //将数据写入数据库
-                mDBManager.addWeiChatCaCheToDataBase(lists);
+                mDBManager.addWeiChatCaCheToDataBase(data);
             }
         }).start();
     }
