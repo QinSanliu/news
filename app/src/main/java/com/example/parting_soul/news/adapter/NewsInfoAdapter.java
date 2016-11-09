@@ -124,6 +124,7 @@ public class NewsInfoAdapter extends BaseFragmentAdapter<News> implements AbsLis
         mStart = firstVisibleItem;
         mEnd = firstVisibleItem + visibleItemCount;
         LogUtils.i(CommonInfo.TAG, "NewsInfoAdapter-->onScroll-->onScroll start = " + mStart + " end = " + mEnd);
+        LogUtils.i(CommonInfo.TAG, "NewsInfoAdapter-->" + isFirstIn + " " + visibleItemCount + " " + mCanLoagImage);
         if (isFirstIn && visibleItemCount > 0 && mCanLoagImage) {
             mImageLoader.loadImage(mStart, mEnd, mListView, this);
             isFirstIn = false;

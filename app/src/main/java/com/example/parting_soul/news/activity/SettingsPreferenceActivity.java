@@ -4,10 +4,12 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 
 import com.example.parting_soul.news.R;
 import com.example.parting_soul.news.bean.Settings;
@@ -32,12 +34,18 @@ public class SettingsPreferenceActivity extends AppCompatActivity {
      */
     private ImageButton mBackView;
 
+    private LinearLayout mNotificationHead;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ThemeChangeManager.changeThemeMode(this);
         LanguageChangeManager.changeLanguage();
         setContentView(R.layout.layout_settings);
+        mNotificationHead = (LinearLayout) findViewById(R.id.notify);
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
+            mNotificationHead.setVisibility(View.VISIBLE);
+        }
         mBackView = (ImageButton) findViewById(R.id.back_forward);
         if (savedInstanceState == null) {
             mPreferenceFragment = new SettingsPreferenceFragment();

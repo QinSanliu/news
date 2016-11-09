@@ -10,7 +10,8 @@
         android:layout_height="25dp"
         android:background="?attr/colorPrimaryDark"
         android:fitsSystemWindows="true"
-        android:orientation="horizontal" />
+        android:orientation="horizontal"
+        android:visibility="gone"/>
 
     <ScrollView
         android:id="@+id/scrollView"

@@ -117,11 +117,11 @@ public class DBManager {
                 sql.append("insert or replace into ").append(NewsTable.NEWS_TABLE_NAME).append(" ( ")
                         .append(NewsTable.NEWS_TABLE_TITLE + "," + NewsTable.NEWS_TABLE_PICPATH + "," + NewsTable.NEWS_TABLE_AUTHOR_NAME
                                 + "," + NewsTable.NEWS_TABLE_URL + "," + NewsTable.NEWS_TABLE_DATE + "," + NewsTable.NEWS_TABLE_NEWS_TYPE + "," + NewsTable.NEWS_TABLE_IS_COLLECTION)
-                        .append(" ) values( ").append("'").append(n.getTitle() + "','" + n.getPicPath() + "','" + n.getAuthor_name()
-                        + "','" + n.getUrl() + "','" + n.getDate() + "','" + newsType).append("',(").append("select ")
-                        .append(NewsTable.NEWS_TABLE_IS_COLLECTION).append(" from ").append(NewsTable.NEWS_TABLE_NAME).append(" where ").append(NewsTable.NEWS_TABLE_TITLE).append(" = '" + n.getTitle() + "') )");
-                database.execSQL(sql.toString());
-                LogUtils.d(CommonInfo.TAG, "--->" + sql.toString());
+                        .append(" ) values( ").append(" ? ").append("," + " ? " + "," + " ? "
+                        + "," + " ? " + "," + " ? " + "," + " ? ").append(",(").append("select ")
+                        .append(NewsTable.NEWS_TABLE_IS_COLLECTION).append(" from ").append(NewsTable.NEWS_TABLE_NAME).append(" where ").append(NewsTable.NEWS_TABLE_TITLE).append(" = " + " ? " + ") )");
+                database.execSQL(sql.toString(), new Object[]{n.getTitle(), n.getPicPath(), n.getAuthor_name(), n.getUrl(), n.getDate(), newsType, n.getTitle()});
+                LogUtils.d(CommonInfo.TAG, "--->add news cache" + sql.toString());
             }
 
         }

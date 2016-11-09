@@ -2,9 +2,12 @@ package com.example.parting_soul.news.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.parting_soul.news.R;
@@ -23,12 +26,18 @@ import java.io.InputStreamReader;
 public class ApplicationBriefActivity extends AppCompatActivity {
     private TextView mContent;
 
+    private LinearLayout mNotificationHead;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ThemeChangeManager.changeThemeMode(this);
         LanguageChangeManager.changeLanguage();
         setContentView(R.layout.application_brief);
+        mNotificationHead = (LinearLayout) findViewById(R.id.notify);
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
+            mNotificationHead.setVisibility(View.VISIBLE);
+        }
         mContent = (TextView) findViewById(R.id.application_content);
         mContent.setText(readTXTFileFromAssets(this));
     }

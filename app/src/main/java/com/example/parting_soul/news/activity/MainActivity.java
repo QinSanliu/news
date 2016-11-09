@@ -3,6 +3,7 @@ package com.example.parting_soul.news.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -44,6 +45,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
      * 应用程序的名字，显示于标题中间
      */
     private TextView mTitle;
+
+    private LinearLayout mNotificationHead;
 
     /**
      * 自定义标题的布局
@@ -117,6 +120,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         ThemeChangeManager.changeThemeMode(this);
         LanguageChangeManager.changeLanguage();
         setContentView(R.layout.drawer_layout);
+        mNotificationHead = (LinearLayout) findViewById(R.id.notify);
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
+            mNotificationHead.setVisibility(View.VISIBLE);
+        }
         init();
         initLeftDrawerLayout();
         mSettings = Settings.newsInstance();

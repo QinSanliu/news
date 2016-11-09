@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import libcore.io.DiskLruCache;
@@ -39,6 +40,7 @@ public class ImageLoader {
      * 异步任务集合
      */
     private Set<LoadImageAsynTask> mTaskSets;
+
 
     /**
      * 一级缓存，url和图片的映射
@@ -151,6 +153,7 @@ public class ImageLoader {
                 LogUtils.d(CommonInfo.TAG, "ImageLoader-->loadImage--->bitmap from cache");
             } else {
                 //找不到图片则从SD卡或者网络下载图片
+                LogUtils.d(CommonInfo.TAG, "LoadImage download");
                 downLoadImage(url, imageView);
             }
         }
@@ -204,10 +207,11 @@ public class ImageLoader {
      * 停止所有正在执行的异步任务
      */
     public void cancelAllAsyncTask() {
-        if (mTaskSets != null) {
-            for (AsyncTask task : mTaskSets) {
-                task.cancel(false);
-            }
+        Iterator<LoadImageAsynTask> it = mTaskSets.iterator();
+        while (it.hasNext()) {
+            LoadImageAsynTask task = it.next();
+ //           task.cancel(false);
+            it.remove();
         }
     }
 
@@ -217,7 +221,7 @@ public class ImageLoader {
      * @param url       图片路径
      * @param imageView 显示图片的控件
      */
-    public void downLoadImage(final String url, ImageView imageView) {
+    public synchronized void downLoadImage(final String url, ImageView imageView) {
         LoadImageAsynTask task = new LoadImageAsynTask(url, imageView);
         task.execute(url);
         mTaskSets.add(task);
@@ -240,10 +244,18 @@ public class ImageLoader {
         public LoadImageAsynTask(String url, ImageView imageView) {
             mImageView = imageView;
             mUrl = url;
+            LogUtils.d(CommonInfo.TAG, "LoadImage create async");
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            LogUtils.d(CommonInfo.TAG, "LoadImage onPre");
         }
 
         @Override
         protected Bitmap doInBackground(String... params) {
+            LogUtils.d(CommonInfo.TAG, "LoadImage doInBackground");
             DiskLruCache.Snapshot snapshot = null;
             String imageUrl = params[0];
             if (TextUtils.isEmpty(imageUrl)) return null;
@@ -316,7 +328,9 @@ public class ImageLoader {
         @Override
         protected void onPostExecute(Bitmap bitmap) {
             super.onPostExecute(bitmap);
+            LogUtils.d(CommonInfo.TAG, "LoadImage onPostExecute mImageView " + mImageView + " murl " + mUrl + " " + mImageView.getTag());
             if (mImageView != null && mImageView.getTag().equals(mUrl)) {
+                LogUtils.d(CommonInfo.TAG, "LoadImage onPostExecute bitmap " + bitmap);
                 //判断控件的tag标志是否与url一致
                 if (bitmap != null) {
                     mImageView.setImageBitmap(bitmap);
@@ -327,7 +341,6 @@ public class ImageLoader {
             //异步任务图片加载完成，移除该任务
             mTaskSets.remove(this);
         }
-
     }
 
     /**

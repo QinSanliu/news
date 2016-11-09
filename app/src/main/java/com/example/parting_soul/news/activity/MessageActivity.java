@@ -2,6 +2,7 @@ package com.example.parting_soul.news.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -16,6 +17,7 @@ import android.webkit.WebViewClient;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -72,6 +74,8 @@ public class MessageActivity extends AppCompatActivity implements View.OnClickLi
      * 取消收藏结束
      */
     private static final int DIS_COLLECTION_FINISH = 0X333;
+
+    private LinearLayout mNotificationHead;
 
     /**
      * 显示网页新闻
@@ -150,6 +154,10 @@ public class MessageActivity extends AppCompatActivity implements View.OnClickLi
         ThemeChangeManager.changeThemeMode(this);
         LanguageChangeManager.changeLanguage();
         setContentView(R.layout.layout_news_msg);
+        mNotificationHead = (LinearLayout) findViewById(R.id.notify);
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
+            mNotificationHead.setVisibility(View.VISIBLE);
+        }
         mTitleView = (TextView) findViewById(R.id.title_name);
         changeTitle();
         mBackView = (ImageButton) findViewById(R.id.back_forward);
