@@ -25,11 +25,11 @@
 	<tr>
 			<td><img src = "https://github.com/PartingSoul/news/blob/master/Screenshots/quweng4.png"></td>
 			<td><img src = "https://github.com/PartingSoul/news/blob/master/Screenshots/quweng5.png"></td>
-			<td><img src = "https://github.com/PartingSoul/news/blob/master/Screenshots/quwen6.png"></td>
+			<td><img src = "https://github.com/PartingSoul/news/blob/master/Screenshots/quweng6.png"></td>
 	</tr>
 	<tr>
 			<td><img src = "https://github.com/PartingSoul/news/blob/master/Screenshots/quweng7.png"></td>
 			<td><img src = "https://github.com/PartingSoul/news/blob/master/Screenshots/quweng8.png"></td>
-			<td><img src = "https://github.com/PartingSoul/news/blob/master/Screenshots/quwen9.png"></td>
+			<td><img src = "https://github.com/PartingSoul/news/blob/master/Screenshots/quweng9.png"></td>
 	</tr>
 </table>
