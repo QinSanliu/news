@@ -6,6 +6,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Html;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -39,7 +40,7 @@ public class ApplicationBriefActivity extends AppCompatActivity {
             mNotificationHead.setVisibility(View.VISIBLE);
         }
         mContent = (TextView) findViewById(R.id.application_content);
-        mContent.setText(readTXTFileFromAssets(this));
+        mContent.setText(Html.fromHtml(readTXTFileFromAssets(this)));
     }
 
     /***
@@ -52,7 +53,7 @@ public class ApplicationBriefActivity extends AppCompatActivity {
         InputStream in = null;
         StringBuilder builder = new StringBuilder();
         try {
-            in = context.getAssets().open("application.txt");
+            in = context.getAssets().open("ApplicationBrief.html");
             BufferedReader reader = new BufferedReader(new InputStreamReader(in));
             String result = null;
             while ((result = reader.readLine()) != null) {

@@ -210,7 +210,7 @@ public class ImageLoader {
         Iterator<LoadImageAsynTask> it = mTaskSets.iterator();
         while (it.hasNext()) {
             LoadImageAsynTask task = it.next();
- //           task.cancel(false);
+            //           task.cancel(false);
             it.remove();
         }
     }
@@ -335,7 +335,11 @@ public class ImageLoader {
                 if (bitmap != null) {
                     mImageView.setImageBitmap(bitmap);
                 } else {
-                    mImageView.setImageResource(R.mipmap.imageview_error_bc);
+                    if (Settings.is_no_picture_mode && !NetworkInfo.isWifiAvailable() && NetworkInfo.isNetworkAvailable()) {
+                        mImageView.setImageResource(R.mipmap.imageview_no_pic_mode);
+                    } else {
+                        mImageView.setImageResource(R.mipmap.imageview_error_bc);
+                    }
                 }
             }
             //异步任务图片加载完成，移除该任务

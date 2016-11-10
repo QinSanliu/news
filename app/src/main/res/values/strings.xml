@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">News</string>
+    <string name="app_name">趣闻</string>
 
     <!-- 横向导航条菜单项名称-->
     <string-array name="news_type">
@@ -136,4 +136,6 @@
     <string name="cancel_collected">取消收藏</string>
 
     <string name="loading">正在加载...</string>
+
+    <string name="share_content">欢迎使用趣闻,该应用新闻有丰富的种类，微信的精选内容，以及有趣的段子使你捧腹大笑，并且有强大的个性化设置功能。</string>
 </resources>

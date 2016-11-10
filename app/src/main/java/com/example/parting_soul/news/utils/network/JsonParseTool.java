@@ -176,6 +176,9 @@ public class JsonParseTool {
                     joke.setPage(page);
                     lists.add(joke);
                 }
+                if (lists.size() == 0) {
+                    lists = null;
+                }
             } else {
                 lists = null;
             }

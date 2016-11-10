@@ -45,10 +45,10 @@
             android:layout="@layout/preference_item"
             android:summary="@string/note_summary"
             android:title="@string/note" />
-        <Preference
+        <!--<Preference
             android:key="license"
             android:layout="@layout/preference_item"
             android:summary="@string/license_summary"
-            android:title="@string/license" />
+            android:title="@string/license" />-->
     </PreferenceCategory>
 </PreferenceScreen>

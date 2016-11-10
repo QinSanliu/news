@@ -96,7 +96,7 @@ public class AboutFragment extends PreferenceFragment implements Preference.OnPr
         //标题
         intent.putExtra(Intent.EXTRA_SUBJECT, "分享" + getResources().getString(R.string.app_name));
         //分享的内容
-        intent.putExtra(Intent.EXTRA_TEXT, "分享" + getResources().getString(R.string.app_name));
+        intent.putExtra(Intent.EXTRA_TEXT, getResources().getString(R.string.share_content));
         //分享的类型
         intent.setType("text/plain");
         //验证是否有应用响应

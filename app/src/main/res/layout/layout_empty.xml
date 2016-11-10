@@ -4,11 +4,11 @@
     android:layout_height="match_parent"
     android:background="?attr/theme_backgroundColor">
 
-    <TextView
+    <ImageView
         android:id="@+id/empty"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:text="@string/empty" />
+        android:src="@mipmap/empty_page" />
 
 </RelativeLayout>
