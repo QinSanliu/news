@@ -13,7 +13,23 @@
         6) 重置设置:初始化所有设置
         7) 无图模式:可以设置仅在wifi下加载图片
         8) 清除缓存:清除新闻数据缓存以及图片缓存
-
+***
 
 ###软件截图
-![enter image description here](https://github.com/PartingSoul/news/blob/master/Screenshots/quweng1.png)![enter image description here](https://github.com/PartingSoul/news/blob/master/Screenshots/quweng2.png)![enter image description here](https://github.com/PartingSoul/news/blob/master/Screenshots/quwen3.png)![enter image description here](https://github.com/PartingSoul/news/blob/master/Screenshots/quweng4.png)![enter image description here](https://github.com/PartingSoul/news/blob/master/Screenshots/quweng5.png)![enter image description here](https://github.com/PartingSoul/news/blob/master/Screenshots/quweng6.png)![enter image description here](https://github.com/PartingSoul/news/blob/master/Screenshots/quweng7.png)![enter image description here](https://github.com/PartingSoul/news/blob/master/Screenshots/quweng8.png)![enter image description here](https://github.com/PartingSoul/news/blob/master/Screenshots/quweng9.png)
+<table>
+		<tr>
+			<td><img src = "https://github.com/PartingSoul/news/blob/master/Screenshots/quweng1.png"></td>
+			<td><img src = "https://github.com/PartingSoul/news/blob/master/Screenshots/quweng2.png"></td>
+			<td><img src = "https://github.com/PartingSoul/news/blob/master/Screenshots/quwen3.png"></td>
+	</tr>
+	<tr>
+			<td><img src = "https://github.com/PartingSoul/news/blob/master/Screenshots/quweng4.png"></td>
+			<td><img src = "https://github.com/PartingSoul/news/blob/master/Screenshots/quweng5.png"></td>
+			<td><img src = "https://github.com/PartingSoul/news/blob/master/Screenshots/quwen6.png"></td>
+	</tr>
+	<tr>
+			<td><img src = "https://github.com/PartingSoul/news/blob/master/Screenshots/quweng7.png"></td>
+			<td><img src = "https://github.com/PartingSoul/news/blob/master/Screenshots/quweng8.png"></td>
+			<td><img src = "https://github.com/PartingSoul/news/blob/master/Screenshots/quwen9.png"></td>
+	</tr>
+</table>
