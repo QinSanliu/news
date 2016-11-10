@@ -1,5 +1,6 @@
- ###apk下载地址(android系统4.1以上)
- [enter link description here](https://github.com/PartingSoul/news/tree/master/release_apk/app-release.apk) 
+ 
+ apk下载地址(android系统4.1以上)
+ [enter link description here](http://pan.baidu.com/s/1jIBa4nW) 
  
  ***
  **趣闻是一款娱乐性的客户端，数据内容主要分为三个模块，分别为新闻，微信精选以及段子(笑话)，功能模块包括收藏以及个性化设置**。
