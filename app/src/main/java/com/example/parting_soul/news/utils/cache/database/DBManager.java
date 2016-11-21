@@ -284,10 +284,9 @@ public class DBManager {
                 sql.append("insert or replace into ").append(WeiChatTable.WEICHAT_TABLE_NAME).append(" ( ").append(WeiChatTable.WEICHAT_TABLE_ID + ",")
                         .append(WEICHAT_TABLE_TITLE + "," + WeiChatTable.WEICHAT_TABLE_PIC_PATH + "," + WeiChatTable.WEICHAT_TABLE__SOURCE
                                 + "," + WeiChatTable.WEICHAT_TABLE_URL + "," + WeiChatTable.WEICHAT_PAGE + "," + WeiChatTable.WEICHAT_IS_COLLECTED)
-                        .append(" ) values( '").append(n.getId()).append("',").append("'").append(n.getTitle() + "','" + n.getPicPath() + "','" + n.getSource()
-                        + "','" + n.getUrl() + "',").append(n.getPage()).append(",").append("(").append("select ")
-                        .append(WeiChatTable.WEICHAT_IS_COLLECTED).append(" from ").append(WeiChatTable.WEICHAT_TABLE_NAME).append(" where ").append(WeiChatTable.WEICHAT_TABLE_ID).append(" = '" + n.getId() + "') )");
-                database.execSQL(sql.toString());
+                        .append(" ) values( ? ").append(",").append("?,?,?,?,?").append(",").append("(").append("select ")
+                        .append(WeiChatTable.WEICHAT_IS_COLLECTED).append(" from ").append(WeiChatTable.WEICHAT_TABLE_NAME).append(" where ").append(WeiChatTable.WEICHAT_TABLE_ID).append(" = " + "?" + ") )");
+                database.execSQL(sql.toString(), new Object[]{n.getId(), n.getTitle(), n.getPicPath(), n.getSource(), n.getUrl(), n.getPage(), n.getId()});
                 LogUtils.d(CommonInfo.TAG, "--->" + sql.toString());
             }
 
@@ -416,10 +415,10 @@ public class DBManager {
                 StringBuilder sql = new StringBuilder();
                 sql.append("insert or replace into ").append(JokeTable.JOKE_TABLE_NAME).append(" ( ").append(JokeTable.JOKE_TABLE_ID + ",")
                         .append(JokeTable.JOKE_TABLE_CONTENT + "," + JokeTable.JOKE_TABLE_UPDATA_TIME + "," + JokeTable.JOKE_TABLE_PAGE
-                                + "," + JOKE_TABLE_IS_COLLECTED).append(" ) values( '").append(n.getHashId()).append("',").append("'")
-                        .append(n.getContent() + "','" + n.getDate() + "'," + n.getPage() + ",").append("(").append("select ")
-                        .append(JOKE_TABLE_IS_COLLECTED).append(" from ").append(JokeTable.JOKE_TABLE_NAME).append(" where ").append(JokeTable.JOKE_TABLE_ID).append(" = '" + n.getHashId() + "') )");
-                database.execSQL(sql.toString());
+                                + "," + JOKE_TABLE_IS_COLLECTED).append(" ) values( ").append("?").append(",")
+                        .append(" ? , ? , ? ,").append("(").append("select ")
+                        .append(JOKE_TABLE_IS_COLLECTED).append(" from ").append(JokeTable.JOKE_TABLE_NAME).append(" where ").append(JokeTable.JOKE_TABLE_ID).append(" = " + "?" + ") )");
+                database.execSQL(sql.toString(), new Object[]{n.getHashId(), n.getContent(), n.getDate(), n.getPage(), n.getHashId()});
                 LogUtils.d(CommonInfo.TAG, "--->" + sql.toString());
             }
 
