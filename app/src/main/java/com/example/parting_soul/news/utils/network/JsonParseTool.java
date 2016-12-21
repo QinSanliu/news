@@ -125,8 +125,9 @@ public class JsonParseTool {
         List<WeiChat> lists = new ArrayList<WeiChat>();
         try {
             JSONObject root = new JSONObject(jsonString);
-            String state = root.getString(CommonInfo.WeiChatAPI.JSONKEY.REQUEST_JSON_REASON_KEY_NAME);
-            if (state.equals(CommonInfo.WeiChatAPI.JSONKEY.RESQUEST_JSON_REASON_SUCCESS_KEY_VALUE)) {
+            //           String state = root.getString(CommonInfo.WeiChatAPI.JSONKEY.REQUEST_JSON_REASON_KEY_NAME);
+            int state = root.getInt(CommonInfo.WeiChatAPI.JSONKEY.REQUEST_JSON_ERROR_CODE);
+            if (state == CommonInfo.WeiChatAPI.JSONKEY.REQUEST_JSON_ERROR_NORMAL) {
                 JSONObject result = root.getJSONObject(CommonInfo.WeiChatAPI.JSONKEY.RESPONSE_JSON_RESULT_KEY_NAME);
                 JSONArray array = result.getJSONArray(CommonInfo.WeiChatAPI.JSONKEY.REQUEST_JSON_DATA_LISTS);
                 int totalPage = result.getInt(CommonInfo.WeiChatAPI.JSONKEY.REQUEST_JSON_TOLALPAGE_KEY_NAME);

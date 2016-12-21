@@ -185,6 +185,17 @@ public class CommonInfo {
              * 当前页
              */
             public static final String REQUEST_JSON_PAGE_NO_KEY_NAME = "pno";
+
+            /**
+             * 返回码
+             */
+            public static final String REQUEST_JSON_ERROR_CODE = "error_code";
+
+            /**
+             * 正常返回的错误码
+             */
+            public static final int REQUEST_JSON_ERROR_NORMAL = 0;
+
         }
     }
 
